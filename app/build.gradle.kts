@@ -32,4 +32,8 @@ dependencies {
 
     // Timber
     implementation(libs.timber)
+
+    // Implement local modules
+    implementation(projects.core.domain)
+    implementation(projects.core.data)
 }
