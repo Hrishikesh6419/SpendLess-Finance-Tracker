@@ -1,0 +1,230 @@
+[versions]
+# ──────────────────────────
+# 🏗️  Build Tools
+# ──────────────────────────
+agp = "8.8.0"                                # Android Gradle Plugin (AGP) - Required for building Android apps
+androidTools = "31.7.3"                      # Android SDK Build Tools
+desugar_jdk_libs = "2.1.3"                   # Enables Java 8+ APIs on older Android versions
+ksp = "2.0.21-1.0.25"                        # Kotlin Symbol Processing (annotation processing)
+
+# ──────────────────────────
+# 🏆 Kotlin & Coroutines
+# ──────────────────────────
+kotlin = "2.0.21"                            # Kotlin version
+coroutines = "1.9.0"                         # Kotlin Coroutines - Asynchronous programming support
+
+# ──────────────────────────
+# ⚙️  Core Android Libraries
+# ──────────────────────────
+coreKtx = "1.15.0"                           # Core AndroidX extensions
+appcompat = "1.7.0"                          # Backward-compatible Android components
+
+# ──────────────────────────
+# 📌 Code Quality & Static Analysis
+# ──────────────────────────
+annotation = "1.9.1"                         # AndroidX annotation utilities
+
+# ──────────────────────────
+# 🎨 UI Libraries
+# ──────────────────────────
+activityCompose = "1.9.3"                    # Compose Activity support
+composeBom = "2024.11.00"                    # Compose BOM (Bill of Materials) - Manages Compose dependencies
+materialIconsExtended = "1.7.5"              # Material Icons Extended for Jetpack Compose
+navigationCompose = "2.8.4"                  # Jetpack Compose Navigation
+material = "1.12.0"                          # Material Design Components
+
+# ──────────────────────────
+# 🔄 Lifecycle & Dependency Injection
+# ──────────────────────────
+lifecycleRuntimeKtx = "2.8.7"                # Jetpack Lifecycle components
+koin = "4.0.0"                               # Koin - Dependency Injection for Kotlin
+
+# ──────────────────────────
+# 📂 Database & Persistence
+# ──────────────────────────
+room = "2.6.1"                               # Room - Android Database ORM
+
+# ──────────────────────────
+# 📦 Serialization & Data Handling
+# ──────────────────────────
+kotlinx-serialization = "1.7.3"              # KotlinX Serialization for JSON processing
+
+# ──────────────────────────
+# 🔬 Testing Libraries
+# ──────────────────────────
+junit = "4.13.2"                             # JUnit - Unit testing framework
+junitVersion = "1.2.1"                       # JUnit AndroidX version
+espressoCore = "3.6.1"                       # Espresso - UI Testing framework
+
+# ──────────────────────────
+# 🛠 Miscellaneous Utilities
+# ──────────────────────────
+securityCryptoKtx = "1.1.0-alpha06"          # Android Security Crypto
+timber = "5.0.1"                             # Timber - Logging library
+work = "2.10.0"                              # WorkManager - Background tasks
+
+# ──────────────────────────
+# 📌 Project Metadata
+# ──────────────────────────
+projectApplicationId = "com.hrishi.spendless"
+projectVersionName = "1.0"
+projectMinSdkVersion = "25"
+projectTargetSdkVersion = "35"
+projectCompileSdkVersion = "35"
+projectVersionCode = "1"
+
+[libraries]
+# ──────────────────────────
+# 🎨 Jetpack Compose UI Libraries
+# ──────────────────────────
+androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
+androidx-lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycleRuntimeKtx" }
+androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleRuntimeKtx" }
+androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
+androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
+androidx-compose-ui = { group = "androidx.compose.ui", name = "ui" }
+androidx-compose-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
+androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
+androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+androidx-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
+androidx-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
+
+# ──────────────────────────
+# 🔹 Core AndroidX Libraries
+# ──────────────────────────
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+androidx-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "materialIconsExtended" }
+androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
+androidx-security-crypto-ktx = { module = "androidx.security:security-crypto-ktx", version.ref = "securityCryptoKtx" }
+
+# ──────────────────────────
+# ⚡ Kotlin & Coroutines
+# ──────────────────────────
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
+kotlinx-coroutines-play-services = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "coroutines" }
+
+# ──────────────────────────
+# 🏗️ Build Tools & Annotation Processing
+# ──────────────────────────
+android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
+android-tools-common = { group = "com.android.tools", name = "common", version.ref = "androidTools" }
+kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+ksp-gradlePlugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
+room-gradlePlugin = { group = "androidx.room", name = "room-gradle-plugin", version.ref = "room" }
+
+# ──────────────────────────
+# 🛠 Utilities & Logging
+# ──────────────────────────
+desugar-jdk-libs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugar_jdk_libs" }
+timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
+
+# ──────────────────────────
+# 🔍 Testing Libraries
+# ──────────────────────────
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
+androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+
+# ──────────────────────────
+# 🏗️ Dependency Injection - Koin
+# ──────────────────────────
+koin-android-workmanager = { group = "io.insert-koin", name = "koin-androidx-workmanager", version.ref = "koin" }
+koin-android = { group = "io.insert-koin", name = "koin-android", version.ref = "koin" }
+koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koin" }
+koin-androidx-compose = { group = "io.insert-koin", name = "koin-androidx-compose", version.ref = "koin" }
+
+# ──────────────────────────
+# 📀 Database - Room
+# ──────────────────────────
+room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
+room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+
+# ──────────────────────────
+# 🔄 Lifecycle Management & State Handling
+# ──────────────────────────
+androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
+
+# ──────────────────────────
+# ⏳ Background Processing & Work Management
+# ──────────────────────────
+androidx-work = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "work" }
+
+# ──────────────────────────
+# 🎨 UI & Material Design Components
+# ──────────────────────────
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+
+# ──────────────────────────
+# 📌 Code Quality & Static Analysis
+# ──────────────────────────
+annotation = { group = "androidx.annotation", name = "annotation", version.ref = "annotation" }
+
+
+# ──────────────────────────
+# 📦 Gradle Plugins
+# ──────────────────────────
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+android-library = { id = "com.android.library", version.ref = "agp" }
+jetbrainsKotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+org-jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+room = { id = "androidx.room", version.ref = "room" }
+
+# 🏗️ Build Tools & Annotation Processing
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+
+# ──────────────────────────
+# Convention Plugins
+# ──────────────────────────
+spendless-android-application = { id = "spendless.android.application", version = "unspecified" }
+spendless-android-application-compose = { id = "spendless.android.application.compose", version = "unspecified" }
+spendless-android-library = { id = "spendless.android.library", version = "unspecified" }
+spendless-android-library-compose = { id = "spendless.android.library.compose", version = "unspecified" }
+spendless-android-feature-ui = { id = "spendless.android.feature.ui", version = "unspecified" }
+spendless-android-room = { id = "spendless.android.room", version = "unspecified" }
+spendless-jvm-library = { id = "spendless.jvm.library", version = "unspecified" }
+
+
+# ──────────────────────────
+# 🏗️  Dependency Bundles (Grouping dependencies)
+# ──────────────────────────
+[bundles]
+compose = [
+    "androidx-activity-compose",
+    "androidx-lifecycle-runtime-compose",
+    "androidx-lifecycle-viewmodel-compose",
+    "androidx-compose-material3",
+    "androidx-compose-bom",
+    "androidx-compose-ui",
+    "androidx-compose-ui-graphics",
+    "androidx-compose-ui-tooling",
+    "androidx-compose-ui-tooling-preview",
+]
+
+compose-debug = [
+    "androidx-compose-ui-tooling",
+    "androidx-compose-ui-test-manifest",
+]
+
+compose-test = [
+    "androidx-compose-ui-test-manifest",
+    "androidx-compose-ui-test-junit4",
+]
+
+koin = [
+    "koin-core",
+    "koin-android",
+    "koin-android-workmanager"
+]
+
+koin-compose = [
+    "koin-core",
+    "koin-android",
+    "koin-android-workmanager",
+    "koin-androidx-compose"
+]
