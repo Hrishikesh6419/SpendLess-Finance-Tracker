@@ -28,3 +28,6 @@ include(":core:data")
 
 include(":core:presentation:ui")
 include(":core:presentation:designsystem")
+include(":auth:domain")
+include(":auth:presentation")
+include(":auth:data")

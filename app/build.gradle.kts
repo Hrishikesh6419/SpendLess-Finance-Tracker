@@ -34,6 +34,12 @@ dependencies {
     implementation(libs.timber)
 
     // Implement local modules
+    implementation(projects.auth.domain)
+    implementation(projects.auth.data)
+    implementation(projects.auth.presentation)
+
     implementation(projects.core.domain)
     implementation(projects.core.data)
+    implementation(projects.core.presentation.designsystem)
+    implementation(projects.core.presentation.ui)
 }
