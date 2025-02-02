@@ -1,33 +1,30 @@
-# Ignore Android Studio settings
-.idea/                     # Ignore entire .idea directory
+# ─────────────────────────────────────────────────────────
+# Ignore Android Studio/IntelliJ-specific settings
+# ─────────────────────────────────────────────────────────
+.idea/
 .idea/caches/
 .idea/libraries/
 .idea/modules.xml
 .idea/workspace.xml
 .idea/navEditor.xml
 .idea/assetWizardSettings.xml
+
 # Ignore project files
 *.iml
 
+# ─────────────────────────────────────────────────────────
 # Ignore OS-specific files
+# ─────────────────────────────────────────────────────────
 .DS_Store
 Thumbs.db
 
+# ─────────────────────────────────────────────────────────
 # Ignore build and generated files
+# ─────────────────────────────────────────────────────────
 /build/
-*/build/
+/*/build/
 .externalNativeBuild/
 .cxx/
 captures/
 
-# Ignore Gradle-related files
-.gradle/
-gradlew
-gradlew.bat
-gradle/wrapper/
-
-# Ensure `libs.versions.toml` is tracked
-!gradle/libs.versions.toml
-
-# Ignore local configuration (should not be shared)
 local.properties
