@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Login Button Resources-->
+    <string name="login_button_content_description">Login Button</string>
+    <string name="login_welcome_back">Welcome back!</string>
+    <string name="login_enter_your_details">Enter you login details</string>
+</resources>

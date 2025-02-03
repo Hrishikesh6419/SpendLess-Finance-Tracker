@@ -10,6 +10,7 @@ android {
 dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.koin.androidx.compose)
     implementation(projects.core.domain)
     implementation(projects.auth.domain)
 }
