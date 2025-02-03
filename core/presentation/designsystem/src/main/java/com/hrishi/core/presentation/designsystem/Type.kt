@@ -97,7 +97,8 @@ val Typography = Typography(
     bodyMedium = TextStyle(
         fontFamily = FigtreeRegular,
         fontSize = 16.sp,
-        lineHeight = 24.sp
+        lineHeight = 24.sp,
+        color = SpendLessDarkGrey
     ),
     bodySmall = TextStyle(
         fontFamily = FigtreeRegular,
