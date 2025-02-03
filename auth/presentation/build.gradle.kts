@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.spendless.android.feature.ui)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -7,6 +8,8 @@ android {
 }
 
 dependencies {
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.kotlinx.serialization.json)
     implementation(projects.core.domain)
     implementation(projects.auth.domain)
 }
