@@ -23,9 +23,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -37,6 +39,7 @@ fun SpendLessTextField(
     state: TextFieldState,
     hint: String,
     keyboardType: KeyboardType = KeyboardType.Text,
+    imeAction: ImeAction = ImeAction.Next,
     modifier: Modifier = Modifier,
 ) {
     var isFocused by remember {
@@ -50,16 +53,16 @@ fun SpendLessTextField(
             color = MaterialTheme.colorScheme.onSurface
         ),
         keyboardOptions = KeyboardOptions(
-            keyboardType = keyboardType
+            keyboardType = keyboardType,
+            imeAction = imeAction
         ),
         modifier = modifier
             .fillMaxWidth()
             .onFocusChanged {
                 isFocused = it.isFocused
             }
-            .defaultMinSize(
-                minHeight = 48.dp
-            )
+            .defaultMinSize(minHeight = 48.dp)
+            .shadow(2.dp, shape = RoundedCornerShape(16.dp), clip = false)
             .clip(RoundedCornerShape(16.dp))
             .border(
                 width = 1.dp, color = if (isFocused) {

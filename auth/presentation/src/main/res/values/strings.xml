@@ -4,4 +4,8 @@
     <string name="login_button_content_description">Login Button</string>
     <string name="login_welcome_back">Welcome back!</string>
     <string name="login_enter_your_details">Enter you login details</string>
+    <string name="login_username">Username</string>
+    <string name="login_pin">PIN</string>
+    <string name="login_log_in">Log in</string>
+    <string name="login_new_to_spend_less">New to SpendLess?</string>
 </resources>
