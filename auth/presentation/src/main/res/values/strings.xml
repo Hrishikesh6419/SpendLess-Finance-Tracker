@@ -8,4 +8,5 @@
     <string name="login_pin">PIN</string>
     <string name="login_log_in">Log in</string>
     <string name="login_new_to_spend_less">New to SpendLess?</string>
+    <string name="login_error_username_or_pin_is_incorrect">Username or PIN is incorrect</string>
 </resources>

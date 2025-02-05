@@ -15,9 +15,6 @@ fun NavGraphBuilder.authGraph(
     ) {
         composable<LoginRoute> {
             LoginScreenRoot(
-                onRegisterClick = {
-
-                }
             )
         }
 
