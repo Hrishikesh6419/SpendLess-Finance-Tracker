@@ -24,7 +24,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
@@ -43,7 +42,6 @@ fun SpendLessTextField(
     onDone: (() -> Unit)? = null
 ) {
     var isFocused by remember { mutableStateOf(false) }
-    val keyboardController = LocalSoftwareKeyboardController.current
 
     BasicTextField(
         value = value,
@@ -57,7 +55,6 @@ fun SpendLessTextField(
         ),
         keyboardActions = KeyboardActions(
             onDone = {
-                keyboardController?.hide()
                 onDone?.invoke()
             }
         ),
