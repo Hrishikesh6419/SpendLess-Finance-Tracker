@@ -10,7 +10,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
-import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -33,7 +32,7 @@ import com.hrishi.auth.presentation.login.component.SpendLessClickableText
 import com.hrishi.core.presentation.designsystem.LoginIcon
 import com.hrishi.core.presentation.designsystem.SpendLessFinanceTrackerTheme
 import com.hrishi.core.presentation.designsystem.components.SpendLessButton
-import com.hrishi.core.presentation.designsystem.components.SpendLessErrorBanner
+import com.hrishi.core.presentation.designsystem.components.SpendLessSnackBarHost
 import com.hrishi.core.presentation.designsystem.components.SpendLessTextField
 import com.hrishi.presentation.ui.ObserveAsEvents
 import kotlinx.coroutines.launch
@@ -79,11 +78,7 @@ fun LoginScreen(
     onAction: (LoginAction) -> Unit
 ) {
     Scaffold(containerColor = Color.Transparent, snackbarHost = {
-        SnackbarHost(hostState = snackbarHostState) { data ->
-            SpendLessErrorBanner(
-                text = data.visuals.message
-            )
-        }
+        SpendLessSnackBarHost(snackbarHostState)
     }) { contentPadding ->
         Column(
             modifier = modifier
