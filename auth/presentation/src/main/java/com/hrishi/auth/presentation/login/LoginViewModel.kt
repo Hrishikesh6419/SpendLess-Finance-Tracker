@@ -6,6 +6,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class LoginViewModel : ViewModel() {
@@ -20,9 +21,10 @@ class LoginViewModel : ViewModel() {
         viewModelScope.launch {
             when (action) {
                 LoginAction.OnLoginClick -> {
-                    val username = _uiState.value.username.text.trim()
+                    val username = _uiState.value.username.trim()
+                    val pin = _uiState.value.pin.trim()
 
-                    if (!isValidUsername(username)) {
+                    if (!isValidUsername(username) || pin.length < 5) {
                         eventChannel.send(LoginEvent.IncorrectCredentials)
                     } else {
                         // Proceed with login logic
@@ -31,6 +33,18 @@ class LoginViewModel : ViewModel() {
 
                 LoginAction.OnRegisterClick -> {
                     // Handle registration logic
+                }
+
+                is LoginAction.OnPinChange -> {
+                    _uiState.update {
+                        it.copy(pin = action.pin)
+                    }
+                }
+
+                is LoginAction.OnUsernameUpdate -> {
+                    _uiState.update {
+                        it.copy(username = action.username)
+                    }
                 }
             }
         }

@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -104,7 +105,10 @@ fun LoginScreen(
             )
 
             SpendLessTextField(
-                state = uiState.username,
+                value = uiState.username,
+                onValueChange = {
+                    onAction(LoginAction.OnUsernameUpdate(it))
+                },
                 hint = stringResource(R.string.login_username),
                 modifier = Modifier.padding(
                     start = 16.dp,
@@ -114,9 +118,16 @@ fun LoginScreen(
             )
 
             SpendLessTextField(
-                state = uiState.pin,
+                value = uiState.pin,
+                onValueChange = {
+                    onAction(LoginAction.OnPinChange(it))
+                },
                 hint = stringResource(R.string.login_pin),
                 keyboardType = KeyboardType.Number,
+                imeAction = ImeAction.Done,
+                onDone = {
+                    onAction(LoginAction.OnLoginClick)
+                },
                 modifier = Modifier.padding(
                     start = 16.dp,
                     end = 16.dp,
@@ -129,7 +140,8 @@ fun LoginScreen(
                     start = 16.dp,
                     end = 16.dp,
                     top = 24.dp
-                ), buttonText = stringResource(R.string.login_log_in)
+                ),
+                buttonText = stringResource(R.string.login_log_in),
             ) {
                 onAction(LoginAction.OnLoginClick)
             }
