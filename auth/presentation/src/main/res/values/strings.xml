@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Login Button Resources-->
+    <!-- Login Screen Resources-->
     <string name="login_button_content_description">Login Button</string>
     <string name="login_welcome_back">Welcome back!</string>
     <string name="login_enter_your_details">Enter you login details</string>
@@ -9,4 +9,9 @@
     <string name="login_log_in">Log in</string>
     <string name="login_new_to_spend_less">New to SpendLess?</string>
     <string name="login_error_username_or_pin_is_incorrect">Username or PIN is incorrect</string>
+
+    <!-- Registration Screen Resources-->
+    <string name="register_headline">Welcome to SpendLess! \n How can we address you?</string>
+    <string name="register_create_unique_username">Create unique username</string>
+
 </resources>

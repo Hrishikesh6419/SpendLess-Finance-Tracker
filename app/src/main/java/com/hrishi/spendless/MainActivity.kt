@@ -26,7 +26,7 @@ class MainActivity : ComponentActivity() {
                 Box(Modifier.safeDrawingPadding()) { // This ensures that interactable elements don't overlap with the system UI
                     Surface(
                         modifier = Modifier.fillMaxSize(),
-                        color = MaterialTheme.colorScheme.onBackground
+                        color = MaterialTheme.colorScheme.background
                     ) {
                         val navController = rememberNavController()
                         NavigationRoot(navController)

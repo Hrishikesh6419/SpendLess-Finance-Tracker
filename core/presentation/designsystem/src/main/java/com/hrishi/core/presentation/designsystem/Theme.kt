@@ -14,7 +14,8 @@ private val ColorScheme = darkColorScheme(
     onSurface = SpendLessBlack,
     onSurfaceVariant = SpendLessDarkGrey,
     error = SpendLessRed,
-    onBackground = SpendLessPaleLavender
+    background = SpendLessPaleLavender,
+    onBackground = SpendLessLightGrey
 )
 
 @Composable

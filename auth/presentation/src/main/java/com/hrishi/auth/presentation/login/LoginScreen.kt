@@ -21,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -41,12 +42,14 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun LoginScreenRoot(
     modifier: Modifier = Modifier,
+    onRegisterClick: () -> Unit,
     viewModel: LoginViewModel = koinViewModel()
 ) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackBarHostState = remember { SnackbarHostState() }
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
@@ -58,6 +61,11 @@ fun LoginScreenRoot(
                         duration = SnackbarDuration.Short
                     )
                 }
+            }
+
+            LoginEvent.NavigateToRegisterScreen -> {
+                keyboardController?.hide()
+                onRegisterClick()
             }
         }
     }
@@ -72,7 +80,7 @@ fun LoginScreenRoot(
 
 @Composable
 fun LoginScreen(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     uiState: LoginViewState,
     snackbarHostState: SnackbarHostState,
     onAction: (LoginAction) -> Unit
@@ -160,7 +168,7 @@ fun LoginScreen(
 @Composable
 fun PreviewLoginScreen() {
     SpendLessFinanceTrackerTheme {
-        Surface(color = MaterialTheme.colorScheme.onBackground) {
+        Surface(color = MaterialTheme.colorScheme.background) {
             LoginScreen(
                 modifier = Modifier,
                 uiState = LoginViewState(),

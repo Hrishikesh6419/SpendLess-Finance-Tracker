@@ -32,7 +32,7 @@ class LoginViewModel : ViewModel() {
                 }
 
                 LoginAction.OnRegisterClick -> {
-                    // Handle registration logic
+                    eventChannel.send(LoginEvent.NavigateToRegisterScreen)
                 }
 
                 is LoginAction.OnPinChange -> {
