@@ -24,8 +24,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.hrishi.auth.apresentation.R
+import com.hrishi.auth.presentation.login.component.SpendLessClickableText
 import com.hrishi.core.presentation.designsystem.LoginIcon
 import com.hrishi.core.presentation.designsystem.SpendLessFinanceTrackerTheme
+import com.hrishi.core.presentation.designsystem.components.SpendLessButton
 import com.hrishi.core.presentation.designsystem.components.SpendLessHeadlineTextField
 import com.hrishi.core.presentation.designsystem.components.SpendLessSnackBarHost
 import com.hrishi.presentation.ui.ObserveAsEvents
@@ -76,7 +78,9 @@ fun RegisterScreen(
 
             Text(
                 modifier = Modifier.padding(
-                    top = 20.dp, start = 26.dp, end = 26.dp
+                    top = 20.dp,
+                    start = 26.dp,
+                    end = 26.dp
                 ),
                 text = stringResource(R.string.register_headline),
                 style = MaterialTheme.typography.headlineMedium,
@@ -91,12 +95,40 @@ fun RegisterScreen(
 
             SpendLessHeadlineTextField(
                 value = uiState.username,
-                modifier = Modifier.padding(top = 36.dp, start = 26.dp, end = 26.dp),
+                modifier = Modifier.padding(
+                    top = 36.dp,
+                    start = 26.dp,
+                    end = 26.dp
+                ),
                 onValueChange = {
                     onAction(RegisterAction.OnUserNameChanged(it))
                 },
                 hint = stringResource(R.string.login_username)
             )
+
+            SpendLessButton(
+                modifier = Modifier.padding(
+                    top = 16.dp,
+                    start = 26.dp,
+                    end = 26.dp
+                ),
+                buttonText = stringResource(R.string.common_next),
+                onClick = {
+
+                },
+                isEnabled = false
+            )
+
+            SpendLessClickableText(
+                modifier = Modifier.padding(
+                    top = 28.dp,
+                    start = 26.dp,
+                    end = 26.dp
+                ),
+                text = stringResource(R.string.register_already_have_an_account)
+            ) {
+
+            }
 
         }
     }
