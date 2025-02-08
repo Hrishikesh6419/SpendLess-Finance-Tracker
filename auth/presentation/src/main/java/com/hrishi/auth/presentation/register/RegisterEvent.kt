@@ -4,5 +4,6 @@ sealed interface RegisterEvent {
     data object UsernameTaken : RegisterEvent
     data object SuccessfulRegistration : RegisterEvent
     data object NavigateToRegisterScreen : RegisterEvent
+    data object NavigateToPinScreen : RegisterEvent
     data object IncorrectUsername : RegisterEvent
 }

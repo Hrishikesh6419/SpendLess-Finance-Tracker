@@ -36,10 +36,13 @@ class RegisterViewModel(
                     eventChannel.send(RegisterEvent.NavigateToRegisterScreen)
 
                 RegisterAction.OnNextClicked -> {
-                    if (!authUseCases.isUsernameValidUseCase(_uiState.value.username)) {
+                    val username = _uiState.value.username
+                    if (!authUseCases.isUsernameValidUseCase(username)) {
                         eventChannel.send(RegisterEvent.IncorrectUsername)
-                    } else {
+                    } else if (authUseCases.isUsernameDuplicateUseCase(username)) {
                         // Navigate
+                    } else {
+                        eventChannel.send(RegisterEvent.NavigateToPinScreen)
                     }
                 }
             }

@@ -43,7 +43,8 @@ import org.koin.androidx.compose.koinViewModel
 fun RegisterScreenRoot(
     modifier: Modifier = Modifier,
     viewModel: RegisterViewModel = koinViewModel(),
-    onAlreadyHaveAnAccountClick: () -> Unit
+    onAlreadyHaveAnAccountClick: () -> Unit,
+    onNavigateToPinScreen: () -> Unit
 ) {
     val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -70,6 +71,11 @@ fun RegisterScreenRoot(
                         duration = SnackbarDuration.Short
                     )
                 }
+            }
+
+            RegisterEvent.NavigateToPinScreen -> {
+                keyboardController?.hide()
+                onNavigateToPinScreen()
             }
         }
     }
