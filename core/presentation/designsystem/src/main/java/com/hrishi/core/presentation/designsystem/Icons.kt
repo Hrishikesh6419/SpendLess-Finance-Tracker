@@ -12,3 +12,11 @@ val LoginIcon: ImageVector
 val ArrowForward: ImageVector
     @Composable
     get() = ImageVector.vectorResource(R.drawable.ic_arrow_forward)
+
+val BackDelete: ImageVector
+    @Composable
+    get() = ImageVector.vectorResource(R.drawable.ic_delete)
+
+val FingerPrint: ImageVector
+    @Composable
+    get() = ImageVector.vectorResource(R.drawable.ic_finger_print)
