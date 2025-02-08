@@ -36,7 +36,9 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun RegisterScreenRoot(
-    modifier: Modifier = Modifier, viewModel: RegisterViewModel = koinViewModel()
+    modifier: Modifier = Modifier,
+    viewModel: RegisterViewModel = koinViewModel(),
+    onAlreadyHaveAnAccountClick: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackBarHostState = remember { SnackbarHostState() }
@@ -46,11 +48,15 @@ fun RegisterScreenRoot(
             is RegisterEvent.EnableNextButton -> Unit
             RegisterEvent.SuccessfulRegistration -> Unit
             RegisterEvent.UsernameTaken -> Unit
+            RegisterEvent.NavigateToRegisterScreen -> onAlreadyHaveAnAccountClick()
         }
     }
 
     RegisterScreen(
-        modifier = modifier, uiState = uiState, snackBarHostState, onAction = viewModel::onAction
+        modifier = modifier,
+        uiState = uiState,
+        snackBarHostState = snackBarHostState,
+        onAction = viewModel::onAction
     )
 }
 
@@ -117,7 +123,7 @@ fun RegisterScreen(
                 onClick = {
 
                 },
-                isEnabled = false,
+                isEnabled = uiState.isNextEnabled,
                 icon = ArrowForward
             )
 
@@ -129,9 +135,8 @@ fun RegisterScreen(
                 ),
                 text = stringResource(R.string.register_already_have_an_account)
             ) {
-
+                onAction(RegisterAction.OnAlreadyHaveAnAccountClicked)
             }
-
         }
     }
 }
