@@ -5,12 +5,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -30,53 +30,53 @@ import com.hrishi.core.presentation.designsystem.SpendLessOnPrimaryFixed
 @Composable
 fun SpendLessPinPad(
     modifier: Modifier = Modifier,
-    hasBiometricButton: Boolean? = false,
+    hasBiometricButton: Boolean = false,
     onBiometricButtonClicked: (() -> Unit)? = null,
     onNumberPressedClicked: (Int) -> Unit,
-    onDeletePressedClicked: () -> Unit,
+    onDeletePressedClicked: () -> Unit
 ) {
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(3),
+    Column(
         modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(4.dp),
-        horizontalArrangement = Arrangement.spacedBy(4.dp)
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        items(9) { index ->
-            PinPadButton(
-                text = (index + 1).toString(),
-                onClick = { onNumberPressedClicked(index + 1) }
-            )
-        }
-
-        items(3) { index ->
-            when (index) {
-                0 -> {
-                    if (hasBiometricButton == true) {
-                        PinPadButton(
-                            icon = FingerPrint,
-                            onClick = onBiometricButtonClicked,
-                            alpha = 0.30f
-                        )
-                    } else {
-                        Spacer(modifier = Modifier.size(108.dp)) // Empty space if biometric is disabled
-                    }
-                }
-
-                1 -> {
+        for (row in 0 until 3) {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                for (col in 0 until 3) {
+                    val number = row * 3 + col + 1
                     PinPadButton(
-                        text = "0",
-                        onClick = { onNumberPressedClicked(0) }
-                    )
-                }
-
-                2 -> {
-                    PinPadButton(
-                        icon = BackDelete,
-                        onClick = onDeletePressedClicked,
-                        alpha = 0.30f
+                        text = number.toString(),
+                        onClick = { onNumberPressedClicked(number) }
                     )
                 }
             }
+        }
+
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            if (hasBiometricButton) {
+                PinPadButton(
+                    icon = FingerPrint,
+                    onClick = onBiometricButtonClicked,
+                    alpha = 0.30f
+                )
+            } else {
+                Spacer(modifier = Modifier.size(108.dp)) // Empty space if biometric is disabled
+            }
+
+            PinPadButton(
+                text = "0",
+                onClick = { onNumberPressedClicked(0) }
+            )
+
+            PinPadButton(
+                icon = BackDelete,
+                onClick = onDeletePressedClicked,
+                alpha = 0.30f
+            )
         }
     }
 }
