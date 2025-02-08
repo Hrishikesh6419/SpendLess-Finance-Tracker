@@ -2,6 +2,7 @@
 <resources>
     <!-- Common Resources-->
     <string name="common_next">Next</string>
+    <string name="common_incorrect_username_format">Incorrect username format</string>
 
     <!-- Login Screen Resources-->
     <string name="login_button_content_description">Login Button</string>

@@ -1,6 +1,7 @@
 package com.hrishi.spendless
 
 import android.app.Application
+import com.hrishi.auth.di.authDataModule
 import com.hrishi.auth.presentation.di.authViewModelModule
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
@@ -24,6 +25,7 @@ class SpendLessApp : Application() {
             androidContext(this@SpendLessApp)
             modules(
                 authViewModelModule,
+                authDataModule
             )
         }
     }

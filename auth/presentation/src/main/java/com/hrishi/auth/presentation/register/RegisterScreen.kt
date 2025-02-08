@@ -9,15 +9,19 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -32,6 +36,7 @@ import com.hrishi.core.presentation.designsystem.components.SpendLessButton
 import com.hrishi.core.presentation.designsystem.components.SpendLessHeadlineTextField
 import com.hrishi.core.presentation.designsystem.components.SpendLessSnackBarHost
 import com.hrishi.presentation.ui.ObserveAsEvents
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -40,15 +45,32 @@ fun RegisterScreenRoot(
     viewModel: RegisterViewModel = koinViewModel(),
     onAlreadyHaveAnAccountClick: () -> Unit
 ) {
+    val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackBarHostState = remember { SnackbarHostState() }
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val scope = rememberCoroutineScope()
 
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
-            is RegisterEvent.EnableNextButton -> Unit
-            RegisterEvent.SuccessfulRegistration -> Unit
+            RegisterEvent.SuccessfulRegistration -> {
+                keyboardController?.hide()
+            }
             RegisterEvent.UsernameTaken -> Unit
-            RegisterEvent.NavigateToRegisterScreen -> onAlreadyHaveAnAccountClick()
+            RegisterEvent.NavigateToRegisterScreen -> {
+                keyboardController?.hide()
+                onAlreadyHaveAnAccountClick()
+            }
+
+            RegisterEvent.IncorrectUsername -> {
+                scope.launch {
+                    snackBarHostState.currentSnackbarData?.dismiss()
+                    snackBarHostState.showSnackbar(
+                        message = context.getString(R.string.common_incorrect_username_format),
+                        duration = SnackbarDuration.Short
+                    )
+                }
+            }
         }
     }
 
@@ -121,7 +143,7 @@ fun RegisterScreen(
                 ),
                 buttonText = stringResource(R.string.common_next),
                 onClick = {
-
+                    onAction(RegisterAction.OnNextClicked)
                 },
                 isEnabled = uiState.isNextEnabled,
                 icon = ArrowForward
