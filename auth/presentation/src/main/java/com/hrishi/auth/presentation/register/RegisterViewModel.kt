@@ -42,6 +42,12 @@ class RegisterViewModel(
                     } else if (authUseCases.isUsernameDuplicateUseCase(username)) {
                         // Navigate
                     } else {
+                        _uiState.update {
+                            it.copy(
+                                username = "",
+                                isNextEnabled = false
+                            )
+                        }
                         eventChannel.send(RegisterEvent.NavigateToPinScreen)
                     }
                 }
