@@ -8,3 +8,7 @@ import com.hrishi.presentation.designsystem.R
 val LoginIcon: ImageVector
     @Composable
     get() = ImageVector.vectorResource(R.drawable.ic_login_icon)
+
+val ArrowForward: ImageVector
+    @Composable
+    get() = ImageVector.vectorResource(R.drawable.ic_arrow_forward)

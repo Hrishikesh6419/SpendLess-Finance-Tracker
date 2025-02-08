@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.hrishi.auth.apresentation.R
 import com.hrishi.auth.presentation.login.component.SpendLessClickableText
+import com.hrishi.core.presentation.designsystem.ArrowForward
 import com.hrishi.core.presentation.designsystem.LoginIcon
 import com.hrishi.core.presentation.designsystem.SpendLessFinanceTrackerTheme
 import com.hrishi.core.presentation.designsystem.components.SpendLessButton
@@ -116,7 +117,8 @@ fun RegisterScreen(
                 onClick = {
 
                 },
-                isEnabled = false
+                isEnabled = false,
+                icon = ArrowForward
             )
 
             SpendLessClickableText(
