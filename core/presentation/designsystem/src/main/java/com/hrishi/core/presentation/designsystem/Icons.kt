@@ -20,3 +20,11 @@ val BackDelete: ImageVector
 val FingerPrint: ImageVector
     @Composable
     get() = ImageVector.vectorResource(R.drawable.ic_finger_print)
+
+val BackArrow: ImageVector
+    @Composable
+    get() = ImageVector.vectorResource(R.drawable.ic_back)
+
+val DownloadButton: ImageVector
+    @Composable
+    get() = ImageVector.vectorResource(R.drawable.ic_download)
