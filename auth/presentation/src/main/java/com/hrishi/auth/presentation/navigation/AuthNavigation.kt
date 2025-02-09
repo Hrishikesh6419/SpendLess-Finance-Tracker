@@ -48,7 +48,14 @@ fun NavGraphBuilder.authGraph(
         }
 
         composable<CreatePinRoute> {
-            CreatePinScreenRoot()
+            CreatePinScreenRoot(
+                onNavigateToConfirmScreen = {
+
+                },
+                onNavigateToRegisterScreen = {
+                    navController.navigateToRegisterScreen()
+                }
+            )
         }
     }
 }

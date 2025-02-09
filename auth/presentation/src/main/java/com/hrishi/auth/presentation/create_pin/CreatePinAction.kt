@@ -4,4 +4,5 @@ sealed interface CreatePinAction {
     data class OnPinUpdate(val pin: String) : CreatePinAction
     data class OnNumberPressed(val number: Int) : CreatePinAction
     data object OnDeletePressed : CreatePinAction
+    data object OnBackPressed : CreatePinAction
 }
