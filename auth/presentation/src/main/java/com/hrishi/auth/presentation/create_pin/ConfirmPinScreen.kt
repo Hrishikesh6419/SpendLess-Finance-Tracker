@@ -6,37 +6,49 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.hrishi.auth.apresentation.R
 import com.hrishi.auth.presentation.create_pin.component.CreatePinScreenComponent
 import com.hrishi.core.presentation.designsystem.SpendLessFinanceTrackerTheme
 import com.hrishi.presentation.ui.ObserveAsEvents
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun CreatePinScreenRoot(
+fun ConfirmPinScreenRoot(
     modifier: Modifier = Modifier,
-    onNavigateToConfirmScreen: (String) -> Unit,
     onNavigateToRegisterScreen: () -> Unit,
+    onNavigateToPreferencesScreen: () -> Unit,
     viewModel: CreatePinViewModel = koinViewModel()
 ) {
+    val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackBarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
 
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
-            is CreatePinEvent.NavigateToConfirmPinScreen -> onNavigateToConfirmScreen(event.createdPin)
             CreatePinEvent.NavigateToRegisterScreen -> onNavigateToRegisterScreen()
-            else -> Unit
+            CreatePinEvent.NavigateToPreferencesScreen -> onNavigateToPreferencesScreen()
+            CreatePinEvent.PinsDoNotMatch -> {
+                scope.launch {
+                    snackBarHostState.currentSnackbarData?.dismiss()
+                    snackBarHostState.showSnackbar(context.getString(R.string.confirm_pin_error_pins_do_not_match))
+                }
+            }
+
+            is CreatePinEvent.NavigateToConfirmPinScreen -> Unit // Not Applicable here
         }
     }
 
     CreatePinScreenComponent(
         modifier = modifier,
-        headlineResId = R.string.create_pin_headline,
-        subHeadlineResId = R.string.create_pin_sub_headline,
+        headlineResId = R.string.confirm_pin_headline,
+        subHeadlineResId = R.string.confirm_pin_sub_headline,
         snackbarHostState = snackBarHostState,
         uiState = uiState,
         onAction = viewModel::onAction
@@ -45,15 +57,15 @@ fun CreatePinScreenRoot(
 
 @Composable
 @Preview
-fun PreviewCreatePinScreen() {
+fun PreviewConfirmPinScreenRoot() {
     SpendLessFinanceTrackerTheme {
         Surface(color = MaterialTheme.colorScheme.background) {
             CreatePinScreenComponent(
                 uiState = CreatePinState(),
                 snackbarHostState = SnackbarHostState(),
                 onAction = {},
-                headlineResId = R.string.create_pin_headline,
-                subHeadlineResId = R.string.create_pin_sub_headline
+                headlineResId = R.string.confirm_pin_headline,
+                subHeadlineResId = R.string.confirm_pin_sub_headline
             )
         }
     }

@@ -17,6 +17,9 @@ data object RegisterRoute
 @Serializable
 data object CreatePinRoute
 
+@Serializable
+data class ConfirmPinRoute(val createdPin: String)
+
 // Navigation Extensions
 fun NavController.navigateToLoginRoute(navOptions: NavOptionsBuilder.() -> Unit = {}) =
     navigate(route = LoginRoute, navOptions)
@@ -26,3 +29,8 @@ fun NavController.navigateToRegisterScreen(navOptions: NavOptionsBuilder.() -> U
 
 fun NavController.navigateToCreatePinScreen(navOptions: NavOptionsBuilder.() -> Unit = {}) =
     navigate(route = CreatePinRoute, navOptions)
+
+fun NavController.navigateToConfirmPinScreen(
+    createdPin: String,
+    navOptions: NavOptionsBuilder.() -> Unit = {}
+) = navigate(route = ConfirmPinRoute(createdPin), navOptions)

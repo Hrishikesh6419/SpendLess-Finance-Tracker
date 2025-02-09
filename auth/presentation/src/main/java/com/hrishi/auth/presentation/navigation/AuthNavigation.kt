@@ -4,6 +4,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
+import com.hrishi.auth.presentation.create_pin.ConfirmPinScreenRoot
 import com.hrishi.auth.presentation.create_pin.CreatePinScreenRoot
 import com.hrishi.auth.presentation.login.LoginScreenRoot
 import com.hrishi.auth.presentation.register.RegisterScreenRoot
@@ -50,10 +51,27 @@ fun NavGraphBuilder.authGraph(
         composable<CreatePinRoute> {
             CreatePinScreenRoot(
                 onNavigateToConfirmScreen = {
-
+                    navController.navigateToConfirmPinScreen(
+                        createdPin = it
+                    ) {
+                        popUpTo<CreatePinRoute> {
+                            inclusive = true
+                        }
+                    }
                 },
                 onNavigateToRegisterScreen = {
                     navController.navigateToRegisterScreen()
+                }
+            )
+        }
+
+        composable<ConfirmPinRoute> {
+            ConfirmPinScreenRoot(
+                onNavigateToRegisterScreen = {
+                    navController.navigateToRegisterScreen()
+                },
+                onNavigateToPreferencesScreen = {
+
                 }
             )
         }

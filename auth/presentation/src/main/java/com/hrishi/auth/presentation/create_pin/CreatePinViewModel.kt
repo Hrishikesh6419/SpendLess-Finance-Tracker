@@ -1,5 +1,6 @@
 package com.hrishi.auth.presentation.create_pin
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.channels.Channel
@@ -9,13 +10,17 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class CreatePinViewModel : ViewModel() {
+class CreatePinViewModel(
+    savedStateHandle: SavedStateHandle
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(CreatePinState())
     val uiState = _uiState.asStateFlow()
 
     private val eventChannel = Channel<CreatePinEvent>()
     val events = eventChannel.receiveAsFlow()
+
+    private val enteredPin = savedStateHandle.get<String>("createdPin")
 
     fun onAction(action: CreatePinAction) {
         viewModelScope.launch {
@@ -39,8 +44,15 @@ class CreatePinViewModel : ViewModel() {
                             )
                         }
                     }
-                    if (_uiState.value.pin.length == 5) {
-                        eventChannel.send(CreatePinEvent.NavigateToRegisterScreen)
+                    val updatedPin = _uiState.value.pin
+                    if (updatedPin.length == 5) {
+                        if (enteredPin == null) {
+                            eventChannel.send(CreatePinEvent.NavigateToConfirmPinScreen(updatedPin))
+                        } else if (updatedPin.equals(enteredPin, true)) {
+                            eventChannel.send(CreatePinEvent.NavigateToPreferencesScreen)
+                        } else {
+                            eventChannel.send(CreatePinEvent.PinsDoNotMatch)
+                        }
                     }
                 }
 

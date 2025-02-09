@@ -18,9 +18,13 @@
     <string name="register_headline">Welcome to SpendLess! \n How can we address you?</string>
     <string name="register_create_unique_username">Create unique username</string>
     <string name="register_already_have_an_account">Already have an account?</string>
-    
+
+    <!-- Create Pin Screens-->
     <string name="create_pin_headline">Create PIN</string>
-    <string name="create_pin_sub_headline">Use PIN to login to your account  </string>
+    <string name="create_pin_sub_headline">Use PIN to login to your account</string>
+    <string name="confirm_pin_headline">Repeat Your PIN</string>
+    <string name="confirm_pin_sub_headline">Enter your PIN again</string>
+    <string name="confirm_pin_error_pins_do_not_match">PINs don\’t match. Try again</string>
 
 
 </resources>
