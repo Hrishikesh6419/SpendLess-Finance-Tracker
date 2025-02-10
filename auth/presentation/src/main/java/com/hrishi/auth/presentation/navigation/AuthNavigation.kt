@@ -1,14 +1,18 @@
 package com.hrishi.auth.presentation.navigation
 
+import android.util.Log
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
+import androidx.navigation.toRoute
 import com.hrishi.auth.presentation.create_pin.ConfirmPinScreenRoot
 import com.hrishi.auth.presentation.create_pin.CreatePinScreenRoot
 import com.hrishi.auth.presentation.login.LoginScreenRoot
-import com.hrishi.auth.presentation.navigation.model.CreatePinData
+import com.hrishi.auth.presentation.navigation.model.CreatePinScreenData
+import com.hrishi.auth.presentation.navigation.model.PreferencesScreenData
 import com.hrishi.auth.presentation.register.RegisterScreenRoot
+import com.hrishi.auth.presentation.user_preference.PreferencesScreenRoot
 import com.hrishi.presentation.ui.SerializableNavType
 import kotlinx.serialization.serializer
 import kotlin.reflect.typeOf
@@ -53,7 +57,9 @@ fun NavGraphBuilder.authGraph(
         }
 
         composable<CreatePinRoute>(
-            typeMap = mapOf(typeOf<CreatePinData>() to SerializableNavType.create(serializer<CreatePinData>()))
+            typeMap = mapOf(
+                typeOf<CreatePinScreenData>() to SerializableNavType.create(serializer<CreatePinScreenData>())
+            )
         ) {
             CreatePinScreenRoot(
                 onNavigateToConfirmScreen = {
@@ -70,16 +76,26 @@ fun NavGraphBuilder.authGraph(
         }
 
         composable<ConfirmPinRoute>(
-            typeMap = mapOf(typeOf<CreatePinData>() to SerializableNavType.create(serializer<CreatePinData>()))
+            typeMap = mapOf(
+                typeOf<CreatePinScreenData>() to SerializableNavType.create(serializer<CreatePinScreenData>())
+            )
         ) {
             ConfirmPinScreenRoot(
                 onNavigateToRegisterScreen = {
                     navController.navigateToRegisterScreen()
                 },
                 onNavigateToPreferencesScreen = {
-
+                    navController.navigateToPreferencesScreen(it)
                 }
             )
+        }
+
+        composable<PreferencesRoute>(
+            typeMap = mapOf(
+                typeOf<PreferencesScreenData>() to SerializableNavType.create(serializer<PreferencesScreenData>())
+            )
+        ) {
+            PreferencesScreenRoot()
         }
     }
 }

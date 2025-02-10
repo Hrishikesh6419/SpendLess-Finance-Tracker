@@ -3,7 +3,8 @@ package com.hrishi.auth.presentation.create_pin
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hrishi.auth.presentation.navigation.model.CreatePinData
+import com.hrishi.auth.presentation.navigation.model.CreatePinScreenData
+import com.hrishi.auth.presentation.navigation.model.PreferencesScreenData
 import com.hrishi.presentation.ui.getRouteData
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,7 +23,7 @@ class CreatePinViewModel(
     private val eventChannel = Channel<CreatePinEvent>()
     val events = eventChannel.receiveAsFlow()
 
-    private val createPinData = savedStateHandle.getRouteData<CreatePinData>("screenData")
+    private var createPinScreenData = savedStateHandle.getRouteData<CreatePinScreenData>("screenData")
 
     fun onAction(action: CreatePinAction) {
         viewModelScope.launch {
@@ -39,7 +40,7 @@ class CreatePinViewModel(
 
                 is CreatePinAction.OnNumberPressed -> {
                     val pin = _uiState.value.pin
-                    if (pin.length < 5) {
+                    if (pin.length < MAX_PIN_LENGTH) {
                         _uiState.update {
                             it.copy(
                                 pin = pin + action.number
@@ -47,18 +48,28 @@ class CreatePinViewModel(
                         }
                     }
                     val updatedPin = _uiState.value.pin
-                    if (updatedPin.length == 5) {
-                        if (createPinData?.pin == null) {
+                    if (updatedPin.length == MAX_PIN_LENGTH) {
+                        if (createPinScreenData?.pin == null) {
                             eventChannel.send(
                                 CreatePinEvent.NavigateToConfirmPinScreen(
-                                    CreatePinData(
-                                        username = createPinData?.username ?: "",
+                                    CreatePinScreenData(
+                                        username = createPinScreenData?.username ?: "",
                                         pin = updatedPin
                                     )
                                 )
                             )
-                        } else if (updatedPin.equals(createPinData.pin, true)) {
-                            eventChannel.send(CreatePinEvent.NavigateToPreferencesScreen)
+                        } else if (updatedPin.equals(createPinScreenData?.pin, true)) {
+                            createPinScreenData?.let {
+                                eventChannel.send(
+                                    CreatePinEvent.NavigateToPreferencesScreen(
+                                        screenData = PreferencesScreenData(
+                                            it.username,
+                                            it.pin
+                                        )
+                                    )
+                                )
+                            }
+                            resetState()
                         } else {
                             eventChannel.send(CreatePinEvent.PinsDoNotMatch)
                         }
@@ -70,5 +81,20 @@ class CreatePinViewModel(
                 }
             }
         }
+    }
+
+    private fun resetState() {
+        _uiState.update {
+            it.copy(
+                pin = ""
+            )
+        }
+        createPinScreenData = createPinScreenData?.copy(
+            pin = ""
+        )
+    }
+
+    companion object {
+        private const val MAX_PIN_LENGTH = 5
     }
 }

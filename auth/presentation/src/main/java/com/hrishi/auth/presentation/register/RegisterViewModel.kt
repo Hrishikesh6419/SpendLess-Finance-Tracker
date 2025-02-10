@@ -2,7 +2,7 @@ package com.hrishi.auth.presentation.register
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hrishi.auth.presentation.navigation.model.CreatePinData
+import com.hrishi.auth.presentation.navigation.model.CreatePinScreenData
 import com.hrishi.domain.usecase.AuthUseCases
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -43,20 +43,24 @@ class RegisterViewModel(
                     } else if (authUseCases.isUsernameDuplicateUseCase(username)) {
                         // Navigate
                     } else {
-                        _uiState.update {
-                            it.copy(
-                                username = "",
-                                isNextEnabled = false
-                            )
-                        }
+                        resetState()
                         eventChannel.send(
                             RegisterEvent.NavigateToPinScreen(
-                                CreatePinData(username = username)
+                                CreatePinScreenData(username = username)
                             )
                         )
                     }
                 }
             }
+        }
+    }
+
+    private fun resetState() {
+        _uiState.update {
+            it.copy(
+                username = "",
+                isNextEnabled = false
+            )
         }
     }
 }

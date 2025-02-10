@@ -13,6 +13,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.hrishi.auth.apresentation.R
 import com.hrishi.auth.presentation.create_pin.component.CreatePinScreenComponent
+import com.hrishi.auth.presentation.navigation.model.PreferencesScreenData
 import com.hrishi.core.presentation.designsystem.SpendLessFinanceTrackerTheme
 import com.hrishi.presentation.ui.ObserveAsEvents
 import kotlinx.coroutines.launch
@@ -22,7 +23,7 @@ import org.koin.androidx.compose.koinViewModel
 fun ConfirmPinScreenRoot(
     modifier: Modifier = Modifier,
     onNavigateToRegisterScreen: () -> Unit,
-    onNavigateToPreferencesScreen: () -> Unit,
+    onNavigateToPreferencesScreen: (PreferencesScreenData) -> Unit,
     viewModel: CreatePinViewModel = koinViewModel()
 ) {
     val context = LocalContext.current
@@ -33,7 +34,6 @@ fun ConfirmPinScreenRoot(
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
             CreatePinEvent.NavigateToRegisterScreen -> onNavigateToRegisterScreen()
-            CreatePinEvent.NavigateToPreferencesScreen -> onNavigateToPreferencesScreen()
             CreatePinEvent.PinsDoNotMatch -> {
                 scope.launch {
                     snackBarHostState.currentSnackbarData?.dismiss()
@@ -41,6 +41,7 @@ fun ConfirmPinScreenRoot(
                 }
             }
 
+            is CreatePinEvent.NavigateToPreferencesScreen -> onNavigateToPreferencesScreen(event.screenData)
             is CreatePinEvent.NavigateToConfirmPinScreen -> Unit // Not Applicable here
         }
     }
