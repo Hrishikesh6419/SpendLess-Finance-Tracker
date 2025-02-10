@@ -2,6 +2,7 @@ package com.hrishi.auth.presentation.register
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.hrishi.auth.presentation.navigation.model.CreatePinData
 import com.hrishi.domain.usecase.AuthUseCases
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -48,7 +49,11 @@ class RegisterViewModel(
                                 isNextEnabled = false
                             )
                         }
-                        eventChannel.send(RegisterEvent.NavigateToPinScreen)
+                        eventChannel.send(
+                            RegisterEvent.NavigateToPinScreen(
+                                CreatePinData(username = username)
+                            )
+                        )
                     }
                 }
             }

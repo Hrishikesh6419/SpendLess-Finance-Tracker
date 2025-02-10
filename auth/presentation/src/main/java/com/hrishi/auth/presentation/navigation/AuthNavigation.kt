@@ -7,7 +7,11 @@ import androidx.navigation.compose.navigation
 import com.hrishi.auth.presentation.create_pin.ConfirmPinScreenRoot
 import com.hrishi.auth.presentation.create_pin.CreatePinScreenRoot
 import com.hrishi.auth.presentation.login.LoginScreenRoot
+import com.hrishi.auth.presentation.navigation.model.CreatePinData
 import com.hrishi.auth.presentation.register.RegisterScreenRoot
+import com.hrishi.presentation.ui.SerializableNavType
+import kotlinx.serialization.serializer
+import kotlin.reflect.typeOf
 
 fun NavGraphBuilder.authGraph(
     navController: NavHostController
@@ -41,19 +45,19 @@ fun NavGraphBuilder.authGraph(
                     }
                 },
                 onNavigateToPinScreen = {
-                    navController.navigateToCreatePinScreen {
+                    navController.navigateToCreatePinScreen(screenData = it) {
                         restoreState = false
                     }
                 }
             )
         }
 
-        composable<CreatePinRoute> {
+        composable<CreatePinRoute>(
+            typeMap = mapOf(typeOf<CreatePinData>() to SerializableNavType.create(serializer<CreatePinData>()))
+        ) {
             CreatePinScreenRoot(
                 onNavigateToConfirmScreen = {
-                    navController.navigateToConfirmPinScreen(
-                        createdPin = it
-                    ) {
+                    navController.navigateToConfirmPinScreen(screenData = it) {
                         popUpTo<CreatePinRoute> {
                             inclusive = true
                         }
@@ -65,7 +69,9 @@ fun NavGraphBuilder.authGraph(
             )
         }
 
-        composable<ConfirmPinRoute> {
+        composable<ConfirmPinRoute>(
+            typeMap = mapOf(typeOf<CreatePinData>() to SerializableNavType.create(serializer<CreatePinData>()))
+        ) {
             ConfirmPinScreenRoot(
                 onNavigateToRegisterScreen = {
                     navController.navigateToRegisterScreen()

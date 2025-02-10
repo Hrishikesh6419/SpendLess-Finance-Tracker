@@ -62,7 +62,7 @@ fun SpendLessHeadlineTextField(
         modifier = modifier
             .fillMaxWidth()
             .onFocusChanged { isFocused = it.isFocused }
-            .defaultMinSize(minHeight = 48.dp)
+            .defaultMinSize(minHeight = 64.dp)
             .clip(RoundedCornerShape(16.dp))
             .background(
                 MaterialTheme.colorScheme.onBackground.copy(
@@ -73,9 +73,14 @@ fun SpendLessHeadlineTextField(
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center,
-                modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 10.dp, bottom = 10.dp)
+                modifier = Modifier.padding(
+                    start = 16.dp,
+                    end = 16.dp,
+                    top = 10.dp,
+                    bottom = 10.dp
+                )
             ) {
-                Box(modifier = Modifier.weight(1f)) { // TODO: Try center align with cursor
+                Box(modifier = Modifier.weight(1f)) { // TODO: Fix cursor showing between hint
                     if (value.isEmpty()) {
                         Text(
                             modifier = Modifier.fillMaxWidth(),

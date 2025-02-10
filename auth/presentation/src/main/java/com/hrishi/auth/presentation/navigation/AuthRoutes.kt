@@ -2,6 +2,7 @@ package com.hrishi.auth.presentation.navigation
 
 import androidx.navigation.NavController
 import androidx.navigation.NavOptionsBuilder
+import com.hrishi.auth.presentation.navigation.model.CreatePinData
 import kotlinx.serialization.Serializable
 
 // Routes
@@ -15,10 +16,10 @@ data object LoginRoute
 data object RegisterRoute
 
 @Serializable
-data object CreatePinRoute
+data class CreatePinRoute(val screenData: CreatePinData)
 
 @Serializable
-data class ConfirmPinRoute(val createdPin: String)
+data class ConfirmPinRoute(val screenData: CreatePinData)
 
 // Navigation Extensions
 fun NavController.navigateToLoginRoute(navOptions: NavOptionsBuilder.() -> Unit = {}) =
@@ -27,10 +28,13 @@ fun NavController.navigateToLoginRoute(navOptions: NavOptionsBuilder.() -> Unit 
 fun NavController.navigateToRegisterScreen(navOptions: NavOptionsBuilder.() -> Unit = {}) =
     navigate(route = RegisterRoute, navOptions)
 
-fun NavController.navigateToCreatePinScreen(navOptions: NavOptionsBuilder.() -> Unit = {}) =
-    navigate(route = CreatePinRoute, navOptions)
+fun NavController.navigateToCreatePinScreen(
+    screenData: CreatePinData,
+    navOptions: NavOptionsBuilder.() -> Unit = {}
+) =
+    navigate(route = CreatePinRoute(screenData), navOptions)
 
 fun NavController.navigateToConfirmPinScreen(
-    createdPin: String,
+    screenData: CreatePinData,
     navOptions: NavOptionsBuilder.() -> Unit = {}
-) = navigate(route = ConfirmPinRoute(createdPin), navOptions)
+) = navigate(route = ConfirmPinRoute(screenData), navOptions)

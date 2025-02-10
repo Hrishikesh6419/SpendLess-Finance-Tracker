@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.hrishi.auth.apresentation.R
 import com.hrishi.auth.presentation.login.component.SpendLessClickableText
+import com.hrishi.auth.presentation.navigation.model.CreatePinData
 import com.hrishi.core.presentation.designsystem.ArrowForward
 import com.hrishi.core.presentation.designsystem.LoginIcon
 import com.hrishi.core.presentation.designsystem.SpendLessFinanceTrackerTheme
@@ -44,7 +45,7 @@ fun RegisterScreenRoot(
     modifier: Modifier = Modifier,
     viewModel: RegisterViewModel = koinViewModel(),
     onAlreadyHaveAnAccountClick: () -> Unit,
-    onNavigateToPinScreen: () -> Unit
+    onNavigateToPinScreen: (CreatePinData) -> Unit
 ) {
     val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -73,9 +74,9 @@ fun RegisterScreenRoot(
                 }
             }
 
-            RegisterEvent.NavigateToPinScreen -> {
+            is RegisterEvent.NavigateToPinScreen -> {
                 keyboardController?.hide()
-                onNavigateToPinScreen()
+                onNavigateToPinScreen(event.screenData)
             }
         }
     }

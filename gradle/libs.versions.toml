@@ -30,7 +30,7 @@ annotation = "1.9.1"                         # AndroidX annotation utilities
 activityCompose = "1.9.3"                    # Compose Activity support
 composeBom = "2024.11.00"                    # Compose BOM (Bill of Materials) - Manages Compose dependencies
 materialIconsExtended = "1.7.5"              # Material Icons Extended for Jetpack Compose
-navigationCompose = "2.8.4"                  # Jetpack Compose Navigation
+navigationCompose = "2.8.6"                  # Jetpack Compose Navigation
 material = "1.12.0"                          # Material Design Components
 
 # ──────────────────────────
