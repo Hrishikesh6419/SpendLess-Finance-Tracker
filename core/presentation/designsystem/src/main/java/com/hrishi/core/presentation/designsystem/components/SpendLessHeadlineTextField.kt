@@ -80,8 +80,11 @@ fun SpendLessHeadlineTextField(
                     bottom = 10.dp
                 )
             ) {
-                Box(modifier = Modifier.weight(1f)) { // TODO: Fix cursor showing between hint
-                    if (value.isEmpty()) {
+                Box(modifier = Modifier.weight(1f)) {
+                    // TODO: Added isFocused to hide hint when value is empty,
+                    //  if not cursor was being shown in between hint.
+                    //  Maybe take a look later?
+                    if (value.isEmpty() && !isFocused) {
                         Text(
                             modifier = Modifier.fillMaxWidth(),
                             text = hint.toLowerCase(Locale.current),
@@ -96,7 +99,6 @@ fun SpendLessHeadlineTextField(
         }
     )
 }
-
 
 @Preview
 @Composable
