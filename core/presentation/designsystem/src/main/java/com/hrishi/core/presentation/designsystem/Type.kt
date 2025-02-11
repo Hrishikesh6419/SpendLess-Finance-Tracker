@@ -87,7 +87,8 @@ val Typography = Typography(
     labelMedium = TextStyle(
         fontFamily = FigtreeMedium,
         fontSize = 16.sp,
-        lineHeight = 24.sp
+        lineHeight = 24.sp,
+        color = SpendLessBlack
     ),
     labelSmall = TextStyle(
         fontFamily = FigtreeMedium,

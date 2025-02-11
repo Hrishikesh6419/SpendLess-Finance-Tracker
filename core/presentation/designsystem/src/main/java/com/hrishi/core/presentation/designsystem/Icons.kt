@@ -28,3 +28,11 @@ val BackArrow: ImageVector
 val DownloadButton: ImageVector
     @Composable
     get() = ImageVector.vectorResource(R.drawable.ic_download)
+
+val DropDownButton: ImageVector
+    @Composable
+    get() = ImageVector.vectorResource(R.drawable.ic_dropdown)
+
+val TickIcon: ImageVector
+    @Composable
+    get() = ImageVector.vectorResource(R.drawable.ic_tick)
