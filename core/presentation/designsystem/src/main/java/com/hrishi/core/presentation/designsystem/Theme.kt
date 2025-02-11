@@ -16,7 +16,9 @@ private val ColorScheme = darkColorScheme(
     error = SpendLessRed,
     background = SpendLessPaleLavender,
     onBackground = SpendLessLightGrey,
-    primaryContainer = SpendLessPrimaryFixed
+    primaryContainer = SpendLessPrimaryFixed,
+    onPrimaryContainer = SpendLessOnPrimaryFixed,
+    surfaceContainerLowest = SpendLessSurfaceContainerLowest
 )
 
 @Composable

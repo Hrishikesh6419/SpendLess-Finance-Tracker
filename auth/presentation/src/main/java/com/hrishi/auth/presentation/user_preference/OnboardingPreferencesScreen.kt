@@ -9,15 +9,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.hrishi.core.presentation.designsystem.SpendLessFinanceTrackerTheme
 
 @Composable
-fun PreferencesScreenRoot(
+fun OnboardingPreferencesScreenRoot(
     modifier: Modifier = Modifier
 ) {
-
-    PreferencesScreen()
+    OnboardingPreferencesScreen()
 }
 
 @Composable
-fun PreferencesScreen(
+fun OnboardingPreferencesScreen(
     modifier: Modifier = Modifier
 ) {
     Text("Preferences Screen")
@@ -25,10 +24,10 @@ fun PreferencesScreen(
 
 @Composable
 @Preview
-fun PreviewPreferencesScreen() {
+fun PreviewOnboardingPreferencesScreen() {
     SpendLessFinanceTrackerTheme {
         Surface(color = MaterialTheme.colorScheme.background) {
-            PreferencesScreen()
+            OnboardingPreferencesScreen()
         }
     }
 }

@@ -25,7 +25,6 @@ import androidx.compose.ui.unit.dp
 import com.hrishi.core.presentation.designsystem.BackDelete
 import com.hrishi.core.presentation.designsystem.FingerPrint
 import com.hrishi.core.presentation.designsystem.SpendLessFinanceTrackerTheme
-import com.hrishi.core.presentation.designsystem.SpendLessOnPrimaryFixed
 
 @Composable
 fun SpendLessPinPad(
@@ -101,7 +100,7 @@ private fun PinPadButton(
             Text(
                 text = it,
                 style = MaterialTheme.typography.headlineLarge.copy(
-                    color = SpendLessOnPrimaryFixed
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
                 )
             )
         }

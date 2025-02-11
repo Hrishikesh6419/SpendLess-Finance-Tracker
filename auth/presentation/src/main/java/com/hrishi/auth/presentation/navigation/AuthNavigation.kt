@@ -1,18 +1,16 @@
 package com.hrishi.auth.presentation.navigation
 
-import android.util.Log
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
-import androidx.navigation.toRoute
 import com.hrishi.auth.presentation.create_pin.ConfirmPinScreenRoot
 import com.hrishi.auth.presentation.create_pin.CreatePinScreenRoot
 import com.hrishi.auth.presentation.login.LoginScreenRoot
 import com.hrishi.auth.presentation.navigation.model.CreatePinScreenData
 import com.hrishi.auth.presentation.navigation.model.PreferencesScreenData
 import com.hrishi.auth.presentation.register.RegisterScreenRoot
-import com.hrishi.auth.presentation.user_preference.PreferencesScreenRoot
+import com.hrishi.auth.presentation.user_preference.OnboardingPreferencesScreenRoot
 import com.hrishi.presentation.ui.SerializableNavType
 import kotlinx.serialization.serializer
 import kotlin.reflect.typeOf
@@ -95,7 +93,7 @@ fun NavGraphBuilder.authGraph(
                 typeOf<PreferencesScreenData>() to SerializableNavType.create(serializer<PreferencesScreenData>())
             )
         ) {
-            PreferencesScreenRoot()
+            OnboardingPreferencesScreenRoot()
         }
     }
 }
