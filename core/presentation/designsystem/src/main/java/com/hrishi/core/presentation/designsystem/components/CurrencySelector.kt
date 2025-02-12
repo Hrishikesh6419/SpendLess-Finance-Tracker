@@ -45,19 +45,19 @@ fun <T> CurrencySelector(
     title: String,
     selectedOption: T,
     options: Array<T>,
-    displayContent1: (T) -> String,
-    displayContent2: (T) -> String,
-    displayMenuItem1: (T) -> String,
-    displayMenuItem2: (T) -> String,
+    currencyDisplay: (T) -> String,
+    currencyTitleDisplay: (T) -> String,
+    currencyMenuDisplay: (T) -> String,
+    currencyTitleMenuDisplay: (T) -> String,
     onItemSelected: (T) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
 
     // Remember updated states for functions to prevent recompositions
-    val currentDisplayContent1 by rememberUpdatedState(newValue = displayContent1)
-    val currentDisplayContent2 by rememberUpdatedState(newValue = displayContent2)
-    val currentDisplayMenuItem1 by rememberUpdatedState(newValue = displayMenuItem1)
-    val currentDisplayMenuItem2 by rememberUpdatedState(newValue = displayMenuItem2)
+    val currentCurrencyDisplay by rememberUpdatedState(newValue = currencyDisplay)
+    val currentCurrencyTitleDisplay by rememberUpdatedState(newValue = currencyTitleDisplay)
+    val currentCurrencyMenuDisplay by rememberUpdatedState(newValue = currencyMenuDisplay)
+    val currentCurrencyTitleMenuDisplay by rememberUpdatedState(newValue = currencyTitleMenuDisplay)
 
     Column(modifier = modifier) {
         Text(
@@ -98,12 +98,12 @@ fun <T> CurrencySelector(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = currentDisplayContent1(selectedOption),
+                            text = currentCurrencyDisplay(selectedOption),
                             style = MaterialTheme.typography.labelMedium
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            text = currentDisplayContent2(selectedOption),
+                            text = currentCurrencyTitleDisplay(selectedOption),
                             style = MaterialTheme.typography.bodyMedium
                         )
                     }
@@ -125,12 +125,12 @@ fun <T> CurrencySelector(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text(
-                                    text = currentDisplayMenuItem1(option),
+                                    text = currentCurrencyMenuDisplay(option),
                                     style = MaterialTheme.typography.labelMedium
                                 )
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Text(
-                                    text = currentDisplayMenuItem2(option),
+                                    text = currentCurrencyTitleMenuDisplay(option),
                                     style = MaterialTheme.typography.bodyMedium,
                                     textAlign = TextAlign.End
                                 )
@@ -169,16 +169,16 @@ fun PreviewCurrencySelector() {
                 title = "Currency",
                 selectedOption = FakeCurrency.INR,
                 options = FakeCurrency.entries.toTypedArray(),
-                displayContent1 = {
+                currencyDisplay = {
                     it.symbol
                 },
-                displayContent2 = {
+                currencyTitleDisplay = {
                     it.title
                 },
-                displayMenuItem1 = {
+                currencyMenuDisplay = {
                     it.symbol
                 },
-                displayMenuItem2 = {
+                currencyTitleMenuDisplay = {
                     it.title
                 },
                 onItemSelected = {

@@ -26,5 +26,13 @@
     <string name="confirm_pin_sub_headline">Enter your PIN again</string>
     <string name="confirm_pin_error_pins_do_not_match">PINs don\’t match. Try again</string>
 
-
+    <!-- Onboarding Preferences Screen-->
+    <string name="onboarding_preferences_headline">Set SpendLess\nto your preferences</string>
+    <string name="onboarding_preferences_sub_headline">You can change it at any time in Settings</string>
+    <string name="onboarding_preferences_money_sent_this_month">spend this month</string>
+    <string name="onboarding_preferences_expenses_format_title">Expenses format</string>
+    <string name="onboarding_preferences_decimal_separator_title">Decimal separator</string>
+    <string name="onboarding_preferences_thousands_separator_title">Thousands separator</string>
+    <string name="onboarding_preferences_start_button_title">Start Tracking!</string>
+    <string name="onboarding_preferences_currency_title">Currency</string>
 </resources>

@@ -57,7 +57,7 @@ fun CreatePinScreenComponent(
                 .padding(contentPadding)
         ) {
             Column(
-                modifier = modifier
+                modifier = Modifier
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally,
