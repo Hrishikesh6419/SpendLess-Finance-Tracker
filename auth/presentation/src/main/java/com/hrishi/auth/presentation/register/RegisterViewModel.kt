@@ -3,7 +3,7 @@ package com.hrishi.auth.presentation.register
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hrishi.auth.presentation.navigation.model.CreatePinScreenData
-import com.hrishi.domain.usecase.AuthUseCases
+import com.hrishi.domain.usecase.LoginUseCases
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class RegisterViewModel(
-    private val authUseCases: AuthUseCases
+    private val loginUseCases: LoginUseCases
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(RegisterViewState())
@@ -38,9 +38,9 @@ class RegisterViewModel(
 
                 RegisterAction.OnNextClicked -> {
                     val username = _uiState.value.username
-                    if (!authUseCases.isUsernameValidUseCase(username)) {
+                    if (!loginUseCases.isUsernameValidUseCase(username)) {
                         eventChannel.send(RegisterEvent.IncorrectUsername)
-                    } else if (authUseCases.isUsernameDuplicateUseCase(username)) {
+                    } else if (loginUseCases.isUsernameDuplicateUseCase(username)) {
                         // Navigate
                     } else {
                         resetState()

@@ -4,9 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hrishi.auth.presentation.navigation.model.PreferencesScreenData
-import com.hrishi.domain.formatting.NumberFormatter
-import com.hrishi.domain.model.DecimalSeparator
-import com.hrishi.domain.model.ThousandsSeparator
+import com.hrishi.domain.usecase.OnboardingPreferenceUseCases
 import com.hrishi.presentation.ui.getRouteData
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,7 +14,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class OnboardingPreferencesViewModel(
-    savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle,
+    private val onboardingPreferenceUseCases: OnboardingPreferenceUseCases
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(OnboardingPreferencesViewState())
@@ -65,7 +64,10 @@ class OnboardingPreferencesViewModel(
     private fun updateUiState(updateBlock: (OnboardingPreferencesViewState) -> OnboardingPreferencesViewState) {
         _uiState.update { currentState ->
             val newState = updateBlock(currentState)
-            val isValidFormat = shouldEnableStartTracking(newState)
+            val isValidFormat = onboardingPreferenceUseCases.validateSelectedPreferences(
+                decimalSeparator = newState.decimalSeparator,
+                thousandsSeparator = newState.thousandsSeparator
+            )
 
             newState.copy(
                 enableStartTracking = isValidFormat,
@@ -74,30 +76,12 @@ class OnboardingPreferencesViewModel(
         }
     }
 
-    /**
-     * Formats the example number based on current preferences.
-     */
     private fun formatExample(state: OnboardingPreferencesViewState): String {
-        return NumberFormatter.formatAmount(
-            amount = -10382.45,
+        return onboardingPreferenceUseCases.formatExampleUseCase(
             expenseFormat = state.expenseFormat,
             decimalSeparator = state.decimalSeparator,
             thousandsSeparator = state.thousandsSeparator,
             currency = state.currency
         )
-    }
-
-    /**
-     * Determines if the Start button should be enabled.
-     * The button is **disabled** if:
-     * - Decimal separator and thousands separator conflict (e.g., DOT vs DOT or COMMA vs COMMA)
-     */
-    private fun shouldEnableStartTracking(state: OnboardingPreferencesViewState): Boolean {
-        return when {
-            (state.decimalSeparator == DecimalSeparator.DOT && state.thousandsSeparator == ThousandsSeparator.DOT) ||
-                    (state.decimalSeparator == DecimalSeparator.COMMA && state.thousandsSeparator == ThousandsSeparator.COMMA) -> false
-
-            else -> true
-        }
     }
 }

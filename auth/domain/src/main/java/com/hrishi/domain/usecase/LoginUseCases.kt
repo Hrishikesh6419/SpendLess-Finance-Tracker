@@ -3,7 +3,7 @@ package com.hrishi.domain.usecase
 private const val MIN_USERNAME_LENGTH = 3
 private const val MAX_USERNAME_LENGTH = 14
 
-data class AuthUseCases(
+data class LoginUseCases(
     val isUsernameValidUseCase: IsUsernameValidUseCase,
     val isUsernameDuplicateUseCase: IsUsernameDuplicateUseCase
 )

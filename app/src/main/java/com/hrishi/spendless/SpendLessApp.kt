@@ -3,6 +3,7 @@ package com.hrishi.spendless
 import android.app.Application
 import com.hrishi.auth.di.authDataModule
 import com.hrishi.auth.presentation.di.authViewModelModule
+import com.hrishi.core.data.coreDataModule
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import org.koin.android.ext.koin.androidContext
@@ -25,7 +26,8 @@ class SpendLessApp : Application() {
             androidContext(this@SpendLessApp)
             modules(
                 authViewModelModule,
-                authDataModule
+                authDataModule,
+                coreDataModule
             )
         }
     }
