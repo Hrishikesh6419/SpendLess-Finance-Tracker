@@ -10,4 +10,5 @@ dependencies {
     implementation(libs.timber)
     implementation(libs.bundles.koin)
     implementation(projects.core.domain)
+    implementation(libs.androidx.security.crypto)
 }

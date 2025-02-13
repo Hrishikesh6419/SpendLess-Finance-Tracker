@@ -1,5 +1,8 @@
 package com.hrishi.auth.di
 
+import com.hrishi.domain.usecase.DecryptPinUseCase
+import com.hrishi.domain.usecase.EncryptPinUseCase
+import com.hrishi.domain.usecase.EncryptionUseCases
 import com.hrishi.domain.usecase.FormatExampleUseCase
 import com.hrishi.domain.usecase.IsUsernameDuplicateUseCase
 import com.hrishi.domain.usecase.IsUsernameValidUseCase
@@ -18,4 +21,7 @@ val authDataModule = module {
     factory { ValidateSelectedPreferences() }
     factory { FormatExampleUseCase(get()) }
     single { OnboardingPreferenceUseCases(get(), get()) }
+    factory { EncryptPinUseCase(get()) }
+    factory { DecryptPinUseCase(get()) }
+    single { EncryptionUseCases(get(), get()) }
 }

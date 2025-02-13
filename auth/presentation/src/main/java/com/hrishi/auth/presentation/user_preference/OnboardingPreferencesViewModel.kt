@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hrishi.auth.presentation.navigation.model.PreferencesScreenData
+import com.hrishi.domain.usecase.EncryptionUseCases
 import com.hrishi.domain.usecase.OnboardingPreferenceUseCases
 import com.hrishi.presentation.ui.getRouteData
 import kotlinx.coroutines.channels.Channel
@@ -15,7 +16,8 @@ import kotlinx.coroutines.launch
 
 class OnboardingPreferencesViewModel(
     savedStateHandle: SavedStateHandle,
-    private val onboardingPreferenceUseCases: OnboardingPreferenceUseCases
+    private val onboardingPreferenceUseCases: OnboardingPreferenceUseCases,
+    private val encryptionUseCases: EncryptionUseCases
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(OnboardingPreferencesViewState())
@@ -51,16 +53,19 @@ class OnboardingPreferencesViewModel(
 
                 OnboardingPreferencesAction.OnStartClicked -> {
                     eventChannel.send(OnboardingPreferencesEvent.NavigateToDashboardScreen)
+                    val (encryptedPin, iv) = encryptionUseCases.encryptPinUseCase(
+                        screenData?.pin ?: ""
+                    )
+                    println("hrishiii OnStartClicked encryptedPin : $encryptedPin")
+                    println("hrishiii OnStartClicked iv : $iv")
+                    val decryptedPin = encryptionUseCases.decryptPinUseCase(encryptedPin, iv)
+                    println("hrishiii OnStartClicked decryptedPin : $decryptedPin")
+                    println("hrishiii -----------")
                 }
             }
         }
     }
 
-    /**
-     * Helper function to update UI state while ensuring that:
-     * - `exampleFormat` is updated when needed.
-     * - `enableStartTracking` is updated when needed.
-     */
     private fun updateUiState(updateBlock: (OnboardingPreferencesViewState) -> OnboardingPreferencesViewState) {
         _uiState.update { currentState ->
             val newState = updateBlock(currentState)

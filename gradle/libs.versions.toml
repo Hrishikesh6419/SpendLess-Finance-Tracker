@@ -72,6 +72,7 @@ projectMinSdkVersion = "25"
 projectTargetSdkVersion = "35"
 projectCompileSdkVersion = "35"
 projectVersionCode = "1"
+securityCrypto = "1.1.0-alpha06"
 
 [libraries]
 # ──────────────────────────
@@ -161,6 +162,7 @@ material = { group = "com.google.android.material", name = "material", version.r
 # 📌 Code Quality & Static Analysis
 # ──────────────────────────
 annotation = { group = "androidx.annotation", name = "annotation", version.ref = "annotation" }
+androidx-security-crypto = { group = "androidx.security", name = "security-crypto", version.ref = "securityCrypto" }
 
 
 # ──────────────────────────
