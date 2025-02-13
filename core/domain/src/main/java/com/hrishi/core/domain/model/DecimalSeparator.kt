@@ -1,4 +1,4 @@
-package com.hrishi.domain.model
+package com.hrishi.core.domain.model
 
 import java.util.Locale
 

@@ -1,9 +1,9 @@
-package com.hrishi.domain.formatting
+package com.hrishi.core.domain.formatting
 
-import com.hrishi.domain.model.Currency
-import com.hrishi.domain.model.DecimalSeparator
-import com.hrishi.domain.model.ExpenseFormat
-import com.hrishi.domain.model.ThousandsSeparator
+import com.hrishi.core.domain.model.Currency
+import com.hrishi.core.domain.model.DecimalSeparator
+import com.hrishi.core.domain.model.ExpenseFormat
+import com.hrishi.core.domain.model.ThousandsSeparator
 import java.util.Locale
 
 object NumberFormatter {

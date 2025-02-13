@@ -1,9 +1,9 @@
 package com.hrishi.auth.presentation.user_preference
 
-import com.hrishi.domain.model.Currency
-import com.hrishi.domain.model.DecimalSeparator
-import com.hrishi.domain.model.ExpenseFormat
-import com.hrishi.domain.model.ThousandsSeparator
+import com.hrishi.core.domain.model.Currency
+import com.hrishi.core.domain.model.DecimalSeparator
+import com.hrishi.core.domain.model.ExpenseFormat
+import com.hrishi.core.domain.model.ThousandsSeparator
 
 sealed interface OnboardingPreferencesAction {
     data class OnExpenseFormatUpdate(val format: ExpenseFormat) : OnboardingPreferencesAction

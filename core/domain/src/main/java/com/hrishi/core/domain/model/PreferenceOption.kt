@@ -1,4 +1,4 @@
-package com.hrishi.domain.model
+package com.hrishi.core.domain.model
 
 interface PreferenceOption {
     fun displayText(

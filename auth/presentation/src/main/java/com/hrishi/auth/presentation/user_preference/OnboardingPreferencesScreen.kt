@@ -28,16 +28,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.hrishi.auth.apresentation.R
+import com.hrishi.core.domain.model.Currency
+import com.hrishi.core.domain.model.DecimalSeparator
+import com.hrishi.core.domain.model.ExpenseFormat
+import com.hrishi.core.domain.model.ThousandsSeparator
 import com.hrishi.core.presentation.designsystem.SpendLessFinanceTrackerTheme
 import com.hrishi.core.presentation.designsystem.components.CurrencySelector
 import com.hrishi.core.presentation.designsystem.components.SegmentedSelector
 import com.hrishi.core.presentation.designsystem.components.SpendLessButton
 import com.hrishi.core.presentation.designsystem.components.SpendLessSnackBarHost
 import com.hrishi.core.presentation.designsystem.components.SpendLessTopBar
-import com.hrishi.domain.model.Currency
-import com.hrishi.domain.model.DecimalSeparator
-import com.hrishi.domain.model.ExpenseFormat
-import com.hrishi.domain.model.ThousandsSeparator
 import com.hrishi.presentation.ui.ObserveAsEvents
 import org.koin.androidx.compose.koinViewModel
 

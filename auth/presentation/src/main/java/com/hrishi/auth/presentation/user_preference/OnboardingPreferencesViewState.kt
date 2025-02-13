@@ -1,10 +1,10 @@
 package com.hrishi.auth.presentation.user_preference
 
-import com.hrishi.domain.formatting.NumberFormatter
-import com.hrishi.domain.model.Currency
-import com.hrishi.domain.model.DecimalSeparator
-import com.hrishi.domain.model.ExpenseFormat
-import com.hrishi.domain.model.ThousandsSeparator
+import com.hrishi.core.domain.formatting.NumberFormatter
+import com.hrishi.core.domain.model.Currency
+import com.hrishi.core.domain.model.DecimalSeparator
+import com.hrishi.core.domain.model.ExpenseFormat
+import com.hrishi.core.domain.model.ThousandsSeparator
 
 data class OnboardingPreferencesViewState(
     val expenseFormat: ExpenseFormat = ExpenseFormat.MINUS_PREFIX,

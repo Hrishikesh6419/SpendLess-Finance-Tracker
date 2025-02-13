@@ -1,4 +1,4 @@
-package com.hrishi.domain.model
+package com.hrishi.core.domain.model
 
 enum class Currency(val symbol: String, val title: String) {
     USD("$", "US Dollar (USD)"),
