@@ -16,7 +16,8 @@ import kotlinx.serialization.serializer
 import kotlin.reflect.typeOf
 
 fun NavGraphBuilder.authGraph(
-    navController: NavHostController
+    navController: NavHostController,
+    onNavigateToDashboardScreen: () -> Unit
 ) {
     navigation<AuthBaseRoute>(
         startDestination = LoginRoute
@@ -99,9 +100,7 @@ fun NavGraphBuilder.authGraph(
                         popUpTo<RegisterRoute>()
                     }
                 },
-                onNavigateToDashboardScreen = {
-
-                }
+                onNavigateToDashboardScreen = onNavigateToDashboardScreen
             )
         }
     }

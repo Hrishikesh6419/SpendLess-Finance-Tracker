@@ -41,6 +41,9 @@ dependencies {
     implementation(projects.auth.domain)
     implementation(projects.auth.data)
     implementation(projects.auth.presentation)
+    implementation(projects.dashboard.domain)
+    implementation(projects.dashboard.data)
+    implementation(projects.dashboard.presentation)
 
     implementation(projects.core.domain)
     implementation(projects.core.database)
