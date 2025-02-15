@@ -12,8 +12,9 @@ data class OnboardingPreferencesViewState(
     val decimalSeparator: DecimalSeparator = DecimalSeparator.DOT,
     val thousandsSeparator: ThousandsSeparator = ThousandsSeparator.COMMA,
     val enableStartTracking: Boolean = true,
+    val amount: Double = -10382.45,
     val exampleFormat: String = NumberFormatter.formatAmount(
-        amount = -10382.45,
+        amount = amount,
         expenseFormat = expenseFormat,
         decimalSeparator = decimalSeparator,
         thousandsSeparator = thousandsSeparator,

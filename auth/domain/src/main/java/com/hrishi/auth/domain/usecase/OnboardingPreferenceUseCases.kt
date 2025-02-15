@@ -32,13 +32,14 @@ class ValidateSelectedPreferences {
 
 class FormatExampleUseCase(private val numberFormatter: NumberFormatter) {
     operator fun invoke(
+        amount: Double,
         expenseFormat: ExpenseFormat,
         decimalSeparator: DecimalSeparator,
         thousandsSeparator: ThousandsSeparator,
         currency: Currency
     ): String {
         return numberFormatter.formatAmount(
-            amount = -10382.45,
+            amount = amount,
             expenseFormat = expenseFormat,
             decimalSeparator = decimalSeparator,
             thousandsSeparator = thousandsSeparator,

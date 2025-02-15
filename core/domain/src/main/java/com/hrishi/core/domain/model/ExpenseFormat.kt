@@ -34,13 +34,10 @@ enum class ExpenseFormat : PreferenceOption {
         }
     }
 
-    companion object {
-        fun fromSaveValue(value: String): ExpenseFormat? {
-            return when (value) {
-                "-" -> MINUS_PREFIX
-                "()" -> BRACKETS
-                else -> null
-            }
+    fun toValue(number: String): String {
+        return when (this) {
+            MINUS_PREFIX -> "-$number"
+            BRACKETS -> "($number)"
         }
     }
 }

@@ -26,14 +26,11 @@ enum class ThousandsSeparator : PreferenceOption {
         }
     }
 
-    companion object {
-        fun fromSaveValue(value: String): ThousandsSeparator? {
-            return when (value) {
-                "." -> DOT
-                "," -> COMMA
-                " " -> SPACE
-                else -> null
-            }
+    fun toValue(): Char {
+        return when (this) {
+            DOT -> '.'
+            COMMA -> ','
+            SPACE -> ' '
         }
     }
 }

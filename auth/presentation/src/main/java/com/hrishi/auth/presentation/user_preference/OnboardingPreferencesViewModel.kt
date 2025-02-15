@@ -143,6 +143,7 @@ class OnboardingPreferencesViewModel(
 
     private fun formatExample(state: OnboardingPreferencesViewState): String {
         return onboardingPreferenceUseCases.formatExampleUseCase(
+            amount = state.amount,
             expenseFormat = state.expenseFormat,
             decimalSeparator = state.decimalSeparator,
             thousandsSeparator = state.thousandsSeparator,

@@ -13,13 +13,10 @@ enum class DecimalSeparator : PreferenceOption {
         }
     }
 
-    companion object {
-        fun fromSaveValue(value: String): DecimalSeparator? {
-            return when (value) {
-                "." -> DOT
-                "," -> COMMA
-                else -> null
-            }
+    fun toValue(): Char {
+        return when (this) {
+            DOT -> '.'
+            COMMA -> ','
         }
     }
 }

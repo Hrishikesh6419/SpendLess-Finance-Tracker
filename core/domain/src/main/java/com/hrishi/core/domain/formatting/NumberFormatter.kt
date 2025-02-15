@@ -4,6 +4,9 @@ import com.hrishi.core.domain.model.Currency
 import com.hrishi.core.domain.model.DecimalSeparator
 import com.hrishi.core.domain.model.ExpenseFormat
 import com.hrishi.core.domain.model.ThousandsSeparator
+import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
+import java.text.NumberFormat
 import java.util.Locale
 
 object NumberFormatter {
@@ -14,44 +17,27 @@ object NumberFormatter {
         thousandsSeparator: ThousandsSeparator,
         currency: Currency
     ): String {
-        val isNegative = amount < 0
+        val isNegativeNumber = amount < 0
         val absoluteAmount = kotlin.math.abs(amount)
 
-        // Format number using US Locale (default is dot as decimal separator, comma for thousands)
-        var formattedNumber = String.format(Locale.US, "%,.2f", absoluteAmount)
+        val numberFormat = NumberFormat.getNumberInstance(Locale.US) as DecimalFormat
+        val symbols = DecimalFormatSymbols(Locale.US)
 
-        // Step 1: Convert thousands separator to a temporary placeholder
-        formattedNumber = when (thousandsSeparator) {
-            ThousandsSeparator.DOT -> formattedNumber.replace(',', '¤')  // Use ¤ (temp char)
-            ThousandsSeparator.COMMA -> formattedNumber  // No change (US default)
-            ThousandsSeparator.SPACE -> formattedNumber.replace(',', ' ') // 1,000 → 1 000
-        }
+        symbols.decimalSeparator = decimalSeparator.toValue()
+        symbols.groupingSeparator = thousandsSeparator.toValue()
 
-        // Step 2: Convert decimal separator (Ensure it doesn't overwrite thousands)
-        formattedNumber = when (decimalSeparator) {
-            DecimalSeparator.DOT -> formattedNumber.replace('.', '.')  // No change needed
-            DecimalSeparator.COMMA -> formattedNumber.replace(
-                '.',
-                ','
-            ) // 1.000 → 1,000 OR 1¤000 → 1¤000
-        }
+        numberFormat.decimalFormatSymbols = symbols
+        numberFormat.minimumFractionDigits = 2
+        numberFormat.maximumFractionDigits = 2
+        numberFormat.isGroupingUsed = true
 
-        // Step 3: Convert the temporary placeholder back to the correct thousands separator
-        formattedNumber = when (thousandsSeparator) {
-            ThousandsSeparator.DOT -> formattedNumber.replace(
-                '¤',
-                '.'
-            )  // Restore dot for thousands
-            ThousandsSeparator.COMMA -> formattedNumber  // No change
-            ThousandsSeparator.SPACE -> formattedNumber  // Already handled
-        }
+        val formattedNumber = numberFormat.format(absoluteAmount)
 
-        // Step 4: Apply expense format with currency
-        return when {
-            isNegative && expenseFormat == ExpenseFormat.MINUS_PREFIX -> "-${currency.symbol}$formattedNumber"
-            isNegative && expenseFormat == ExpenseFormat.BRACKETS -> "(${currency.symbol}$formattedNumber)"
-            else -> "${currency.symbol}$formattedNumber"
-        }
+        // Formatted for expense format, i.e, minus or brackets
+        val finalFormattedAmount = if (isNegativeNumber) {
+            expenseFormat.toValue(formattedNumber)
+        } else formattedNumber
+
+        return "${currency.symbol}$finalFormattedAmount"
     }
 }
-
