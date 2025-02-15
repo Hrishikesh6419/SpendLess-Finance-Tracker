@@ -6,7 +6,8 @@ import com.hrishi.auth.domain.usecase.DecryptPinUseCase
 import com.hrishi.auth.domain.usecase.EncryptPinUseCase
 import com.hrishi.auth.domain.usecase.EncryptionUseCases
 import com.hrishi.auth.domain.usecase.FormatExampleUseCase
-import com.hrishi.auth.domain.usecase.IsUsernameDuplicateUseCase
+import com.hrishi.auth.domain.usecase.InitiateLoginUseCase
+import com.hrishi.auth.domain.usecase.IsUserNameDuplicateUseCase
 import com.hrishi.auth.domain.usecase.IsUsernameValidUseCase
 import com.hrishi.auth.domain.usecase.LoginUseCases
 import com.hrishi.auth.domain.usecase.OnboardingPreferenceUseCases
@@ -21,7 +22,7 @@ import org.koin.dsl.module
 val authDataModule = module {
     // Login
     single { IsUsernameValidUseCase() }
-    factory { IsUsernameDuplicateUseCase() }
+    factory { InitiateLoginUseCase(get(), get()) }
     single { LoginUseCases(get(), get()) }
 
     // Onboarding Preferences
@@ -37,6 +38,7 @@ val authDataModule = module {
 
     // Register User
     factory { RegisterUserUseCase(get()) }
-    single { RegisterUseCases(get()) }
+    factory { IsUserNameDuplicateUseCase(get()) }
+    single { RegisterUseCases(get(), get()) }
     singleOf(::UserInfoRepositoryImpl).bind<UserInfoRepository>()
 }

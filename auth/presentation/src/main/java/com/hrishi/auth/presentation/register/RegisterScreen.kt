@@ -78,6 +78,16 @@ fun RegisterScreenRoot(
                 keyboardController?.hide()
                 onNavigateToPinScreen(event.screenData)
             }
+
+            RegisterEvent.DuplicateUsername -> {
+                scope.launch {
+                    snackBarHostState.currentSnackbarData?.dismiss()
+                    snackBarHostState.showSnackbar(
+                        message = context.getString(R.string.common_error_username_taken),
+                        duration = SnackbarDuration.Short
+                    )
+                }
+            }
         }
     }
 

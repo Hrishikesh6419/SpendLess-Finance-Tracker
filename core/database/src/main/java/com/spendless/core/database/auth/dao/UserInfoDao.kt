@@ -12,8 +12,8 @@ interface UserInfoDao {
     @Insert
     suspend fun insertUser(userInfo: UserInfoEntity): Long
 
-    @Query("SELECT * FROM user_info WHERE userId=:userId")
-    suspend fun getUser(userId: Long): UserInfoEntity?
+    @Query("SELECT * FROM user_info WHERE username=:userName")
+    suspend fun getUser(userName: String): UserInfoEntity?
 
     @Query("SELECT * FROM user_info")
     fun getAllUsers(): Flow<List<UserInfoEntity>>

@@ -30,8 +30,8 @@ class RoomLocalUserInfoDataSource(
         }
     }
 
-    override suspend fun getUser(userId: Long): Result<UserInfo, DataError> {
-        val userEntity = userInfoDao.getUser(userId)
+    override suspend fun getUser(userName: String): Result<UserInfo, DataError> {
+        val userEntity = userInfoDao.getUser(userName)
         return userEntity?.let {
             Result.Success(it.toUserInfo())
         } ?: Result.Error(DataError.Local.USER_FETCH_ERROR)

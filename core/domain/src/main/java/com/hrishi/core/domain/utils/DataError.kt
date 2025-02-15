@@ -4,6 +4,7 @@ sealed interface DataError : Error {
 
     enum class Local : DataError {
         DISK_FULL,
+        INVALID_CREDENTIALS,
         INSERT_USER_ERROR,
         DUPLICATE_USER_ERROR,
         USER_FETCH_ERROR,

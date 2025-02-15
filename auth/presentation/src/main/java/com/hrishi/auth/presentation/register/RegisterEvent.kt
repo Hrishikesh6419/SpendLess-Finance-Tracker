@@ -8,4 +8,5 @@ sealed interface RegisterEvent {
     data object NavigateToRegisterScreen : RegisterEvent
     data class NavigateToPinScreen(val screenData: CreatePinScreenData) : RegisterEvent
     data object IncorrectUsername : RegisterEvent
+    data object DuplicateUsername : RegisterEvent
 }

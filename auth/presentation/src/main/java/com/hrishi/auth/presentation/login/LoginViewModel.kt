@@ -1,8 +1,10 @@
 package com.hrishi.auth.presentation.login
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hrishi.auth.domain.usecase.LoginUseCases
+import com.hrishi.core.domain.utils.Result
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -30,7 +32,16 @@ class LoginViewModel(
                     if (!loginUseCases.isUsernameValidUseCase(username) || pin.length < MIN_PIN_LENGTH) {
                         eventChannel.send(LoginEvent.IncorrectCredentials)
                     } else {
-                        // Proceed with login logic
+                        when (val loginResult = loginUseCases.initiateLoginUseCase(
+                            username = username,
+                            enteredPin = pin
+                        )) {
+                            is Result.Success -> {
+                                Log.d("hrishiii", "onAction: Success")
+                            }
+
+                            is Result.Error -> eventChannel.send(LoginEvent.IncorrectCredentials)
+                        }
                     }
                 }
 

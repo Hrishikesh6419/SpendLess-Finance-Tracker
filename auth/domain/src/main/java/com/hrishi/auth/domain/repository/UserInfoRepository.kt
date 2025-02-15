@@ -9,7 +9,7 @@ interface UserInfoRepository {
 
     suspend fun registerUser(userInfo: UserInfo): Result<Long, DataError>
 
-    suspend fun getUser(userId: Long): Result<UserInfo, DataError>
+    suspend fun getUser(userName: String): Result<UserInfo, DataError>
 
     fun getAllUsers(): Flow<Result<List<UserInfo>, DataError>>
 }
