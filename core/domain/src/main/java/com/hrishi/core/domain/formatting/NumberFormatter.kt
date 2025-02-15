@@ -32,12 +32,11 @@ object NumberFormatter {
         numberFormat.isGroupingUsed = true
 
         val formattedNumber = numberFormat.format(absoluteAmount)
+        val formattedNumberWithCurrency = "${currency.symbol}$formattedNumber"
 
         // Formatted for expense format, i.e, minus or brackets
-        val finalFormattedAmount = if (isNegativeNumber) {
-            expenseFormat.toValue(formattedNumber)
-        } else formattedNumber
-
-        return "${currency.symbol}$finalFormattedAmount"
+        return if (isNegativeNumber) {
+            expenseFormat.toValue(formattedNumberWithCurrency)
+        } else formattedNumberWithCurrency
     }
 }
