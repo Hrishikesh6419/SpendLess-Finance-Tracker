@@ -2,7 +2,7 @@ package com.hrishi.auth.presentation.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hrishi.domain.usecase.LoginUseCases
+import com.hrishi.auth.domain.usecase.LoginUseCases
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

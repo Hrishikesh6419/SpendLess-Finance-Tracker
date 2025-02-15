@@ -1,14 +1,19 @@
-package com.hrishi.domain.usecase
+package com.hrishi.auth.domain.usecase
 
 import com.hrishi.core.domain.formatting.NumberFormatter
 import com.hrishi.core.domain.model.Currency
 import com.hrishi.core.domain.model.DecimalSeparator
 import com.hrishi.core.domain.model.ExpenseFormat
 import com.hrishi.core.domain.model.ThousandsSeparator
+import com.hrishi.core.domain.preference.model.UserPreferences
+import com.hrishi.core.domain.preference.repository.UserPreferencesRepository
+import com.hrishi.core.domain.utils.DataError
+import com.hrishi.core.domain.utils.Result
 
 data class OnboardingPreferenceUseCases(
     val validateSelectedPreferences: ValidateSelectedPreferences,
-    val formatExampleUseCase: FormatExampleUseCase
+    val formatExampleUseCase: FormatExampleUseCase,
+    val setPreferencesUseCase: SetPreferencesUseCase
 )
 
 class ValidateSelectedPreferences {
@@ -39,5 +44,11 @@ class FormatExampleUseCase(private val numberFormatter: NumberFormatter) {
             thousandsSeparator = thousandsSeparator,
             currency = currency
         )
+    }
+}
+
+class SetPreferencesUseCase(private val userPreferencesRepository: UserPreferencesRepository) {
+    suspend operator fun invoke(userPreferences: UserPreferences): Result<Unit, DataError> {
+        return userPreferencesRepository.insertPreference(userPreferences)
     }
 }

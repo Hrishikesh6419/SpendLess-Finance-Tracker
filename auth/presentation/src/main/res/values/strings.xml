@@ -3,6 +3,8 @@
     <!-- Common Resources-->
     <string name="common_next">Next</string>
     <string name="common_incorrect_username_format">Incorrect username format</string>
+    <string name="common_error_something_went_wrong">Something went wrong</string>
+    <string name="common_error_username_taken">This username has already been taken</string>
 
     <!-- Login Screen Resources-->
     <string name="login_button_content_description">Login Button</string>

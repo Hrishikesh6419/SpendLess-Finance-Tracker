@@ -1,4 +1,4 @@
-package com.hrishi.domain.usecase
+package com.hrishi.auth.domain.usecase
 
 private const val MIN_USERNAME_LENGTH = 3
 private const val MAX_USERNAME_LENGTH = 14

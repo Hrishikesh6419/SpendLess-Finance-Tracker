@@ -11,4 +11,5 @@ dependencies {
     implementation(libs.bundles.koin)
     implementation(projects.core.domain)
     implementation(libs.androidx.security.crypto)
+    implementation(projects.core.database)
 }

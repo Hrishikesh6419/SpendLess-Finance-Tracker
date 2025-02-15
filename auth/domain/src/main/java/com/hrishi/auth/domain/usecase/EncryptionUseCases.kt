@@ -1,4 +1,4 @@
-package com.hrishi.domain.usecase
+package com.hrishi.auth.domain.usecase
 
 import com.hrishi.core.domain.security.EncryptionService
 
