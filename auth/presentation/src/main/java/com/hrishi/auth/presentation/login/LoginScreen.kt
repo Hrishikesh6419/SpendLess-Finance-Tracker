@@ -43,6 +43,7 @@ import org.koin.androidx.compose.koinViewModel
 fun LoginScreenRoot(
     modifier: Modifier = Modifier,
     onRegisterClick: () -> Unit,
+    onNavigateToDashboard: () -> Unit,
     viewModel: LoginViewModel = koinViewModel()
 ) {
     val scope = rememberCoroutineScope()
@@ -66,6 +67,11 @@ fun LoginScreenRoot(
             LoginEvent.NavigateToRegisterScreen -> {
                 keyboardController?.hide()
                 onRegisterClick()
+            }
+
+            LoginEvent.NavigateToDashboardScreen -> {
+                keyboardController?.hide()
+                onNavigateToDashboard()
             }
         }
     }

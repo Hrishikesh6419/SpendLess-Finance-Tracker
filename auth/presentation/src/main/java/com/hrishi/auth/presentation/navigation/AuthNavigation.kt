@@ -32,7 +32,8 @@ fun NavGraphBuilder.authGraph(
                         }
                         restoreState = true
                     }
-                }
+                },
+                onNavigateToDashboard = onNavigateToDashboardScreen
             )
         }
 

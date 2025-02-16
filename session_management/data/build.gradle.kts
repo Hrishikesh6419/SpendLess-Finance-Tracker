@@ -12,4 +12,5 @@ dependencies {
     implementation(projects.core.domain)
     implementation(projects.sessionManagement.domain)
     implementation(libs.androidx.datastore.preference)
+    implementation(libs.kotlinx.coroutines.core)
 }

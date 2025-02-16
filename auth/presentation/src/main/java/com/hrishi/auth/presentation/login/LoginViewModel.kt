@@ -1,10 +1,10 @@
 package com.hrishi.auth.presentation.login
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hrishi.auth.domain.usecase.LoginUseCases
 import com.hrishi.core.domain.utils.Result
+import com.spendless.session_management.domain.usecases.SessionUseCase
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -13,7 +13,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class LoginViewModel(
-    private val loginUseCases: LoginUseCases
+    private val loginUseCases: LoginUseCases,
+    private val sessionUseCase: SessionUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(LoginViewState())
@@ -37,7 +38,12 @@ class LoginViewModel(
                             enteredPin = pin
                         )) {
                             is Result.Success -> {
-                                Log.d("hrishiii", "onAction: Success")
+                                if (loginResult.data) {
+                                    sessionUseCase.startSessionUseCase()
+                                    eventChannel.send(LoginEvent.NavigateToDashboardScreen)
+                                } else {
+                                    eventChannel.send(LoginEvent.IncorrectCredentials)
+                                }
                             }
 
                             is Result.Error -> eventChannel.send(LoginEvent.IncorrectCredentials)

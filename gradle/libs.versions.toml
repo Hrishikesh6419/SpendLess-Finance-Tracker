@@ -73,6 +73,7 @@ projectTargetSdkVersion = "35"
 projectCompileSdkVersion = "35"
 projectVersionCode = "1"
 securityCrypto = "1.1.0-alpha06"
+datastorePreferences = "1.1.2"
 
 [libraries]
 # ──────────────────────────
@@ -163,6 +164,7 @@ material = { group = "com.google.android.material", name = "material", version.r
 # ──────────────────────────
 annotation = { group = "androidx.annotation", name = "annotation", version.ref = "annotation" }
 androidx-security-crypto = { group = "androidx.security", name = "security-crypto", version.ref = "securityCrypto" }
+androidx-datastore-preference = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastorePreferences" }
 
 
 # ──────────────────────────

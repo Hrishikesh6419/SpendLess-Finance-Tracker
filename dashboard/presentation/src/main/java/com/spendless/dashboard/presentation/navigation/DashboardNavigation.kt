@@ -4,7 +4,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
-import com.spendless.dashboard.presentation.dashboard.DashboardScreen
+import com.spendless.dashboard.presentation.dashboard.DashboardScreenRoot
 
 fun NavGraphBuilder.dashboardNavGraph(
     navController: NavHostController
@@ -13,7 +13,7 @@ fun NavGraphBuilder.dashboardNavGraph(
         startDestination = DashboardScreenRoute
     ) {
         composable<DashboardScreenRoute> {
-            DashboardScreen()
+            DashboardScreenRoot()
         }
     }
 }
