@@ -11,6 +11,9 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.koin.androidx.compose)
+
+    // Project dependencies
     implementation(projects.core.domain)
     implementation(projects.auth.domain)
+    api(projects.sessionManagement.presentation)
 }

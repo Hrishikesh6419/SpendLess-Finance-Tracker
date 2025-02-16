@@ -11,4 +11,5 @@ dependencies {
 
     implementation(projects.core.domain)
     implementation(projects.auth.domain)
+    api(projects.sessionManagement.data)
 }
