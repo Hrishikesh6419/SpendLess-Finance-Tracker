@@ -91,7 +91,14 @@ class SessionRepositoryImpl(
 
     override fun isSessionExpired(): Flow<Boolean> {
         return dataStore.data.map { prefs ->
+            val hasValidUser = prefs.userId > 0L  // Ensure a user is logged in
             val isExpired = System.currentTimeMillis() >= prefs.sessionExpiryTime
+
+            if (!hasValidUser) {
+                Log.d(TAG, "No valid user session found. Returning expired=false.")
+                return@map false  // User is not logged in, no need to show PIN prompt
+            }
+
             Log.d(
                 TAG,
                 "Checking session expired: $isExpired at ${formatTime(System.currentTimeMillis())}"
