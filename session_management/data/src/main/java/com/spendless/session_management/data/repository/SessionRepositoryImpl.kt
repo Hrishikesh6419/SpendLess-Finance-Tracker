@@ -23,7 +23,7 @@ class SessionRepositoryImpl(
 
     companion object {
         private const val MINUTES_TO_MILLIS = 1000L
-        private const val TAG = "SessionRepository"
+        private const val TAG = "hrishiii"
 
         // Date formatter for readable logs
         private val dateFormat = SimpleDateFormat("HH:mm:ss dd/MM/yyyy", Locale.US)
@@ -42,7 +42,7 @@ class SessionRepositoryImpl(
 
                 Log.d(
                     TAG,
-                    "hrishiii Saving session with expiration at ${formatTime(expirationTime)}"
+                    "Saving session with expiration at ${formatTime(expirationTime)}"
                 )
 
                 dataStore.updateData { prefs ->
@@ -58,7 +58,7 @@ class SessionRepositoryImpl(
     override suspend fun clearSession() {
         Log.d(
             TAG,
-            "hrishiii Clearing session expiration at ${formatTime(System.currentTimeMillis())}"
+            "Clearing session expiration at ${formatTime(System.currentTimeMillis())}"
         )
 
         // ✅ Reset session data to default
@@ -67,7 +67,7 @@ class SessionRepositoryImpl(
 
 
     private suspend fun setSessionToExpired() {
-        Log.d(TAG, "hrishiii setSessionToExpired at ${formatTime(System.currentTimeMillis())}")
+        Log.d(TAG, "setSessionToExpired at ${formatTime(System.currentTimeMillis())}")
 
         // Reset session data to default
         dataStore.updateData { prefs ->
@@ -83,7 +83,7 @@ class SessionRepositoryImpl(
      */
     override fun getSessionData(): Flow<SessionData> {
         return dataStore.data.map { prefs ->
-            Log.d(TAG, "hrishiii Fetching session data: $prefs")
+            Log.d(TAG, "Fetching session data: $prefs")
             prefs.toDomain()
         }
     }
@@ -94,9 +94,9 @@ class SessionRepositoryImpl(
             val isExpired = System.currentTimeMillis() >= prefs.sessionExpiryTime
             Log.d(
                 TAG,
-                "hrishiii Checking session expired: $isExpired at ${formatTime(System.currentTimeMillis())}"
+                "Checking session expired: $isExpired at ${formatTime(System.currentTimeMillis())}"
             )
-            Log.d(TAG, "hrishiii Session expires at ${formatTime(prefs.sessionExpiryTime)}")
+            Log.d(TAG, "Session expires at ${formatTime(prefs.sessionExpiryTime)}")
             if (isExpired) {
                 setSessionToExpired()
             }
@@ -107,7 +107,7 @@ class SessionRepositoryImpl(
     override suspend fun checkAndUpdateSessionExpiry(): Boolean {
         val isSessionExpired = isSessionExpired().first()
         if (isSessionExpired) {
-            Log.d(TAG, "hrishiii Session expired. Updating DataStore.")
+            Log.d(TAG, "Session expired. Updating DataStore.")
             setSessionToExpired()
         }
         return isSessionExpired
@@ -125,7 +125,7 @@ class SessionRepositoryImpl(
 
                     Log.d(
                         TAG,
-                        "hrishiii Resetting session expiry to ${formatTime(newExpirationTime)} using stored duration: $sessionExpiryDurationMins mins"
+                        "Resetting session expiry to ${formatTime(newExpirationTime)} using stored duration: $sessionExpiryDurationMins mins"
                     )
 
                     prefs.toBuilder()
