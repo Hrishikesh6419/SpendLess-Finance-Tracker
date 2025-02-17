@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hrishi.auth.presentation.navigation.model.CreatePinScreenData
 import com.hrishi.auth.presentation.navigation.model.PreferencesScreenData
+import com.hrishi.presentation.ui.MAX_PIN_LENGTH
 import com.hrishi.presentation.ui.getRouteData
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,7 +29,6 @@ class CreatePinViewModel(
     fun onAction(action: CreatePinAction) {
         viewModelScope.launch {
             when (action) {
-                is CreatePinAction.OnPinUpdate -> Unit
                 CreatePinAction.OnDeletePressed -> {
                     val pin = _uiState.value.pin
                     _uiState.update {
@@ -92,9 +92,5 @@ class CreatePinViewModel(
         createPinScreenData = createPinScreenData?.copy(
             pin = ""
         )
-    }
-
-    companion object {
-        private const val MAX_PIN_LENGTH = 5
     }
 }

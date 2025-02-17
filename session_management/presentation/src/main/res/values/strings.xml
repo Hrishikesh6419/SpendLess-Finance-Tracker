@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pin_prompt_headline">Hello, %s!</string>
+    <string name="pin_prompt_sub_headline">Enter you PIN</string>
+    <string name="pin_prompt_error_try_again">Try your PIN again in %s</string>
+    <string name="login_button_content_description">Login Button</string>
+</resources>
