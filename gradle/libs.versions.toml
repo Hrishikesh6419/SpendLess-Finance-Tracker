@@ -74,8 +74,13 @@ projectCompileSdkVersion = "35"
 projectVersionCode = "1"
 securityCrypto = "1.1.0-alpha06"
 datastorePreferences = "1.1.2"
+protobufPlugin = "0.9.4"
+protobuf = "4.29.2"
 
 [libraries]
+protobuf-kotlin-lite = { group = "com.google.protobuf", name = "protobuf-kotlin-lite", version.ref = "protobuf" }
+protobuf-protoc = { group = "com.google.protobuf", name = "protoc", version.ref = "protobuf" }
+
 # ──────────────────────────
 # 🎨 Jetpack Compose UI Libraries
 # ──────────────────────────
@@ -171,6 +176,7 @@ androidx-datastore-preference = { group = "androidx.datastore", name = "datastor
 # 📦 Gradle Plugins
 # ──────────────────────────
 [plugins]
+protobuf = { id = "com.google.protobuf", version.ref = "protobufPlugin" }
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 jetbrainsKotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }

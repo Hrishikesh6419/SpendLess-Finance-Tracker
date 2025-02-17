@@ -7,3 +7,8 @@ interface PreferenceOption {
         keepDecimal: Boolean = true
     ): String
 }
+
+interface SettingsPreferenceOption {
+    fun displayText(text: String): String
+    fun getValueInLong(): Long
+}

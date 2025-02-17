@@ -24,7 +24,7 @@ class InitiateLoginUseCase(
     private val userInfoRepository: UserInfoRepository,
     private val encryptionService: EncryptionService
 ) {
-    suspend operator fun invoke(username: String, enteredPin: String): Result<Boolean, DataError> {
+    suspend operator fun invoke(username: String, enteredPin: String): Result<Long, DataError> {
         return when (val userResult = userInfoRepository.getUser(username)) {
             is Result.Success -> {
                 val storedPin = encryptionService.decrypt(
@@ -32,7 +32,7 @@ class InitiateLoginUseCase(
                     iv = userResult.data.iv
                 )
                 if (enteredPin == storedPin) {
-                    Result.Success(true)
+                    Result.Success(userResult.data.userId ?: 0L)
                 } else {
                     Result.Error(DataError.Local.INVALID_CREDENTIALS)
                 }

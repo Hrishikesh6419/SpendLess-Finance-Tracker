@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hrishi.auth.domain.usecase.LoginUseCases
 import com.hrishi.core.domain.utils.Result
+import com.spendless.session_management.domain.model.SessionData
 import com.spendless.session_management.domain.usecases.SessionUseCase
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -38,8 +39,13 @@ class LoginViewModel(
                             enteredPin = pin
                         )) {
                             is Result.Success -> {
-                                if (loginResult.data) {
-                                    sessionUseCase.startSessionUseCase()
+                                val sessionData = SessionData(
+                                    userId = loginResult.data,
+                                    userName = username,
+                                    sessionExpiryTime = 0
+                                )
+                                sessionUseCase.saveSessionUseCase(sessionData)
+                                if (loginResult.data > 0L) {
                                     eventChannel.send(LoginEvent.NavigateToDashboardScreen)
                                 } else {
                                     eventChannel.send(LoginEvent.IncorrectCredentials)

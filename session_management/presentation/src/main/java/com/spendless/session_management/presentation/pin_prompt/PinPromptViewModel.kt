@@ -3,6 +3,7 @@ package com.spendless.session_management.presentation.pin_prompt
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hrishi.presentation.ui.MAX_PIN_LENGTH
+import com.spendless.session_management.domain.usecases.SessionUseCase
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -10,7 +11,9 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class PinPromptViewModel : ViewModel() {
+class PinPromptViewModel(
+    private val sessionUseCase: SessionUseCase
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(PinPromptState())
     val uiState = _uiState.asStateFlow()
@@ -41,6 +44,7 @@ class PinPromptViewModel : ViewModel() {
                     val updatedPin = _uiState.value.pin
                     if (updatedPin.length == MAX_PIN_LENGTH) {
                         // TODO: Update this
+                        sessionUseCase.resetSessionExpiryUseCase()
                         eventChannel.send(PinPromptEvent.OnSuccessPopBack)
                     }
                 }

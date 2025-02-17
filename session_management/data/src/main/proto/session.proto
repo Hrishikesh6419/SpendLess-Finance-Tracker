@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+option java_package = "com.spendless.session_management.data";
+option java_multiple_files = true;
+
+message SessionPreferences {
+  int64 user_id = 1;
+  string user_name = 2;
+  int64 session_expiry_time = 3;
+}

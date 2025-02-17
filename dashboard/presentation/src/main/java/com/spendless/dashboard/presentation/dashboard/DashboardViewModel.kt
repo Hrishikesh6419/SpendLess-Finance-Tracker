@@ -21,7 +21,9 @@ class DashboardViewModel(
 
     fun triggerPin() {
         viewModelScope.launch {
-            sessionUseCases.checkSessionExpiryUseCase()
+            if (sessionUseCases.checkSessionExpiryUseCase()) {
+                // TODO: Add Dashboard Logic
+            }
         }
     }
 }

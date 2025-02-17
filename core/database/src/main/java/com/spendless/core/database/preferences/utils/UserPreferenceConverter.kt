@@ -4,6 +4,8 @@ import androidx.room.TypeConverter
 import com.hrishi.core.domain.model.Currency
 import com.hrishi.core.domain.model.DecimalSeparator
 import com.hrishi.core.domain.model.ExpenseFormat
+import com.hrishi.core.domain.model.LockoutDuration
+import com.hrishi.core.domain.model.SessionDuration
 import com.hrishi.core.domain.model.ThousandsSeparator
 
 class UserPreferenceConverters {
@@ -47,4 +49,16 @@ class UserPreferenceConverters {
     fun toCurrency(value: String): Currency {
         return Currency.valueOf(value)
     }
+
+    @TypeConverter
+    fun fromSessionDuration(value: SessionDuration): String = value.name
+
+    @TypeConverter
+    fun toSessionDuration(value: String): SessionDuration = SessionDuration.valueOf(value)
+
+    @TypeConverter
+    fun fromLockoutDuration(value: LockoutDuration): String = value.name
+
+    @TypeConverter
+    fun toLockoutDuration(value: String): LockoutDuration = LockoutDuration.valueOf(value)
 }
