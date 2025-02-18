@@ -6,5 +6,5 @@
     <string name="login_button_content_description">Login Button</string>
     <string name="error_incorrect_pin">Wrong PIN</string>
     <string name="error_too_many_failed_attempts">Too many failed attempts</string>
-    <string name="error_try_pin_again">Try your PIN again in %s</string>
+    <string name="error_try_pin_again">Try your PIN again in</string>
 </resources>

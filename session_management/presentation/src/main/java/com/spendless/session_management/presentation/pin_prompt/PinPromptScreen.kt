@@ -22,6 +22,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -31,6 +35,7 @@ import com.hrishi.core.presentation.designsystem.components.SpendLessEnterPin
 import com.hrishi.core.presentation.designsystem.components.SpendLessPinPad
 import com.hrishi.core.presentation.designsystem.components.SpendLessSnackBarHost
 import com.hrishi.presentation.ui.ObserveAsEvents
+import com.hrishi.presentation.ui.formatToTimeString
 import com.spendless.session_management.presentation.R
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -79,7 +84,8 @@ fun PinPromptScreen(
     uiState: PinPromptState,
     onAction: (PinPromptAction) -> Unit
 ) {
-    Scaffold(containerColor = Color.Transparent,
+    Scaffold(
+        containerColor = Color.Transparent,
         snackbarHost = {
             SpendLessSnackBarHost(snackbarHostState)
         },
@@ -108,16 +114,15 @@ fun PinPromptScreen(
                     },
                     style = MaterialTheme.typography.headlineMedium,
                 )
-                Text(
-                    modifier = Modifier.padding(
-                        top = 8.dp,
-                    ),
-                    text = if (uiState.isExceededFailedAttempts) {
-                        stringResource(R.string.error_try_pin_again, uiState.lockoutTimeRemaining)
-                    } else {
-                        stringResource(R.string.pin_prompt_sub_headline)
-                    }
-                )
+
+                if (uiState.isExceededFailedAttempts) {
+                    LockoutCountdownText(lockoutTimeRemaining = uiState.lockoutTimeRemaining)
+                } else {
+                    Text(
+                        modifier = Modifier.padding(top = 8.dp),
+                        text = stringResource(R.string.pin_prompt_sub_headline)
+                    )
+                }
 
                 SpendLessEnterPin(
                     pin = uiState.pin,
@@ -142,6 +147,39 @@ fun PinPromptScreen(
         }
     }
 }
+
+@Composable
+fun LockoutCountdownText(lockoutTimeRemaining: Long) {
+    val textStyle = MaterialTheme.typography.bodyMedium
+
+    Text(
+        modifier = Modifier.padding(top = 8.dp),
+        text = buildAnnotatedString {
+            withStyle(
+                style = SpanStyle(
+                    fontFamily = textStyle.fontFamily,
+                    color = textStyle.color,
+                    fontSize = textStyle.fontSize,
+                    fontWeight = FontWeight.Normal
+                )
+            ) {
+                append(stringResource(R.string.error_try_pin_again))
+            }
+            withStyle(
+                style = SpanStyle(
+                    fontFamily = textStyle.fontFamily,
+                    color = textStyle.color,
+                    fontSize = textStyle.fontSize,
+                    fontWeight = FontWeight.Bold
+                )
+            ) {
+                append(" ")
+                append(lockoutTimeRemaining.formatToTimeString())
+            }
+        }
+    )
+}
+
 
 @Composable
 @Preview
