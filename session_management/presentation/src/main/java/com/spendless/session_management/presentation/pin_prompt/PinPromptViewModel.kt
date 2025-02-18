@@ -113,6 +113,7 @@ class PinPromptViewModel(
                 }
 
                 PinPromptAction.OnLogoutClicked -> {
+                    sessionUseCase.clearSessionUseCase()
                     eventChannel.send(PinPromptEvent.OnLogout)
                 }
             }
