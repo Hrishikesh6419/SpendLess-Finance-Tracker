@@ -1,4 +1,4 @@
-package com.hrishi.auth.domain.repository
+package com.hrishi.core.domain.auth.repository
 
 import com.hrishi.core.domain.auth.model.UserInfo
 import com.hrishi.core.domain.utils.DataError

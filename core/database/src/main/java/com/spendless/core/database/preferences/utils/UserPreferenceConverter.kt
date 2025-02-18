@@ -5,6 +5,7 @@ import com.hrishi.core.domain.model.Currency
 import com.hrishi.core.domain.model.DecimalSeparator
 import com.hrishi.core.domain.model.ExpenseFormat
 import com.hrishi.core.domain.model.LockoutDuration
+import com.hrishi.core.domain.model.PinAttempts
 import com.hrishi.core.domain.model.SessionDuration
 import com.hrishi.core.domain.model.ThousandsSeparator
 
@@ -61,4 +62,10 @@ class UserPreferenceConverters {
 
     @TypeConverter
     fun toLockoutDuration(value: String): LockoutDuration = LockoutDuration.valueOf(value)
+
+    @TypeConverter
+    fun fromPinAttempts(value: PinAttempts): String = value.name
+
+    @TypeConverter
+    fun toPinAttempts(value: String): PinAttempts = PinAttempts.valueOf(value)
 }

@@ -6,3 +6,9 @@ data class UserInfo(
     val encryptedPin: String,
     val iv: String,
 )
+
+data class UserInfoDecrypted(
+    val userId: Long? = null,
+    val username: String,
+    val pin: String
+)

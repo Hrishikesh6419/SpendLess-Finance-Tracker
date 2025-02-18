@@ -1,8 +1,8 @@
-package com.hrishi.auth.data.repository
+package com.hrishi.core.data.repository
 
-import com.hrishi.auth.domain.repository.UserInfoRepository
 import com.hrishi.core.domain.auth.data_source.LocalUserInfoDataSource
 import com.hrishi.core.domain.auth.model.UserInfo
+import com.hrishi.core.domain.auth.repository.UserInfoRepository
 import com.hrishi.core.domain.utils.DataError
 import com.hrishi.core.domain.utils.Result
 import kotlinx.coroutines.flow.Flow

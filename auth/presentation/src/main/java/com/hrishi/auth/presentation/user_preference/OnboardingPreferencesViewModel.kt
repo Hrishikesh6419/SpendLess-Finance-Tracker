@@ -9,8 +9,10 @@ import com.hrishi.auth.domain.usecase.RegisterUseCases
 import com.hrishi.auth.presentation.navigation.model.PreferencesScreenData
 import com.hrishi.core.domain.auth.model.UserInfo
 import com.hrishi.core.domain.model.LockoutDuration
+import com.hrishi.core.domain.model.PinAttempts
 import com.hrishi.core.domain.model.SessionDuration
 import com.hrishi.core.domain.preference.model.UserPreferences
+import com.hrishi.core.domain.preference.usecase.SettingsPreferenceUseCase
 import com.hrishi.core.domain.utils.DataError
 import com.hrishi.core.domain.utils.Result
 import com.hrishi.presentation.ui.getRouteData
@@ -30,7 +32,8 @@ class OnboardingPreferencesViewModel(
     private val onboardingPreferenceUseCases: OnboardingPreferenceUseCases,
     private val registerUseCases: RegisterUseCases,
     private val encryptionUseCases: EncryptionUseCases,
-    private val sessionUseCase: SessionUseCase
+    private val sessionUseCase: SessionUseCase,
+    private val settingsPreferenceUseCase: SettingsPreferenceUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(OnboardingPreferencesViewState())
@@ -104,11 +107,12 @@ class OnboardingPreferencesViewModel(
             thousandsSeparator = _uiState.value.thousandsSeparator,
             isBiometricEnabled = false,
             sessionDuration = SessionDuration.ONE_MIN,
-            lockOutDuration = LockoutDuration.FIFTEEN_SECONDS
+            lockOutDuration = LockoutDuration.FIFTEEN_SECONDS,
+            allowedPinAttempts = PinAttempts.THREE
         )
 
         val preferencesResult = withContext(Dispatchers.IO) {
-            onboardingPreferenceUseCases.setPreferencesUseCase(userPreferences)
+            settingsPreferenceUseCase.setPreferencesUseCase(userPreferences)
         }
 
         when (preferencesResult) {

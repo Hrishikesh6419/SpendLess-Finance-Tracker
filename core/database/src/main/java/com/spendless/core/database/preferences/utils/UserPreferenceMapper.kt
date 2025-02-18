@@ -4,6 +4,7 @@ import com.hrishi.core.domain.model.Currency
 import com.hrishi.core.domain.model.DecimalSeparator
 import com.hrishi.core.domain.model.ExpenseFormat
 import com.hrishi.core.domain.model.LockoutDuration
+import com.hrishi.core.domain.model.PinAttempts
 import com.hrishi.core.domain.model.SessionDuration
 import com.hrishi.core.domain.model.ThousandsSeparator
 import com.hrishi.core.domain.preference.model.UserPreferences
@@ -18,7 +19,8 @@ fun UserPreferenceEntity.toUserPreferences(): UserPreferences {
         thousandsSeparator = ThousandsSeparator.valueOf(thousandsSeparator.name),
         isBiometricEnabled = isBiometricEnabled,
         sessionDuration = SessionDuration.valueOf(sessionDuration.name),
-        lockOutDuration = LockoutDuration.valueOf(lockOutDuration.name)
+        lockOutDuration = LockoutDuration.valueOf(lockOutDuration.name),
+        allowedPinAttempts = PinAttempts.valueOf(allowedPinAttempts.name)
     )
 }
 
@@ -31,6 +33,7 @@ fun UserPreferences.toUserPreferenceEntity(): UserPreferenceEntity {
         thousandsSeparator = thousandsSeparator,
         isBiometricEnabled = isBiometricEnabled,
         sessionDuration = sessionDuration,
-        lockOutDuration = lockOutDuration
+        lockOutDuration = lockOutDuration,
+        allowedPinAttempts = allowedPinAttempts
     )
 }

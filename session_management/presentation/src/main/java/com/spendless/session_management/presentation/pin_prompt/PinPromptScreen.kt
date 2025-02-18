@@ -1,7 +1,6 @@
 package com.spendless.session_management.presentation.pin_prompt
 
 import androidx.activity.compose.BackHandler
-import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
@@ -18,9 +16,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -30,9 +30,9 @@ import com.hrishi.core.presentation.designsystem.SpendLessFinanceTrackerTheme
 import com.hrishi.core.presentation.designsystem.components.SpendLessEnterPin
 import com.hrishi.core.presentation.designsystem.components.SpendLessPinPad
 import com.hrishi.core.presentation.designsystem.components.SpendLessSnackBarHost
-import com.hrishi.core.presentation.designsystem.components.SpendLessTopBar
 import com.hrishi.presentation.ui.ObserveAsEvents
 import com.spendless.session_management.presentation.R
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -42,6 +42,8 @@ fun PinPromptScreenRoot(
     viewModel: PinPromptViewModel = koinViewModel()
 ) {
 
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackBarHostState = remember { SnackbarHostState() }
 
@@ -53,14 +55,17 @@ fun PinPromptScreenRoot(
         when (event) {
             PinPromptEvent.OnLogout -> Unit
             PinPromptEvent.OnSuccessPopBack -> onSuccessClick()
-            PinPromptEvent.WrongPin -> Unit
+            PinPromptEvent.IncorrectPin -> {
+                snackBarHostState.currentSnackbarData?.dismiss()
+                scope.launch {
+                    snackBarHostState.showSnackbar(context.getString(R.string.error_incorrect_pin))
+                }
+            }
         }
     }
 
     PinPromptScreen(
         modifier = modifier,
-        headlineResId = R.string.pin_prompt_headline,
-        subHeadlineResId = R.string.pin_prompt_sub_headline,
         snackbarHostState = snackBarHostState,
         uiState = uiState,
         onAction = viewModel::onAction
@@ -70,8 +75,6 @@ fun PinPromptScreenRoot(
 @Composable
 fun PinPromptScreen(
     modifier: Modifier = Modifier,
-    @StringRes headlineResId: Int,
-    @StringRes subHeadlineResId: Int,
     snackbarHostState: SnackbarHostState,
     uiState: PinPromptState,
     onAction: (PinPromptAction) -> Unit
@@ -98,14 +101,22 @@ fun PinPromptScreen(
                 )
                 Text(
                     modifier = Modifier.padding(top = 20.dp),
-                    text = stringResource(headlineResId),
+                    text = if (uiState.isExceededFailedAttempts) {
+                        stringResource(R.string.error_too_many_failed_attempts)
+                    } else {
+                        stringResource(R.string.pin_prompt_headline, uiState.username)
+                    },
                     style = MaterialTheme.typography.headlineMedium,
                 )
                 Text(
                     modifier = Modifier.padding(
                         top = 8.dp,
                     ),
-                    text = stringResource(subHeadlineResId)
+                    text = if (uiState.isExceededFailedAttempts) {
+                        stringResource(R.string.error_try_pin_again, uiState.lockoutTimeRemaining)
+                    } else {
+                        stringResource(R.string.pin_prompt_sub_headline)
+                    }
                 )
 
                 SpendLessEnterPin(
@@ -138,11 +149,11 @@ fun PreviewPinPromptScreen() {
     SpendLessFinanceTrackerTheme {
         Surface(color = MaterialTheme.colorScheme.background) {
             PinPromptScreen(
-                uiState = PinPromptState(),
+                uiState = PinPromptState(
+                    username = "Hrishi"
+                ),
                 snackbarHostState = SnackbarHostState(),
                 onAction = {},
-                headlineResId = R.string.pin_prompt_headline,
-                subHeadlineResId = R.string.pin_prompt_sub_headline
             )
         }
     }
