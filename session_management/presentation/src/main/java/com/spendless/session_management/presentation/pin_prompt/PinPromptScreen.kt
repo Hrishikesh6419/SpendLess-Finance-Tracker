@@ -125,6 +125,7 @@ fun PinPromptScreen(
                 }
 
                 SpendLessEnterPin(
+                    isLocked = uiState.isExceededFailedAttempts,
                     pin = uiState.pin,
                     modifier = Modifier.padding(
                         top = 36.dp,
@@ -134,6 +135,7 @@ fun PinPromptScreen(
                 )
 
                 SpendLessPinPad(
+                    isLocked = uiState.isExceededFailedAttempts,
                     modifier = Modifier.padding(top = 32.dp),
                     hasBiometricButton = true,
                     onNumberPressedClicked = {
