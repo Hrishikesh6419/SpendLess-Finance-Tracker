@@ -29,11 +29,13 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.hrishi.core.presentation.designsystem.ExitIcon
 import com.hrishi.core.presentation.designsystem.LoginIcon
 import com.hrishi.core.presentation.designsystem.SpendLessFinanceTrackerTheme
 import com.hrishi.core.presentation.designsystem.components.SpendLessEnterPin
 import com.hrishi.core.presentation.designsystem.components.SpendLessPinPad
 import com.hrishi.core.presentation.designsystem.components.SpendLessSnackBarHost
+import com.hrishi.core.presentation.designsystem.components.SpendLessTopBar
 import com.hrishi.presentation.ui.ObserveAsEvents
 import com.hrishi.presentation.ui.formatToTimeString
 import com.spendless.session_management.presentation.R
@@ -44,6 +46,7 @@ import org.koin.androidx.compose.koinViewModel
 fun PinPromptScreenRoot(
     modifier: Modifier = Modifier,
     onSuccessClick: () -> Unit,
+    onLogout: () -> Unit,
     viewModel: PinPromptViewModel = koinViewModel()
 ) {
 
@@ -58,7 +61,7 @@ fun PinPromptScreenRoot(
 
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
-            PinPromptEvent.OnLogout -> Unit
+            PinPromptEvent.OnLogout -> onLogout()
             PinPromptEvent.OnSuccessPopBack -> onSuccessClick()
             PinPromptEvent.IncorrectPin -> {
                 snackBarHostState.currentSnackbarData?.dismiss()
@@ -89,6 +92,15 @@ fun PinPromptScreen(
         snackbarHost = {
             SpendLessSnackBarHost(snackbarHostState)
         },
+        topBar = {
+            SpendLessTopBar(
+                startIcon = null,
+                endIcon = ExitIcon,
+                onEndIconClick = {
+                    onAction(PinPromptAction.OnLogoutClicked)
+                }
+            )
+        }
     ) { contentPadding ->
         Box( // Wrap everything inside a Box to avoid content overlapping with TopBar when using vertical scroll
             modifier = modifier

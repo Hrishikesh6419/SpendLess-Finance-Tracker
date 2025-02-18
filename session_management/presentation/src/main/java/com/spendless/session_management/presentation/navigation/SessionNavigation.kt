@@ -8,14 +8,16 @@ import com.spendless.session_management.presentation.pin_prompt.PinPromptScreenR
 
 fun NavGraphBuilder.sessionNavGraph(
     navController: NavHostController,
-    onVerificationSuccess: () -> Unit
+    onVerificationSuccess: () -> Unit,
+    onLogout: () -> Unit
 ) {
     navigation<SessionBaseRoute>(
         startDestination = PinPromptScreenRoute
     ) {
         composable<PinPromptScreenRoute> {
             PinPromptScreenRoot(
-                onSuccessClick = onVerificationSuccess
+                onSuccessClick = onVerificationSuccess,
+                onLogout = onLogout
             )
         }
     }

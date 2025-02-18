@@ -113,7 +113,7 @@ class PinPromptViewModel(
                 }
 
                 PinPromptAction.OnLogoutClicked -> {
-
+                    eventChannel.send(PinPromptEvent.OnLogout)
                 }
             }
 

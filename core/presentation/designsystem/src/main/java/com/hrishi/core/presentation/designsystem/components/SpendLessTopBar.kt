@@ -13,10 +13,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.hrishi.core.presentation.designsystem.BackArrow
+import com.hrishi.core.presentation.designsystem.ExitIcon
 import com.hrishi.core.presentation.designsystem.SpendLessFinanceTrackerTheme
 
 @Composable
@@ -26,6 +28,7 @@ fun SpendLessTopBar(
     startIcon: ImageVector? = BackArrow,
     onStartIconClick: (() -> Unit)? = null,
     endIcon: ImageVector? = null,
+    endIconColor: Color = MaterialTheme.colorScheme.error,
     onEndIconClick: (() -> Unit)? = null
 ) {
     Row(
@@ -59,8 +62,9 @@ fun SpendLessTopBar(
         Spacer(modifier = Modifier.weight(1f))
         endIcon?.let {
             Icon(
+                tint = endIconColor,
                 modifier = Modifier
-                    .padding(16.dp)
+                    .padding(end = 16.dp)
                     .clickable {
                         onEndIconClick?.invoke()
                     },
@@ -77,7 +81,8 @@ fun PreviewSpendLessTopBar() {
     SpendLessFinanceTrackerTheme {
         Surface(color = MaterialTheme.colorScheme.background) {
             SpendLessTopBar(
-                title = "",
+                endIcon = ExitIcon,
+                title = "Hi",
                 onStartIconClick = {
 
                 },
