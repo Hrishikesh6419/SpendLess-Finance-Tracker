@@ -8,13 +8,13 @@ import com.spendless.session_management.data.SessionPreferences
 import com.spendless.session_management.data.repository.SessionRepositoryImpl
 import com.spendless.session_management.data.utils.SessionSerializer
 import com.spendless.session_management.domain.repository.SessionRepository
-import com.spendless.session_management.domain.usecases.CheckSessionExpiryUseCase
 import com.spendless.session_management.domain.usecases.ClearSessionUseCase
 import com.spendless.session_management.domain.usecases.GetSessionDataUseCase
 import com.spendless.session_management.domain.usecases.GetSessionStatusUseCase
 import com.spendless.session_management.domain.usecases.ResetSessionExpiryUseCase
 import com.spendless.session_management.domain.usecases.SaveSessionUseCase
 import com.spendless.session_management.domain.usecases.SessionUseCase
+import com.spendless.session_management.domain.usecases.SetSessionExpiredUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import org.koin.android.ext.koin.androidContext
@@ -37,9 +37,9 @@ val sessionModule = module {
     factory { SaveSessionUseCase(get()) }
     factory { GetSessionStatusUseCase(get()) }
     factory { ClearSessionUseCase(get()) }
-    factory { CheckSessionExpiryUseCase(get()) }
     factory { GetSessionDataUseCase(get()) }
     factory { ResetSessionExpiryUseCase(get()) }
+    factory { SetSessionExpiredUseCase(get()) }
     single { SessionUseCase(get(), get(), get(), get(), get(), get()) }
 
     singleOf(::SessionRepositoryImpl).bind<SessionRepository>()

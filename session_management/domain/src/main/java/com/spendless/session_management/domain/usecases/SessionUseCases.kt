@@ -7,8 +7,8 @@ import kotlinx.coroutines.flow.Flow
 data class SessionUseCase(
     val saveSessionUseCase: SaveSessionUseCase,
     val isSessionExpiredUseCase: GetSessionStatusUseCase,
+    val setSessionExpiredUseCase: SetSessionExpiredUseCase,
     val clearSessionUseCase: ClearSessionUseCase,
-    val checkSessionExpiryUseCase: CheckSessionExpiryUseCase,
     val getSessionDataUseCase: GetSessionDataUseCase,
     val resetSessionExpiryUseCase: ResetSessionExpiryUseCase
 )
@@ -31,9 +31,10 @@ class ClearSessionUseCase(private val sessionRepository: SessionRepository) {
     }
 }
 
-class CheckSessionExpiryUseCase(private val sessionRepository: SessionRepository) {
-    suspend operator fun invoke(): Boolean {
-        return sessionRepository.checkAndUpdateSessionExpiry()
+
+class SetSessionExpiredUseCase(private val sessionRepository: SessionRepository) {
+    suspend operator fun invoke() {
+        sessionRepository.setSessionToExpired()
     }
 }
 

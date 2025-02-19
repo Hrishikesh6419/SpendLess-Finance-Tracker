@@ -6,6 +6,7 @@ import com.spendless.session_management.domain.usecases.SessionUseCase
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
@@ -21,7 +22,7 @@ class DashboardViewModel(
 
     fun triggerPin() {
         viewModelScope.launch {
-            if (sessionUseCases.checkSessionExpiryUseCase()) {
+            if (sessionUseCases.isSessionExpiredUseCase().first()) {
                 // TODO: Add Dashboard Logic
             }
         }

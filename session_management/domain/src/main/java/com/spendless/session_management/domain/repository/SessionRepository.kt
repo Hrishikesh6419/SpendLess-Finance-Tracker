@@ -9,11 +9,11 @@ interface SessionRepository {
 
     suspend fun clearSession()
 
+    suspend fun setSessionToExpired()
+
     fun getSessionData(): Flow<SessionData>
 
     fun isSessionExpired(): Flow<Boolean>
-
-    suspend fun checkAndUpdateSessionExpiry(): Boolean
 
     suspend fun resetSessionExpiry()
 }

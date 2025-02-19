@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.spendless.session_management.domain.usecases.SessionUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
@@ -20,9 +21,10 @@ class MainViewModel(
     )
         private set
 
+    // TODO: Clean up and improve pin navigation
     init {
         viewModelScope.launch {
-            sessionUseCases.resetSessionExpiryUseCase()
+            sessionUseCases.setSessionExpiredUseCase()
         }
         sessionUseCases.isSessionExpiredUseCase().onEach { isExpired ->
             state.update {
@@ -50,5 +52,16 @@ class MainViewModel(
                 isSessionExpired = isExpired
             )
         }
+    }
+
+    fun setSessionToExpired() {
+        viewModelScope.launch {
+            sessionUseCases.setSessionExpiredUseCase()
+        }
+    }
+
+    suspend fun isUserIdPresent(): Boolean {
+        return sessionUseCases.getSessionDataUseCase()
+            .firstOrNull()?.userId?.let { it > 0L } ?: false
     }
 }

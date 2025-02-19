@@ -66,12 +66,16 @@ class SessionRepositoryImpl(
     }
 
 
-    private suspend fun setSessionToExpired() {
-        Log.d(TAG, "setSessionToExpired at ${formatTime(System.currentTimeMillis())}")
+    override suspend fun setSessionToExpired() {
 
         // Reset session data to default
         dataStore.updateData { prefs ->
+            val isValidUser = prefs.userId > 0L
+            if (!isValidUser) {
+                return@updateData prefs
+            }
 
+            Log.d(TAG, "setSessionToExpired at ${formatTime(System.currentTimeMillis())}")
             prefs.toBuilder()
                 .setSessionExpiryTime(0L)
                 .build()
@@ -109,15 +113,6 @@ class SessionRepositoryImpl(
             }
             isExpired
         }
-    }
-
-    override suspend fun checkAndUpdateSessionExpiry(): Boolean {
-        val isSessionExpired = isSessionExpired().first()
-        if (isSessionExpired) {
-            Log.d(TAG, "Session expired. Updating DataStore.")
-            setSessionToExpired()
-        }
-        return isSessionExpired
     }
 
     override suspend fun resetSessionExpiry() {
