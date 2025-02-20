@@ -1,5 +1,10 @@
 package com.hrishi.core.presentation.designsystem.components
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -213,11 +218,14 @@ private fun TransactionItemInnerContent(
                 )
             }
 
-            // Only show the note if not collapsed
-            if (!note.isNullOrBlank() && !isCollapsed) {
+            AnimatedVisibility(
+                visible = !note.isNullOrBlank() && !isCollapsed,
+                enter = expandVertically() + fadeIn(),
+                exit = shrinkVertically() + fadeOut()
+            ) {
                 Spacer(modifier = Modifier.height(6.dp))
                 Text(
-                    text = note,
+                    text = note.orEmpty(),
                     style = MaterialTheme.typography.bodySmall
                 )
             }
