@@ -95,8 +95,10 @@ fun PinPromptScreen(
         topBar = {
             SpendLessTopBar(
                 startIcon = null,
-                endIcon = ExitIcon,
-                onEndIconClick = {
+                endIcon2 = ExitIcon,
+                endIcon2Color = MaterialTheme.colorScheme.error,
+                endIcon2BackgroundColor = MaterialTheme.colorScheme.error.copy(alpha = 0.08f),
+                onEndIcon2Click = {
                     onAction(PinPromptAction.OnLogoutClicked)
                 }
             )
