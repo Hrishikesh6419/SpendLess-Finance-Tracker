@@ -44,7 +44,8 @@ fun TransactionItem(
     category: String,
     note: String? = null,
     amount: Double,
-    amountColor: Color = if (amount > 0) success else MaterialTheme.colorScheme.onSurface,
+    incomeAmountColor: Color = success,
+    expenseAmountColor: Color = MaterialTheme.colorScheme.onSurface,
     isCollapsed: Boolean = true,
     noteIcon: ImageVector = NoteIcon,
     expenseBackgroundColor: Color = primaryFixed,
@@ -79,6 +80,12 @@ fun TransactionItem(
         )
         .padding(4.dp)
         .padding(end = 2.dp)
+
+    val amountColor = if (amount > 0) {
+        incomeAmountColor
+    } else {
+        expenseAmountColor
+    }
 
     val expenseIncomeBackgroundColor = if (amount > 0) {
         incomeBackgroundColor
