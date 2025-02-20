@@ -55,10 +55,6 @@ fun NavigationRoot(
         })
     }
 
-    if (startDestination == null) {
-        return
-    }
-
     // TODO: End - Clean up and improve pin navigation
 
     LaunchedEffect(state.isSessionExpired) {
@@ -96,58 +92,6 @@ fun NavigationRoot(
                 }
             }
         )
-    }
-}
-
-@Composable
-fun AppNavigation(
-    modifier: Modifier = Modifier,
-) {
-    val navController = rememberNavController()
-    NavHost(
-        navController = navController,
-        startDestination = HomeRoute
-    ) {
-        composable<HomeRoute> {
-            EntriesScreenRoot(
-                onNavigateToNewEntryScreen = { fileUri ->
-                    navController.navigate(NewEntryRoute(fileUri))
-                }
-            )
-        }
-        composable<NewEntryRoute> {
-            val route = it.toRoute<NewEntryRoute>()
-            Log.d("Route", "AppNavigation: $route")
-            NewEntryScreenRoot(
-                onNavigateBack = {
-                    navController.navigateUp()
-                }
-            )
-        }
-    }
-}
-
-@Composable
-fun EntriesScreenRoot(
-    onNavigateToNewEntryScreen: (String) -> Unit
-) {
-    Column {
-        Button(onClick = {
-            onNavigateToNewEntryScreen("file:///data/user/0/com.jv23.echojournal/cache/256d7bb2-b8f7-4b93-acbb-9825c3dddb00.mp3)")
-        }) {
-            Text("Go to New Entry")
-        }
-    }
-}
-
-@Composable
-fun NewEntryScreenRoot(
-    onNavigateBack: () -> Unit
-) {
-    Column {
-        Button(onClick = onNavigateBack) {
-            Text("Go back to EntriesScreenRoot")
-        }
     }
 }
 

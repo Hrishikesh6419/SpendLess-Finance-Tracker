@@ -44,11 +44,7 @@ fun TransactionItem(
     category: String,
     note: String? = null,
     amount: Double,
-    amountColor: Color = if (amount > 0) {
-        success
-    } else {
-        MaterialTheme.colorScheme.onSurface
-    },
+    amountColor: Color = if (amount > 0) success else MaterialTheme.colorScheme.onSurface,
     isCollapsed: Boolean = true,
     noteIcon: ImageVector = NoteIcon,
     expenseBackgroundColor: Color = primaryFixed,
@@ -61,33 +57,28 @@ fun TransactionItem(
     onCardClicked: (Boolean) -> Unit
 ) {
     var expanded by remember { mutableStateOf(!isCollapsed) }
-
     val canExpand = !note.isNullOrBlank()
 
-    val containerModifier = when {
-        expanded && canExpand -> {
-            modifier
-                .clickable {
-                    expanded = !expanded
-                    onCardClicked(expanded)
-                }
-                .background(
-                    color = MaterialTheme.colorScheme.surfaceContainerLowest,
-                    shape = RoundedCornerShape(16.dp)
-                )
-                .padding(4.dp)
-                .padding(end = 2.dp)
-        }
-
-        canExpand -> {
-            modifier.clickable {
+    // Apply the same shape & padding in both states, so items don't shift.
+    // Only toggle the background color if expanded.
+    val containerModifier = modifier
+        .clickable(enabled = canExpand) {
+            // If there's no note, no expand/collapse logic applies
+            if (canExpand) {
                 expanded = !expanded
                 onCardClicked(expanded)
             }
         }
-
-        else -> modifier
-    }
+        .background(
+            color = if (expanded && canExpand) {
+                MaterialTheme.colorScheme.surfaceContainerLowest
+            } else {
+                Color.Transparent
+            },
+            shape = RoundedCornerShape(16.dp)
+        )
+        .padding(4.dp)
+        .padding(end = 2.dp)
 
     val expenseIncomeBackgroundColor = if (amount > 0) {
         incomeBackgroundColor
@@ -150,7 +141,7 @@ private fun TransactionItemInnerContent(
                 .size(46.dp)
                 .background(Color.Transparent)
         ) {
-            // Colored background for expense/income
+            // Colored background for expense or income
             Box(
                 modifier = Modifier
                     .align(Alignment.Center)
@@ -215,6 +206,7 @@ private fun TransactionItemInnerContent(
                 )
             }
 
+            // Only show the note if not collapsed
             if (!note.isNullOrBlank() && !isCollapsed) {
                 Spacer(modifier = Modifier.height(6.dp))
                 Text(
@@ -225,7 +217,6 @@ private fun TransactionItemInnerContent(
         }
     }
 }
-
 
 private val defaultAmountFormatter: (Double) -> String = {
     "$${String.format("%.2f", it)}"
