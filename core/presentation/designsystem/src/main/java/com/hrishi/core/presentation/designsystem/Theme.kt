@@ -8,18 +8,29 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
+val primaryFixed = SpendLessPrimaryFixed
+val onPrimaryFixed = SpendLessOnPrimaryFixed
+val secondaryFixed = SpendLessSecondaryFixed
+val secondaryFixedDim = SpendLessSecondaryFixedDim
+val success = SpendLessSuccess
+
 private val ColorScheme = darkColorScheme(
     primary = SpendLessPurple,
     onPrimary = SpendLessWhite,
+    secondary = SpendLessSecondary,
     onSurface = SpendLessBlack,
     onSurfaceVariant = SpendLessDarkGrey,
     error = SpendLessRed,
     background = SpendLessPaleLavender,
     onBackground = SpendLessLightGrey,
-    primaryContainer = SpendLessPrimaryFixed,
-    onPrimaryContainer = SpendLessOnPrimaryFixed,
-    surfaceContainerLowest = SpendLessSurfaceContainerLowest
-)
+    primaryContainer = SpendLessPrimaryContainer,
+    onPrimaryContainer = SpendLessOnPrimaryContainer,
+    surfaceContainerLowest = SpendLessSurfaceContainerLowest,
+    inversePrimary = SpendLessInversePrimary,
+    secondaryContainer = SpendLessSecondaryContainer,
+    onSecondaryContainer = SpendLessOnSecondaryContainer,
+
+    )
 
 @Composable
 fun SpendLessFinanceTrackerTheme(

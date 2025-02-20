@@ -27,6 +27,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.hrishi.core.presentation.designsystem.SpendLessFinanceTrackerTheme
+import com.hrishi.core.presentation.designsystem.onPrimaryFixed
+import com.hrishi.core.presentation.designsystem.primaryFixed
 
 @Composable
 fun <T> SegmentedSelector(
@@ -48,7 +50,7 @@ fun <T> SegmentedSelector(
                 .padding(top = 6.dp)
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(16.dp))
-                .background(MaterialTheme.colorScheme.primaryContainer),
+                .background(primaryFixed),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             options.forEach { option ->
@@ -77,7 +79,7 @@ fun <T> SegmentedSelector(
                         color = if (selectedOption == option) {
                             MaterialTheme.colorScheme.onSurface
                         } else {
-                            MaterialTheme.colorScheme.onPrimaryContainer
+                            onPrimaryFixed
                         },
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,

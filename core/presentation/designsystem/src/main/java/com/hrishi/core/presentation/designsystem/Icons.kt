@@ -40,3 +40,7 @@ val TickIcon: ImageVector
 val ExitIcon: ImageVector
     @Composable
     get() = ImageVector.vectorResource(R.drawable.ic_exit)
+
+val NoteIcon: ImageVector
+    @Composable
+    get() = ImageVector.vectorResource(R.drawable.ic_note)
