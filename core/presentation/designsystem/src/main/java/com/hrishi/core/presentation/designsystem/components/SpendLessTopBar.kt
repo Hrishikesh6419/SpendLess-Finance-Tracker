@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
@@ -109,9 +110,9 @@ private fun IconChip(
     Box(
         modifier = Modifier
             .padding(end = 8.dp)
+            .size(40.dp)
             .clip(RoundedCornerShape(16.dp))
             .background(backgroundColor)
-            .padding(12.dp)
     ) {
         Icon(
             modifier = Modifier

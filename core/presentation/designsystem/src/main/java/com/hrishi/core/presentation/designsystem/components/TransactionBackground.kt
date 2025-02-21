@@ -61,7 +61,11 @@ fun TransactionBackground(
             modifier = Modifier
                 .fillMaxSize()
                 .then(
-                    if (hasToolbar) Modifier else Modifier.systemBarsPadding()
+                    if (hasToolbar) {
+                        Modifier
+                    } else {
+                        Modifier.systemBarsPadding()
+                    }
                 )
         ) {
             content()

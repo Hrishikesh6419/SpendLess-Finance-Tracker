@@ -3,7 +3,7 @@ package com.hrishi.core.presentation.designsystem.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -28,7 +28,7 @@ fun PreviousWeekTotalView(
 ) {
     Column(
         modifier = modifier
-            .height(72.dp)
+            .defaultMinSize(minHeight = 72.dp)
             .background(
                 color = backgroundColor,
                 shape = RoundedCornerShape(16.dp)

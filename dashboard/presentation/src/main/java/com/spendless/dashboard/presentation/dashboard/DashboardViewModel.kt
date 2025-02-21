@@ -27,4 +27,10 @@ class DashboardViewModel(
             }
         }
     }
+
+    fun onAction(action: DashboardAction) {
+        when (action) {
+            DashboardAction.NavigationClick -> Unit
+        }
+    }
 }

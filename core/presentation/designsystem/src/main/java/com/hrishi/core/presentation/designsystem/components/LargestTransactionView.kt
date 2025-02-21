@@ -6,7 +6,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -38,29 +39,30 @@ fun LargestTransactionView(
                 color = primaryFixed,
                 shape = RoundedCornerShape(16.dp)
             )
-            .height(72.dp)
+            .defaultMinSize(minHeight = 72.dp)
+            .padding(horizontal = 12.dp)
     ) {
         if (isEmptyTransactions) {
             Text(
                 modifier = Modifier
-                    .padding(horizontal = 20.dp)
+                    .padding(horizontal = 12.dp)
                     .align(Alignment.Center),
                 text = emptyTransactionsText,
                 style = MaterialTheme.typography.titleMedium
             )
         } else {
             Row(
-                modifier = Modifier.align(Alignment.Center)
+                modifier = modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Column(
-                    modifier = Modifier.padding(start = 12.dp),
+                    modifier = Modifier.weight(1f),
                     verticalArrangement = Arrangement.Center
                 ) {
                     Text(
                         text = title,
                         style = MaterialTheme.typography.titleLarge
                     )
-
                     Text(
                         modifier = Modifier.padding(top = 2.dp),
                         text = description,
@@ -70,10 +72,11 @@ fun LargestTransactionView(
                         )
                     )
                 }
+
                 Spacer(modifier = Modifier.width(24.dp))
+
                 Column(
-                    modifier = Modifier
-                        .padding(end = 12.dp),
+                    horizontalAlignment = Alignment.End,
                     verticalArrangement = Arrangement.Center
                 ) {
                     Text(
@@ -109,6 +112,25 @@ fun PreviewLargestTransactionView() {
                 amount = "-\$59.99",
                 date = "Jan 7, 2025",
                 isEmptyTransactions = false
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+fun PreviewLargestTransactionEmptyView() {
+    SpendLessFinanceTrackerTheme {
+        Surface(
+            color = MaterialTheme.colorScheme.background
+        ) {
+            LargestTransactionView(
+                modifier = Modifier.padding(12.dp),
+                title = "Adobe Yearly",
+                description = "Largest transaction",
+                amount = "-\$59.99",
+                date = "Jan 7, 2025",
+                isEmptyTransactions = true
             )
         }
     }
