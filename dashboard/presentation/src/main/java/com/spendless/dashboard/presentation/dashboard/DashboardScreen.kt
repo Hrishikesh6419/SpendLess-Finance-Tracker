@@ -97,7 +97,7 @@ fun DashboardScreen(
         Box(
             modifier = modifier
                 .fillMaxSize()
-                .padding(contentPadding)
+                .padding(top = contentPadding.calculateTopPadding())
         ) {
             Column {
                 Column(
