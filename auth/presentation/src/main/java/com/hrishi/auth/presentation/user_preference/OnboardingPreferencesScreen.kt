@@ -38,7 +38,7 @@ import com.hrishi.core.domain.model.ThousandsSeparator
 import com.hrishi.core.presentation.designsystem.SpendLessFinanceTrackerTheme
 import com.hrishi.core.presentation.designsystem.components.CurrencySelector
 import com.hrishi.core.presentation.designsystem.components.SegmentedSelector
-import com.hrishi.core.presentation.designsystem.components.SpendLessButton
+import com.hrishi.core.presentation.designsystem.components.buttons.SpendLessButton
 import com.hrishi.core.presentation.designsystem.components.SpendLessSnackBarHost
 import com.hrishi.core.presentation.designsystem.components.SpendLessTopBar
 import com.hrishi.presentation.ui.ObserveAsEvents

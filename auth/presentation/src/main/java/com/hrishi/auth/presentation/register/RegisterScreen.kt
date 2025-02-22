@@ -33,7 +33,7 @@ import com.hrishi.auth.presentation.navigation.model.CreatePinScreenData
 import com.hrishi.core.presentation.designsystem.ArrowForward
 import com.hrishi.core.presentation.designsystem.LoginIcon
 import com.hrishi.core.presentation.designsystem.SpendLessFinanceTrackerTheme
-import com.hrishi.core.presentation.designsystem.components.SpendLessButton
+import com.hrishi.core.presentation.designsystem.components.buttons.SpendLessButton
 import com.hrishi.core.presentation.designsystem.components.SpendLessHeadlineTextField
 import com.hrishi.core.presentation.designsystem.components.SpendLessSnackBarHost
 import com.hrishi.presentation.ui.ObserveAsEvents

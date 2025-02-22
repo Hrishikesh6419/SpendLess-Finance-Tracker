@@ -32,7 +32,7 @@ import com.hrishi.auth.apresentation.R
 import com.hrishi.auth.presentation.login.component.SpendLessClickableText
 import com.hrishi.core.presentation.designsystem.LoginIcon
 import com.hrishi.core.presentation.designsystem.SpendLessFinanceTrackerTheme
-import com.hrishi.core.presentation.designsystem.components.SpendLessButton
+import com.hrishi.core.presentation.designsystem.components.buttons.SpendLessButton
 import com.hrishi.core.presentation.designsystem.components.SpendLessSnackBarHost
 import com.hrishi.core.presentation.designsystem.components.SpendLessTextField
 import com.hrishi.presentation.ui.ObserveAsEvents

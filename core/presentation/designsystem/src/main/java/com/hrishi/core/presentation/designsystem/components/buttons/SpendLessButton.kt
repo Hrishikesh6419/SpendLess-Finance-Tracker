@@ -1,4 +1,4 @@
-package com.hrishi.core.presentation.designsystem.components
+package com.hrishi.core.presentation.designsystem.components.buttons
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
