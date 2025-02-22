@@ -14,6 +14,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuBoxScope
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MenuAnchorType
@@ -25,7 +26,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,107 +42,51 @@ import com.hrishi.core.presentation.designsystem.TickIcon
 @Composable
 fun <T> CurrencySelector(
     modifier: Modifier = Modifier,
-    title: String,
+    title: String? = null,
     selectedOption: T,
     options: Array<T>,
     currencyDisplay: (T) -> String,
     currencyTitleDisplay: (T) -> String,
-    currencyMenuDisplay: (T) -> String,
-    currencyTitleMenuDisplay: (T) -> String,
     onItemSelected: (T) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
 
-    // Remember updated states for functions to prevent recompositions
-    val currentCurrencyDisplay by rememberUpdatedState(newValue = currencyDisplay)
-    val currentCurrencyTitleDisplay by rememberUpdatedState(newValue = currencyTitleDisplay)
-    val currentCurrencyMenuDisplay by rememberUpdatedState(newValue = currencyMenuDisplay)
-    val currentCurrencyTitleMenuDisplay by rememberUpdatedState(newValue = currencyTitleMenuDisplay)
-
     Column(modifier = modifier) {
-        Text(
-            text = title,
-            style = MaterialTheme.typography.labelSmall
-        )
+        if (title != null) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.labelSmall,
+                modifier = Modifier.padding(bottom = 6.dp)
+            )
+        }
 
         ExposedDropdownMenuBox(
-            modifier = Modifier.padding(top = 6.dp),
             expanded = expanded,
             onExpandedChange = { expanded = it }
         ) {
-            TextField(
-                value = "",
-                onValueChange = {},
-                readOnly = true,
-                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerLowest,
-                    unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerLowest,
-                    disabledContainerColor = MaterialTheme.colorScheme.surfaceContainerLowest,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent
-                ),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .menuAnchor(MenuAnchorType.PrimaryNotEditable)
-                    .shadow(2.dp, RoundedCornerShape(16.dp))
-                    .clip(RoundedCornerShape(16.dp))
-                    .background(MaterialTheme.colorScheme.surfaceContainerLowest)
-                    .clickable { expanded = !expanded },
-                singleLine = true,
-                interactionSource = remember { MutableInteractionSource() },
-                placeholder = {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = currentCurrencyDisplay(selectedOption),
-                            style = MaterialTheme.typography.labelMedium
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(
-                            text = currentCurrencyTitleDisplay(selectedOption),
-                            style = MaterialTheme.typography.bodyMedium
-                        )
-                    }
-                }
+            CurrencySelectorTextField(
+                expanded = expanded,
+                selectedOption = selectedOption,
+                currencyDisplay = currencyDisplay,
+                currencyTitleDisplay = currencyTitleDisplay,
+                onExpandedChange = { expanded = it }
             )
 
             ExposedDropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false },
                 modifier = Modifier.background(
                     color = MaterialTheme.colorScheme.surfaceContainerLowest
-                ),
-                expanded = expanded,
-                onDismissRequest = { expanded = false }
+                )
             ) {
                 options.forEach { option ->
                     DropdownMenuItem(
                         text = {
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Text(
-                                    text = currentCurrencyMenuDisplay(option),
-                                    style = MaterialTheme.typography.labelMedium
-                                )
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Text(
-                                    text = currentCurrencyTitleMenuDisplay(option),
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    textAlign = TextAlign.End
-                                )
-                                if (option == selectedOption) {
-                                    Spacer(modifier = Modifier.weight(1f))
-                                    Image(
-                                        modifier = Modifier.padding(end = 8.dp),
-                                        imageVector = TickIcon,
-                                        contentDescription = null
-                                    )
-                                }
-                            }
+                            CurrencyRow(
+                                currencyCode = currencyDisplay(option),
+                                currencyName = currencyTitleDisplay(option),
+                                showTickIcon = option == selectedOption
+                            )
                         },
                         onClick = {
                             onItemSelected(option)
@@ -151,6 +95,80 @@ fun <T> CurrencySelector(
                     )
                 }
             }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun <T> ExposedDropdownMenuBoxScope.CurrencySelectorTextField(
+    expanded: Boolean,
+    selectedOption: T,
+    currencyDisplay: (T) -> String,
+    currencyTitleDisplay: (T) -> String,
+    onExpandedChange: (Boolean) -> Unit
+) {
+    val interactionSource = remember { MutableInteractionSource() }
+
+    TextField(
+        value = "",
+        onValueChange = {},
+        readOnly = true,
+        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+        colors = TextFieldDefaults.colors(
+            focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerLowest,
+            unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerLowest,
+            disabledContainerColor = MaterialTheme.colorScheme.surfaceContainerLowest,
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent,
+            disabledIndicatorColor = Color.Transparent
+        ),
+        modifier = Modifier
+            .fillMaxWidth()
+            .menuAnchor(MenuAnchorType.PrimaryNotEditable)
+            .shadow(2.dp, RoundedCornerShape(16.dp))
+            .clip(RoundedCornerShape(16.dp))
+            .background(MaterialTheme.colorScheme.surfaceContainerLowest)
+            .clickable { onExpandedChange(!expanded) },
+        singleLine = true,
+        interactionSource = interactionSource,
+        placeholder = {
+            CurrencyRow(
+                currencyCode = currencyDisplay(selectedOption),
+                currencyName = currencyTitleDisplay(selectedOption)
+            )
+        }
+    )
+}
+
+@Composable
+private fun CurrencyRow(
+    currencyCode: String,
+    currencyName: String,
+    showTickIcon: Boolean = false,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = currencyCode,
+            style = MaterialTheme.typography.labelMedium
+        )
+        Spacer(modifier = Modifier.width(8.dp))
+        Text(
+            text = currencyName,
+            style = MaterialTheme.typography.bodyMedium,
+            textAlign = TextAlign.End
+        )
+        if (showTickIcon) {
+            Spacer(modifier = Modifier.weight(1f))
+            Image(
+                modifier = Modifier.padding(end = 8.dp),
+                imageVector = TickIcon,
+                contentDescription = null
+            )
         }
     }
 }
@@ -169,27 +187,16 @@ fun PreviewCurrencySelector() {
                 title = "Currency",
                 selectedOption = FakeCurrency.INR,
                 options = FakeCurrency.entries.toTypedArray(),
-                currencyDisplay = {
-                    it.symbol
-                },
-                currencyTitleDisplay = {
-                    it.title
-                },
-                currencyMenuDisplay = {
-                    it.symbol
-                },
-                currencyTitleMenuDisplay = {
-                    it.title
-                },
-                onItemSelected = {
-
-                }
+                currencyDisplay = { it.symbol },
+                currencyTitleDisplay = { it.title },
+                onItemSelected = {}
             )
         }
     }
 }
 
 enum class FakeCurrency(val symbol: String, val title: String) {
-    USD("$", "US Dollar (USD)"),
-    INR("₹", "Rupee")
+    INR("₹", "Indian Rupee"),
+    USD("$", "US Dollar"),
+    EUR("€", "Euro")
 }

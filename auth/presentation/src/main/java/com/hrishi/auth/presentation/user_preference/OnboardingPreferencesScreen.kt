@@ -38,9 +38,9 @@ import com.hrishi.core.domain.model.ThousandsSeparator
 import com.hrishi.core.presentation.designsystem.SpendLessFinanceTrackerTheme
 import com.hrishi.core.presentation.designsystem.components.CurrencySelector
 import com.hrishi.core.presentation.designsystem.components.SegmentedSelector
-import com.hrishi.core.presentation.designsystem.components.buttons.SpendLessButton
 import com.hrishi.core.presentation.designsystem.components.SpendLessSnackBarHost
 import com.hrishi.core.presentation.designsystem.components.SpendLessTopBar
+import com.hrishi.core.presentation.designsystem.components.buttons.SpendLessButton
 import com.hrishi.presentation.ui.ObserveAsEvents
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -172,8 +172,6 @@ fun OnboardingPreferencesScreen(
                     options = Currency.entries.toTypedArray(),
                     currencyDisplay = { it.symbol },
                     currencyTitleDisplay = { it.title },
-                    currencyMenuDisplay = { it.symbol },
-                    currencyTitleMenuDisplay = { it.title },
                     onItemSelected = {
                         onAction(OnboardingPreferencesAction.OnCurrencyUpdate(it))
                     }
