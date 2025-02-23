@@ -1,5 +1,6 @@
 package com.hrishi.core.presentation.designsystem.components.text_field
 
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -51,13 +52,16 @@ fun BasicTransactionField(
     BasicTextField(
         modifier = modifier
             .width(IntrinsicSize.Max)
-            .widthIn(min = 100.dp)
-            .onFocusChanged { isFocused = it.isFocused },
+            .widthIn(min = 100.dp),
         value = value,
         onValueChange = onValueChange,
         textStyle = textStyle,
         decorationBox = { innerTextField ->
-            Box {
+            Box(
+                modifier = Modifier
+                    .focusable()
+                    .onFocusChanged { isFocused = it.isFocused }
+            ) {
                 if (value.isBlank() && !isFocused) {
                     Text(
                         text = hint,
