@@ -1,4 +1,4 @@
-package com.hrishi.core.presentation.designsystem.components
+package com.hrishi.core.presentation.designsystem.components.text_field
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border

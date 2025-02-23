@@ -34,7 +34,7 @@ import com.hrishi.core.presentation.designsystem.LoginIcon
 import com.hrishi.core.presentation.designsystem.SpendLessFinanceTrackerTheme
 import com.hrishi.core.presentation.designsystem.components.buttons.SpendLessButton
 import com.hrishi.core.presentation.designsystem.components.SpendLessSnackBarHost
-import com.hrishi.core.presentation.designsystem.components.SpendLessTextField
+import com.hrishi.core.presentation.designsystem.components.text_field.SpendLessTextField
 import com.hrishi.presentation.ui.ObserveAsEvents
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
