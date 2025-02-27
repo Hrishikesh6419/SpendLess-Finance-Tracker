@@ -8,6 +8,7 @@ import com.hrishi.auth.domain.usecase.OnboardingPreferenceUseCases
 import com.hrishi.auth.domain.usecase.RegisterUseCases
 import com.hrishi.auth.presentation.navigation.model.PreferencesScreenData
 import com.hrishi.core.domain.auth.model.UserInfo
+import com.hrishi.core.domain.formatting.NumberFormatter
 import com.hrishi.core.domain.model.LockoutDuration
 import com.hrishi.core.domain.model.PinAttempts
 import com.hrishi.core.domain.model.SessionDuration
@@ -163,7 +164,7 @@ class OnboardingPreferencesViewModel(
     }
 
     private fun formatExample(state: OnboardingPreferencesViewState): String {
-        return onboardingPreferenceUseCases.formatExampleUseCase(
+        return NumberFormatter.formatAmount(
             amount = state.amount,
             expenseFormat = state.expenseFormat,
             decimalSeparator = state.decimalSeparator,

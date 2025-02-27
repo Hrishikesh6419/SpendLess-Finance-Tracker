@@ -4,6 +4,7 @@ import com.hrishi.core.domain.model.Currency
 import com.hrishi.core.domain.model.DecimalSeparator
 import com.hrishi.core.domain.model.ExpenseFormat
 import com.hrishi.core.domain.model.ThousandsSeparator
+import java.math.BigDecimal
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.text.NumberFormat
@@ -11,14 +12,14 @@ import java.util.Locale
 
 object NumberFormatter {
     fun formatAmount(
-        amount: Double,
+        amount: BigDecimal,
         expenseFormat: ExpenseFormat,
         decimalSeparator: DecimalSeparator,
         thousandsSeparator: ThousandsSeparator,
         currency: Currency
     ): String {
-        val isNegativeNumber = amount < 0
-        val absoluteAmount = kotlin.math.abs(amount)
+        val isNegativeNumber = amount < BigDecimal.ZERO
+        val absoluteAmount = amount.abs()
 
         val numberFormat = NumberFormat.getNumberInstance(Locale.US) as DecimalFormat
         val symbols = DecimalFormatSymbols(Locale.US)

@@ -1,14 +1,10 @@
 package com.hrishi.auth.domain.usecase
 
-import com.hrishi.core.domain.formatting.NumberFormatter
-import com.hrishi.core.domain.model.Currency
 import com.hrishi.core.domain.model.DecimalSeparator
-import com.hrishi.core.domain.model.ExpenseFormat
 import com.hrishi.core.domain.model.ThousandsSeparator
 
 data class OnboardingPreferenceUseCases(
-    val validateSelectedPreferences: ValidateSelectedPreferences,
-    val formatExampleUseCase: FormatExampleUseCase
+    val validateSelectedPreferences: ValidateSelectedPreferences
 )
 
 class ValidateSelectedPreferences {
@@ -22,23 +18,5 @@ class ValidateSelectedPreferences {
 
             else -> true
         }
-    }
-}
-
-class FormatExampleUseCase(private val numberFormatter: NumberFormatter) {
-    operator fun invoke(
-        amount: Double,
-        expenseFormat: ExpenseFormat,
-        decimalSeparator: DecimalSeparator,
-        thousandsSeparator: ThousandsSeparator,
-        currency: Currency
-    ): String {
-        return numberFormatter.formatAmount(
-            amount = amount,
-            expenseFormat = expenseFormat,
-            decimalSeparator = decimalSeparator,
-            thousandsSeparator = thousandsSeparator,
-            currency = currency
-        )
     }
 }

@@ -3,7 +3,6 @@ package com.hrishi.auth.data.di
 import com.hrishi.auth.domain.usecase.DecryptPinUseCase
 import com.hrishi.auth.domain.usecase.EncryptPinUseCase
 import com.hrishi.auth.domain.usecase.EncryptionUseCases
-import com.hrishi.auth.domain.usecase.FormatExampleUseCase
 import com.hrishi.auth.domain.usecase.InitiateLoginUseCase
 import com.hrishi.auth.domain.usecase.IsUserNameDuplicateUseCase
 import com.hrishi.auth.domain.usecase.IsUsernameValidUseCase
@@ -22,8 +21,7 @@ val authDataModule = module {
 
     // Onboarding Preferences
     factory { ValidateSelectedPreferences() }
-    factory { FormatExampleUseCase(get()) }
-    single { OnboardingPreferenceUseCases(get(), get()) }
+    single { OnboardingPreferenceUseCases(get()) }
 
     // Encryption
     factory { EncryptPinUseCase(get()) }
