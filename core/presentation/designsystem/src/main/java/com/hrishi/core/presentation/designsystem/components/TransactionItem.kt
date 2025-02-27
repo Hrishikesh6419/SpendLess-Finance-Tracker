@@ -40,6 +40,8 @@ import com.hrishi.core.presentation.designsystem.primaryFixed
 import com.hrishi.core.presentation.designsystem.secondaryFixed
 import com.hrishi.core.presentation.designsystem.secondaryFixedDim
 import com.hrishi.core.presentation.designsystem.success
+import java.math.BigDecimal
+import java.math.RoundingMode
 
 @Composable
 fun TransactionItem(
@@ -48,7 +50,7 @@ fun TransactionItem(
     title: String,
     category: String,
     note: String? = null,
-    amount: Double,
+    amount: BigDecimal,
     incomeAmountColor: Color = success,
     expenseAmountColor: Color = MaterialTheme.colorScheme.onSurface,
     isCollapsed: Boolean = true,
@@ -59,7 +61,7 @@ fun TransactionItem(
     expandedNoteExpenseColor: Color = MaterialTheme.colorScheme.primaryContainer,
     collapsedNoteIncomeColor: Color = secondaryFixedDim,
     expandedNoteIncomeColor: Color = MaterialTheme.colorScheme.secondary,
-    displayAmount: (Double) -> String,
+    displayAmount: (BigDecimal) -> String,
     onCardClicked: (Boolean) -> Unit
 ) {
     var expanded by remember { mutableStateOf(!isCollapsed) }
@@ -86,23 +88,24 @@ fun TransactionItem(
         .padding(4.dp)
         .padding(end = 2.dp)
 
-    val amountColor = if (amount > 0) {
+    // Using BigDecimal.compareTo for comparison
+    val amountColor = if (amount.compareTo(BigDecimal.ZERO) > 0) {
         incomeAmountColor
     } else {
         expenseAmountColor
     }
 
-    val expenseIncomeBackgroundColor = if (amount > 0) {
+    val expenseIncomeBackgroundColor = if (amount.compareTo(BigDecimal.ZERO) > 0) {
         incomeBackgroundColor
     } else {
         expenseBackgroundColor
     }
-    val collapsedNoteColor = if (amount > 0) {
+    val collapsedNoteColor = if (amount.compareTo(BigDecimal.ZERO) > 0) {
         collapsedNoteIncomeColor
     } else {
         collapsedNoteExpenseColor
     }
-    val expandedNoteColor = if (amount > 0) {
+    val expandedNoteColor = if (amount.compareTo(BigDecimal.ZERO) > 0) {
         expandedNoteIncomeColor
     } else {
         expandedNoteExpenseColor
@@ -138,10 +141,10 @@ private fun TransactionItemInnerContent(
     noteIcon: ImageVector,
     title: String,
     category: String,
-    amount: Double,
+    amount: BigDecimal,
     amountColor: Color,
     isCollapsed: Boolean,
-    displayAmount: (Double) -> String
+    displayAmount: (BigDecimal) -> String
 ) {
     Row(
         modifier = modifier.fillMaxWidth(),
@@ -233,8 +236,17 @@ private fun TransactionItemInnerContent(
     }
 }
 
-private val defaultAmountFormatter: (Double) -> String = {
-    "$${String.format("%.2f", it)}"
+private val defaultAmountFormatter: (BigDecimal) -> String = { amount ->
+    val absAmount = amount.abs().setScale(2, RoundingMode.HALF_EVEN)
+    when {
+        amount < BigDecimal.ZERO -> {
+            "-$$absAmount"
+        }
+
+        else -> {
+            "$$absAmount"
+        }
+    }
 }
 
 @Preview(name = "Multiple Scenarios", showBackground = true)
@@ -254,7 +266,7 @@ fun PreviewTransactionItem() {
                 title = "Burger King",
                 category = "Food",
                 note = "Grabbed a quick lunch",
-                amount = 8.50,
+                amount = BigDecimal("8.50"),
                 isCollapsed = true,
                 displayAmount = defaultAmountFormatter,
                 onCardClicked = {}
@@ -266,7 +278,7 @@ fun PreviewTransactionItem() {
                 title = "Football tickets",
                 category = "Sports",
                 note = "Went to a local match with friends",
-                amount = 45.00,
+                amount = BigDecimal("45.00"),
                 isCollapsed = false,
                 displayAmount = defaultAmountFormatter,
                 onCardClicked = {}
@@ -278,7 +290,7 @@ fun PreviewTransactionItem() {
                 title = "Parking",
                 category = "Transport",
                 note = null,
-                amount = 2.00,
+                amount = BigDecimal("2.00"),
                 isCollapsed = true,
                 displayAmount = defaultAmountFormatter,
                 onCardClicked = {}
@@ -290,7 +302,7 @@ fun PreviewTransactionItem() {
                 title = "Phone Bill",
                 category = "Utilities",
                 note = "Monthly charge for phone services",
-                amount = -49.99,
+                amount = BigDecimal("-49.99"),
                 isCollapsed = true,
                 displayAmount = defaultAmountFormatter,
                 onCardClicked = {}
@@ -302,7 +314,7 @@ fun PreviewTransactionItem() {
                 title = "Laptop Payment",
                 category = "Electronics",
                 note = "Installment for new MacBook",
-                amount = -999.99,
+                amount = BigDecimal("-999.99"),
                 isCollapsed = false,
                 displayAmount = defaultAmountFormatter,
                 onCardClicked = {}
