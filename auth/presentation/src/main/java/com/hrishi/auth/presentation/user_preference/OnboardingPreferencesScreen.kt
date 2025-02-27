@@ -44,6 +44,7 @@ import com.hrishi.core.presentation.designsystem.components.buttons.SpendLessBut
 import com.hrishi.presentation.ui.ObserveAsEvents
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
+import java.math.BigDecimal
 
 @Composable
 fun OnboardingPreferencesScreenRoot(
@@ -158,7 +159,7 @@ fun OnboardingPreferencesScreen(
                     },
                     displayText = {
                         it.displayText(
-                            number = -10.00,
+                            number = BigDecimal(-10.00),
                             currency = uiState.currency,
                             keepDecimal = false
                         )
@@ -187,7 +188,7 @@ fun OnboardingPreferencesScreen(
                     },
                     displayText = {
                         it.displayText(
-                            number = 1.00,
+                            number = BigDecimal(1.00),
                             keepDecimal = true
                         )
                     }
@@ -203,7 +204,7 @@ fun OnboardingPreferencesScreen(
                     },
                     displayText = {
                         it.displayText(
-                            number = 1000.00,
+                            number = BigDecimal(1000.00),
                             keepDecimal = false
                         )
                     }

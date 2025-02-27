@@ -1,8 +1,10 @@
 package com.hrishi.core.domain.model
 
+import java.math.BigDecimal
+
 interface PreferenceOption {
     fun displayText(
-        number: Double,
+        number: BigDecimal,
         currency: Currency? = null,
         keepDecimal: Boolean = true
     ): String
