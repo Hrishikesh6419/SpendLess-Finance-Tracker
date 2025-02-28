@@ -30,7 +30,7 @@ private val ColorScheme = darkColorScheme(
     inversePrimary = SpendLessInversePrimary,
     secondaryContainer = SpendLessSecondaryContainer,
     onSecondaryContainer = SpendLessOnSecondaryContainer,
-
+    tertiaryContainer = SpendLessTertiaryContainer
     )
 
 @Composable

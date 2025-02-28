@@ -52,6 +52,7 @@ fun <T> CategorySelector(
     selectedOption: T,
     fontStyle: TextStyle = MaterialTheme.typography.bodyMedium,
     showIconBackground: Boolean = false,
+    iconBackgroundColor: Color = primaryFixed,
     showMenuIcon: Boolean = true,
     options: Array<T>,
     currencyDisplay: (T) -> String,
@@ -77,6 +78,7 @@ fun <T> CategorySelector(
                 expanded = expanded,
                 fontStyle = fontStyle,
                 showIconBackground = showIconBackground,
+                iconBackgroundColor = iconBackgroundColor,
                 selectedOption = selectedOption,
                 currencyDisplay = currencyDisplay,
                 currencyTitleDisplay = currencyTitleDisplay,
@@ -96,6 +98,7 @@ fun <T> CategorySelector(
                             CurrencyRow(
                                 fontStyle = fontStyle,
                                 showIconBackground = showIconBackground,
+                                iconBackgroundColor = iconBackgroundColor,
                                 currencyCode = currencyDisplay(option),
                                 currencyName = currencyTitleDisplay(option),
                                 showMenuIcon = showMenuIcon,
@@ -123,6 +126,7 @@ private fun <T> ExposedDropdownMenuBoxScope.CurrencySelectorTextField(
     expanded: Boolean,
     fontStyle: TextStyle,
     showIconBackground: Boolean,
+    iconBackgroundColor: Color,
     selectedOption: T,
     currencyDisplay: (T) -> String,
     currencyTitleDisplay: (T) -> String,
@@ -151,6 +155,7 @@ private fun <T> ExposedDropdownMenuBoxScope.CurrencySelectorTextField(
             ) {
                 CurrencyRow(
                     showIconBackground = showIconBackground,
+                    iconBackgroundColor = iconBackgroundColor,
                     currencyCode = currencyDisplay(selectedOption),
                     currencyName = currencyTitleDisplay(selectedOption),
                     fontStyle = fontStyle,
@@ -169,6 +174,7 @@ private fun <T> ExposedDropdownMenuBoxScope.CurrencySelectorTextField(
 @Composable
 private fun CurrencyRow(
     showIconBackground: Boolean,
+    iconBackgroundColor: Color,
     currencyCode: String,
     currencyName: String,
     fontStyle: TextStyle,
@@ -189,7 +195,7 @@ private fun CurrencyRow(
                 modifier = Modifier
                     .background(
                         color = if (showMenuIcon) {
-                            primaryFixed
+                            iconBackgroundColor
                         } else {
                             Color.Transparent
                         },
@@ -268,6 +274,7 @@ fun PreviewCategorySelector() {
                         .fillMaxWidth()
                         .padding(16.dp),
                     showIconBackground = true,
+                    iconBackgroundColor = MaterialTheme.colorScheme.tertiaryContainer,
                     fontStyle = MaterialTheme.typography.labelMedium,
                     selectedOption = Recurring.ONE_TIME,
                     showMenuIcon = false,
