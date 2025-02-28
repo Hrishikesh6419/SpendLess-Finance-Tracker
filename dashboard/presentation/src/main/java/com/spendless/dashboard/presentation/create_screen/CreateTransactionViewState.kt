@@ -12,7 +12,8 @@ data class CreateTransactionViewState(
     val amount: BigDecimal,
     val noteHint: String,
     val note: String,
-    val categoryType: ExpenseCategoryTypeUI,
+    val showExpenseCategoryType: Boolean,
+    val expenseCategoryType: ExpenseCategoryTypeUI,
     val recurringType: RecurringTypeUI,
     val isCreateButtonEnabled: Boolean
 )

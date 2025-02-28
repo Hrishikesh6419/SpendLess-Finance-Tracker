@@ -13,6 +13,6 @@ sealed interface CreateTransactionAction {
     data class OnAmountUpdated(val amount: BigDecimal) : CreateTransactionAction
     data object OnCreateClicked : CreateTransactionAction
     data object OnBottomSheetCloseClicked : CreateTransactionAction
-    data class OnCategoryUpdated(val category: ExpenseCategoryTypeUI) : CreateTransactionAction
+    data class OnExpenseCategoryUpdated(val category: ExpenseCategoryTypeUI) : CreateTransactionAction
     data class OnFrequencyUpdated(val frequency: RecurringTypeUI) : CreateTransactionAction
 }

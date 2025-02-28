@@ -164,19 +164,21 @@ private fun CreateTransactionScreen(
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        CategorySelector(
-            modifier = Modifier
-                .fillMaxWidth(),
-            showIconBackground = true,
-            fontStyle = MaterialTheme.typography.labelMedium,
-            selectedOption = uiState.categoryType,
-            options = ExpenseCategoryTypeUI.entries.toTypedArray(),
-            currencyDisplay = { it.symbol },
-            currencyTitleDisplay = { it.title },
-            onItemSelected = {
-                onAction(CreateTransactionAction.OnCategoryUpdated(it))
-            }
-        )
+        if (uiState.showExpenseCategoryType) {
+            CategorySelector(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                showIconBackground = true,
+                fontStyle = MaterialTheme.typography.labelMedium,
+                selectedOption = uiState.expenseCategoryType,
+                options = ExpenseCategoryTypeUI.entries.toTypedArray(),
+                currencyDisplay = { it.symbol },
+                currencyTitleDisplay = { it.title },
+                onItemSelected = {
+                    onAction(CreateTransactionAction.OnExpenseCategoryUpdated(it))
+                }
+            )
+        }
 
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -202,7 +204,8 @@ private fun CreateTransactionScreen(
             buttonText = "Create",
             onClick = {
                 onAction(CreateTransactionAction.OnCreateClicked)
-            }
+            },
+            isEnabled = uiState.isCreateButtonEnabled
         )
     }
 }
@@ -222,7 +225,8 @@ private fun PreviewCreateTransactionScreenRoot() {
                     amount = BigDecimal.ZERO,
                     noteHint = "Add Note",
                     note = "",
-                    categoryType = ExpenseCategoryTypeUI.OTHER,
+                    expenseCategoryType = ExpenseCategoryTypeUI.OTHER,
+                    showExpenseCategoryType = true,
                     recurringType = RecurringTypeUI.ONE_TIME,
                     isCreateButtonEnabled = false
                 ),

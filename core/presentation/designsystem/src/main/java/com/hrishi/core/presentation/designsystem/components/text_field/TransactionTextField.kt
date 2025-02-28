@@ -109,7 +109,7 @@ fun TransactionTextField(
                 val numericString = "$intPart.$decPart"
 
                 val newBigDecimal = BigDecimal(numericString)
-                onValueChange(if (isExpense) newBigDecimal.negate() else newBigDecimal)
+                onValueChange(newBigDecimal)
             } catch (e: Exception) {
                 // no-op
             }

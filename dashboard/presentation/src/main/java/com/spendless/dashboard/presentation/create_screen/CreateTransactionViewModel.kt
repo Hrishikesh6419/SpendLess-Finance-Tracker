@@ -27,7 +27,8 @@ class CreateTransactionViewModel : ViewModel() {
             amount = BigDecimal.ZERO,
             noteHint = "Add Note",
             note = "",
-            categoryType = ExpenseCategoryTypeUI.OTHER,
+            expenseCategoryType = ExpenseCategoryTypeUI.OTHER,
+            showExpenseCategoryType = isExpenseCategoryTypeVisible(transactionType),
             recurringType = RecurringTypeUI.ONE_TIME,
             isCreateButtonEnabled = false
         )
@@ -36,14 +37,18 @@ class CreateTransactionViewModel : ViewModel() {
     private fun getTransactionHint(type: TransactionTypeUI): String =
         if (type == TransactionTypeUI.EXPENSE) "Receiver" else "Sender"
 
+    private fun isExpenseCategoryTypeVisible(type: TransactionTypeUI): Boolean =
+        type == TransactionTypeUI.EXPENSE
+
     fun onAction(action: CreateTransactionAction) {
         when (action) {
-            is CreateTransactionAction.OnCategoryUpdated -> updateState { copy(categoryType = action.category) }
+            is CreateTransactionAction.OnExpenseCategoryUpdated -> updateState { copy(expenseCategoryType = action.category) }
             is CreateTransactionAction.OnFrequencyUpdated -> updateState { copy(recurringType = action.frequency) }
             is CreateTransactionAction.OnTransactionTypeChanged -> updateState {
                 copy(
                     transactionType = action.transactionType,
-                    transactionNameHint = getTransactionHint(action.transactionType)
+                    transactionNameHint = getTransactionHint(action.transactionType),
+                    showExpenseCategoryType = isExpenseCategoryTypeVisible(action.transactionType)
                 )
             }
             is CreateTransactionAction.OnTransactionNameUpdated -> updateState { copy(transactionName = action.transactionName) }
