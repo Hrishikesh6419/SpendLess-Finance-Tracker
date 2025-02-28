@@ -18,10 +18,14 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.SheetState
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -40,9 +44,14 @@ import com.hrishi.core.presentation.designsystem.components.PopularCategoryView
 import com.hrishi.core.presentation.designsystem.components.PreviousWeekTotalView
 import com.hrishi.core.presentation.designsystem.components.SpendLessScaffold
 import com.hrishi.core.presentation.designsystem.components.SpendLessTopBar
+import com.hrishi.core.presentation.designsystem.components.buttons.SpendLessFloatingActionButton
 import com.hrishi.presentation.ui.ObserveAsEvents
+import com.spendless.dashboard.presentation.create_screen.CreateTransactionScreenRoot
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DashboardScreenRoot(
     modifier: Modifier = Modifier,
@@ -51,6 +60,9 @@ fun DashboardScreenRoot(
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val bottomSheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true
+    )
     val snackBarHostState = remember { SnackbarHostState() }
 
     ObserveAsEvents(viewModel.events) {
@@ -66,17 +78,41 @@ fun DashboardScreenRoot(
         modifier = modifier,
         uiState = uiState,
         snackBarHostState = snackBarHostState,
+        bottomSheetState = bottomSheetState,
+        scope = scope,
         onAction = viewModel::onAction
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DashboardScreen(
     modifier: Modifier = Modifier,
     uiState: DashboardState,
     snackBarHostState: SnackbarHostState,
-    onAction: (DashboardAction) -> Unit
+    bottomSheetState: SheetState,
+    scope: CoroutineScope,
+    onAction: (DashboardAction) -> Unit,
 ) {
+    if (uiState.showCreateTransactionSheet) {
+        ModalBottomSheet(
+            onDismissRequest = {
+                onAction(DashboardAction.UpdatedBottomSheet(false))
+            },
+            sheetState = bottomSheetState,
+            containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+            modifier = Modifier
+                .fillMaxHeight()
+                .windowInsetsPadding(WindowInsets.statusBars)
+        ) {
+            Column(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                CreateTransactionScreenRoot()
+            }
+        }
+    }
+
     SpendLessScaffold(
         topAppBar = {
             SpendLessTopBar(
@@ -91,6 +127,15 @@ fun DashboardScreen(
                 endIcon2Color = MaterialTheme.colorScheme.onPrimary,
                 endIcon2BackgroundColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.18f),
                 title = "rockefeller74",
+            )
+        },
+        floatingActionButton = {
+            SpendLessFloatingActionButton(
+                onClick = {
+                    scope.launch {
+                        onAction(DashboardAction.UpdatedBottomSheet(true))
+                    }
+                }
             )
         },
     ) { contentPadding ->
@@ -201,6 +246,7 @@ fun DashboardScreen(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 @Preview
 fun PreviewDashboardScreen() {
@@ -210,9 +256,11 @@ fun PreviewDashboardScreen() {
                 modifier = Modifier,
                 uiState = DashboardState(),
                 snackBarHostState = SnackbarHostState(),
+                scope = rememberCoroutineScope(),
                 onAction = {
 
-                }
+                },
+                bottomSheetState = rememberModalBottomSheetState(),
             )
         }
     }

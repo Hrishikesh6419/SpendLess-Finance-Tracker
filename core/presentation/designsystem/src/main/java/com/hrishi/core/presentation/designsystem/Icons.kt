@@ -52,3 +52,7 @@ val SettingsButton: ImageVector
 val PlusIcon: ImageVector
     @Composable
     get() = ImageVector.vectorResource(R.drawable.ic_plus)
+
+val CloseIcon: ImageVector
+    @Composable
+    get() = ImageVector.vectorResource(R.drawable.ic_close)

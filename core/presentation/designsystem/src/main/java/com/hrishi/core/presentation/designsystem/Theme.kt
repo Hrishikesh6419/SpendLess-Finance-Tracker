@@ -26,6 +26,7 @@ private val ColorScheme = darkColorScheme(
     primaryContainer = SpendLessPrimaryContainer,
     onPrimaryContainer = SpendLessOnPrimaryContainer,
     surfaceContainerLowest = SpendLessSurfaceContainerLowest,
+    surfaceContainerLow = SpendLessSurfaceContainerLow,
     inversePrimary = SpendLessInversePrimary,
     secondaryContainer = SpendLessSecondaryContainer,
     onSecondaryContainer = SpendLessOnSecondaryContainer,

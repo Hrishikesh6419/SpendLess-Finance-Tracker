@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class DashboardViewModel(
@@ -31,6 +32,13 @@ class DashboardViewModel(
     fun onAction(action: DashboardAction) {
         when (action) {
             DashboardAction.NavigationClick -> Unit
+            is DashboardAction.UpdatedBottomSheet -> {
+                _uiState.update {
+                    it.copy(
+                        showCreateTransactionSheet = action.showSheet
+                    )
+                }
+            }
         }
     }
 }
