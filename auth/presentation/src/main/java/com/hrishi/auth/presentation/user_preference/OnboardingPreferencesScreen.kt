@@ -36,7 +36,7 @@ import com.hrishi.core.domain.model.DecimalSeparator
 import com.hrishi.core.domain.model.ExpenseFormat
 import com.hrishi.core.domain.model.ThousandsSeparator
 import com.hrishi.core.presentation.designsystem.SpendLessFinanceTrackerTheme
-import com.hrishi.core.presentation.designsystem.components.CurrencySelector
+import com.hrishi.core.presentation.designsystem.components.CategorySelector
 import com.hrishi.core.presentation.designsystem.components.SegmentedSelector
 import com.hrishi.core.presentation.designsystem.components.SpendLessSnackBarHost
 import com.hrishi.core.presentation.designsystem.components.SpendLessTopBar
@@ -166,7 +166,7 @@ fun OnboardingPreferencesScreen(
                     }
                 )
 
-                CurrencySelector(
+                CategorySelector(
                     modifier = Modifier.padding(top = 16.dp),
                     title = stringResource(R.string.onboarding_preferences_currency_title),
                     selectedOption = uiState.currency,

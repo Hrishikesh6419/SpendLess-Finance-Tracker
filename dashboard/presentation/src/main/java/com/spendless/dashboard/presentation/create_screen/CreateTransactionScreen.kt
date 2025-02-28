@@ -155,6 +155,8 @@ private fun CreateTransactionScreen(
                 onAction(CreateTransactionAction.OnNoteUpdated(it))
             }
         )
+
+        Spacer(modifier = Modifier.height(32.dp))
     }
 }
 

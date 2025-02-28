@@ -46,7 +46,7 @@ import com.hrishi.core.presentation.designsystem.primaryFixed
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun <T> CurrencySelector(
+fun <T> CategorySelector(
     modifier: Modifier = Modifier,
     title: String? = null,
     selectedOption: T,
@@ -232,13 +232,13 @@ private fun CurrencyRow(
 
 @Composable
 @Preview
-fun PreviewCurrencySelector() {
+fun PreviewCategorySelector() {
     SpendLessFinanceTrackerTheme {
         Surface(
             color = MaterialTheme.colorScheme.background
         ) {
             Column {
-                CurrencySelector(
+                CategorySelector(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp),
@@ -250,7 +250,7 @@ fun PreviewCurrencySelector() {
                     onItemSelected = {}
                 )
 
-                CurrencySelector(
+                CategorySelector(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp),
@@ -263,7 +263,7 @@ fun PreviewCurrencySelector() {
                     onItemSelected = {}
                 )
 
-                CurrencySelector(
+                CategorySelector(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp),
