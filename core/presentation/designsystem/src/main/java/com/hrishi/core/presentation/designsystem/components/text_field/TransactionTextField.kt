@@ -37,18 +37,18 @@ import com.hrishi.core.presentation.designsystem.SpendLessSuccess
 import java.math.BigDecimal
 import java.math.RoundingMode
 
-enum class ExpenseFormat {
+enum class ExpenseFormatUI {
     MINUS_SIGN,
     PARENTHESES
 }
 
-enum class ThousandsSeparator(val char: Char) {
+enum class ThousandsSeparatorUI(val char: Char) {
     DOT('.'),
     COMMA(','),
     SPACE(' ')
 }
 
-enum class DecimalSeparator(val char: Char) {
+enum class DecimalSeparatorUI(val char: Char) {
     DOT('.'),
     COMMA(',')
 }
@@ -59,10 +59,10 @@ fun TransactionTextField(
     onValueChange: (BigDecimal) -> Unit,
     modifier: Modifier = Modifier,
     isExpense: Boolean = false,
-    expenseFormat: ExpenseFormat = ExpenseFormat.MINUS_SIGN,
-    currencySymbol: String = "$",
-    decimalSeparator: DecimalSeparator = DecimalSeparator.DOT,
-    thousandSeparator: ThousandsSeparator = ThousandsSeparator.COMMA,
+    expenseFormat: ExpenseFormatUI? = ExpenseFormatUI.MINUS_SIGN,
+    currencySymbol: String? = "$",
+    decimalSeparator: DecimalSeparatorUI = DecimalSeparatorUI.DOT,
+    thousandSeparator: ThousandsSeparatorUI = ThousandsSeparatorUI.COMMA,
     expenseColor: Color = MaterialTheme.colorScheme.error,
     incomeColor: Color = SpendLessSuccess,
     emptyAmountColor: Color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
@@ -145,7 +145,7 @@ fun TransactionTextField(
 
                         when {
                             // Negative with parentheses: ($100.00)
-                            isExpense && expenseFormat == ExpenseFormat.PARENTHESES -> {
+                            isExpense && expenseFormat == ExpenseFormatUI.PARENTHESES -> {
                                 withStyle(spanStyle(signColor)) {
                                     append("(")
                                     append(currencySymbol)
@@ -155,7 +155,7 @@ fun TransactionTextField(
                                 withStyle(spanStyle(signColor)) { append(")") }
                             }
                             // Negative with minus sign: -$100.00
-                            isExpense && expenseFormat == ExpenseFormat.MINUS_SIGN -> {
+                            isExpense && expenseFormat == ExpenseFormatUI.MINUS_SIGN -> {
                                 withStyle(spanStyle(signColor)) {
                                     append("-")
                                     append(currencySymbol)
@@ -239,7 +239,7 @@ fun CurrencyTextFieldPreview() {
                     Log.d("Preview", "Value changed: $it")
                 },
                 isExpense = true,
-                expenseFormat = ExpenseFormat.MINUS_SIGN,
+                expenseFormat = ExpenseFormatUI.MINUS_SIGN,
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -251,8 +251,8 @@ fun CurrencyTextFieldPreview() {
                     Log.d("Preview", "Value changed: $it")
                 },
                 isExpense = true,
-                expenseFormat = ExpenseFormat.MINUS_SIGN,
-                thousandSeparator = ThousandsSeparator.SPACE
+                expenseFormat = ExpenseFormatUI.MINUS_SIGN,
+                thousandSeparator = ThousandsSeparatorUI.SPACE
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -264,7 +264,7 @@ fun CurrencyTextFieldPreview() {
                     Log.d("Preview", "Value changed: $it")
                 },
                 isExpense = true,
-                expenseFormat = ExpenseFormat.PARENTHESES
+                expenseFormat = ExpenseFormatUI.PARENTHESES
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -276,8 +276,8 @@ fun CurrencyTextFieldPreview() {
                     Log.d("Preview", "Value changed: $it")
                 },
                 isExpense = true,
-                expenseFormat = ExpenseFormat.PARENTHESES,
-                thousandSeparator = ThousandsSeparator.SPACE
+                expenseFormat = ExpenseFormatUI.PARENTHESES,
+                thousandSeparator = ThousandsSeparatorUI.SPACE
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -289,9 +289,9 @@ fun CurrencyTextFieldPreview() {
                     Log.d("Preview", "Value changed: $it")
                 },
                 isExpense = true,
-                expenseFormat = ExpenseFormat.PARENTHESES,
-                decimalSeparator = DecimalSeparator.COMMA,
-                thousandSeparator = ThousandsSeparator.DOT
+                expenseFormat = ExpenseFormatUI.PARENTHESES,
+                decimalSeparator = DecimalSeparatorUI.COMMA,
+                thousandSeparator = ThousandsSeparatorUI.DOT
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -303,9 +303,9 @@ fun CurrencyTextFieldPreview() {
                     Log.d("Preview", "Value changed: $it")
                 },
                 isExpense = true,
-                expenseFormat = ExpenseFormat.MINUS_SIGN,
-                decimalSeparator = DecimalSeparator.COMMA,
-                thousandSeparator = ThousandsSeparator.DOT
+                expenseFormat = ExpenseFormatUI.MINUS_SIGN,
+                decimalSeparator = DecimalSeparatorUI.COMMA,
+                thousandSeparator = ThousandsSeparatorUI.DOT
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -317,8 +317,8 @@ fun CurrencyTextFieldPreview() {
                     Log.d("Preview", "Value changed: $it")
                 },
                 isExpense = false,
-                decimalSeparator = DecimalSeparator.COMMA,
-                thousandSeparator = ThousandsSeparator.DOT
+                decimalSeparator = DecimalSeparatorUI.COMMA,
+                thousandSeparator = ThousandsSeparatorUI.DOT
             )
 
             Spacer(modifier = Modifier.height(16.dp))

@@ -2,21 +2,62 @@ package com.spendless.dashboard.presentation.create_screen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.hrishi.core.domain.preference.usecase.SettingsPreferenceUseCase
+import com.hrishi.core.domain.utils.Result
 import com.hrishi.core.presentation.designsystem.model.ExpenseCategoryTypeUI
 import com.hrishi.core.presentation.designsystem.model.RecurringTypeUI
 import com.hrishi.core.presentation.designsystem.model.TransactionTypeUI
+import com.spendless.dashboard.presentation.mapper.toDecimalSeparatorUI
+import com.spendless.dashboard.presentation.mapper.toExpenseFormatUI
+import com.spendless.dashboard.presentation.mapper.toThousandsSeparatorUI
+import com.spendless.session_management.domain.usecases.SessionUseCase
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
 
-class CreateTransactionViewModel : ViewModel() {
+@OptIn(ExperimentalCoroutinesApi::class)
+class CreateTransactionViewModel(
+    private val sessionUseCase: SessionUseCase,
+    private val settingsPreferenceUseCase: SettingsPreferenceUseCase
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(initialUiState())
     val uiState: StateFlow<CreateTransactionViewState> = _uiState
 
     private val eventChannel = Channel<CreateTransactionEvent>(Channel.BUFFERED)
     val events = eventChannel.receiveAsFlow()
+
+    init {
+        fetchUserPreferences()
+    }
+
+    private fun fetchUserPreferences() {
+        sessionUseCase.getSessionDataUseCase()
+            .flatMapLatest { sessionData ->
+                settingsPreferenceUseCase.getPreferencesUseCase(sessionData.userId)
+            }
+            .onEach { result ->
+                if (result is Result.Success) {
+                    _uiState.update {
+                        it.copy(
+                            currency = result.data.currency,
+                            expenseFormat = result.data.expenseFormat.toExpenseFormatUI(),
+                            decimalSeparatorUI = result.data.decimalSeparator.toDecimalSeparatorUI(),
+                            thousandsSeparatorUI = result.data.thousandsSeparator.toThousandsSeparatorUI()
+                        )
+                    }
+                }
+            }
+            .launchIn(viewModelScope)
+    }
 
     private fun initialUiState(): CreateTransactionViewState {
         val transactionType = TransactionTypeUI.EXPENSE

@@ -1,5 +1,9 @@
 package com.spendless.dashboard.presentation.create_screen
 
+import com.hrishi.core.domain.model.Currency
+import com.hrishi.core.presentation.designsystem.components.text_field.DecimalSeparatorUI
+import com.hrishi.core.presentation.designsystem.components.text_field.ExpenseFormatUI
+import com.hrishi.core.presentation.designsystem.components.text_field.ThousandsSeparatorUI
 import com.hrishi.core.presentation.designsystem.model.ExpenseCategoryTypeUI
 import com.hrishi.core.presentation.designsystem.model.RecurringTypeUI
 import com.hrishi.core.presentation.designsystem.model.TransactionTypeUI
@@ -15,5 +19,9 @@ data class CreateTransactionViewState(
     val showExpenseCategoryType: Boolean,
     val expenseCategoryType: ExpenseCategoryTypeUI,
     val recurringType: RecurringTypeUI,
+    val currency: Currency? = null,
+    val expenseFormat: ExpenseFormatUI? = null,
+    val decimalSeparatorUI: DecimalSeparatorUI? = null,
+    val thousandsSeparatorUI: ThousandsSeparatorUI? = null,
     val isCreateButtonEnabled: Boolean
 )

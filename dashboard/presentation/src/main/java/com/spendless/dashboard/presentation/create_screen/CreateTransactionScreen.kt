@@ -27,6 +27,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.hrishi.core.domain.model.Currency
 import com.hrishi.core.presentation.designsystem.CloseIcon
 import com.hrishi.core.presentation.designsystem.PlusIcon
 import com.hrishi.core.presentation.designsystem.SpendLessFinanceTrackerTheme
@@ -34,6 +35,8 @@ import com.hrishi.core.presentation.designsystem.components.CategorySelector
 import com.hrishi.core.presentation.designsystem.components.SegmentedSelector
 import com.hrishi.core.presentation.designsystem.components.buttons.SpendLessButton
 import com.hrishi.core.presentation.designsystem.components.text_field.BasicTransactionField
+import com.hrishi.core.presentation.designsystem.components.text_field.DecimalSeparatorUI
+import com.hrishi.core.presentation.designsystem.components.text_field.ThousandsSeparatorUI
 import com.hrishi.core.presentation.designsystem.components.text_field.TransactionTextField
 import com.hrishi.core.presentation.designsystem.model.ExpenseCategoryTypeUI
 import com.hrishi.core.presentation.designsystem.model.RecurringTypeUI
@@ -138,6 +141,10 @@ private fun CreateTransactionScreen(
         TransactionTextField(
             modifier = Modifier.align(Alignment.CenterHorizontally),
             value = uiState.amount,
+            currencySymbol = uiState.currency?.symbol ?: Currency.USD.symbol,
+            expenseFormat = uiState.expenseFormat,
+            decimalSeparator = uiState.decimalSeparatorUI ?: DecimalSeparatorUI.DOT,
+            thousandSeparator = uiState.thousandsSeparatorUI ?: ThousandsSeparatorUI.COMMA,
             onValueChange = {
                 onAction(CreateTransactionAction.OnAmountUpdated(it))
             },
