@@ -113,7 +113,11 @@ fun DashboardScreen(
             Column(
                 modifier = Modifier.fillMaxWidth()
             ) {
-                CreateTransactionScreenRoot()
+                CreateTransactionScreenRoot(
+                    onDismiss = {
+                        onAction(DashboardAction.UpdatedBottomSheet(false))
+                    }
+                )
             }
         }
     }

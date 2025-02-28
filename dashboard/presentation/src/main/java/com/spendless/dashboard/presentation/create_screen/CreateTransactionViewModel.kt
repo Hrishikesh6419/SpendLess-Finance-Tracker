@@ -1,6 +1,7 @@
 package com.spendless.dashboard.presentation.create_screen
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.hrishi.core.presentation.designsystem.model.ExpenseCategoryTypeUI
 import com.hrishi.core.presentation.designsystem.model.RecurringTypeUI
 import com.hrishi.core.presentation.designsystem.model.TransactionTypeUI
@@ -9,6 +10,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import java.math.BigDecimal
 
 class CreateTransactionViewModel : ViewModel() {
@@ -83,6 +85,14 @@ class CreateTransactionViewModel : ViewModel() {
                 _uiState.update {
                     it.copy(
                         note = action.note
+                    )
+                }
+            }
+
+            CreateTransactionAction.OnBottomSheetCloseClicked -> {
+                viewModelScope.launch {
+                    eventChannel.send(
+                        CreateTransactionEvent.CloseBottomSheet
                     )
                 }
             }

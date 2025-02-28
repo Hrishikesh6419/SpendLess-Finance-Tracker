@@ -1,5 +1,6 @@
 package com.spendless.dashboard.presentation.create_screen
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -44,6 +45,7 @@ import java.math.BigDecimal
 @Composable
 fun CreateTransactionScreenRoot(
     modifier: Modifier = Modifier,
+    onDismiss: () -> Unit,
     viewModel: CreateTransactionViewModel = koinViewModel()
 ) {
     val scope = rememberCoroutineScope()
@@ -54,8 +56,7 @@ fun CreateTransactionScreenRoot(
 
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
-
-            else -> {}
+            CreateTransactionEvent.CloseBottomSheet -> onDismiss()
         }
     }
 
@@ -95,6 +96,9 @@ private fun CreateTransactionScreen(
             )
 
             Icon(
+                modifier = Modifier.clickable {
+                    onAction(CreateTransactionAction.OnBottomSheetCloseClicked)
+                },
                 tint = Color.Unspecified,
                 imageVector = CloseIcon,
                 contentDescription = ""
