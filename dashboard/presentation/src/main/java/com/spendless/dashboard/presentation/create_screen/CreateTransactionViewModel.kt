@@ -30,6 +30,7 @@ class CreateTransactionViewModel : ViewModel() {
                 "Sender"
             },
             amount = BigDecimal.ZERO,
+            noteHint = "Add Note",
             note = "",
             categoryType = CategoryTypeUI.OTHER,
             recurringType = RecurringTypeUI.ONE_TIME,
@@ -42,7 +43,13 @@ class CreateTransactionViewModel : ViewModel() {
             CreateTransactionAction.OnCategoryClicked -> Unit
             CreateTransactionAction.OnCreateClicked -> Unit
             CreateTransactionAction.OnFrequencyClicked -> Unit
-            is CreateTransactionAction.OnTransactionTypeChanged -> Unit
+            is CreateTransactionAction.OnTransactionTypeChanged -> {
+                _uiState.update {
+                    it.copy(
+                        transactionType = action.transactionType
+                    )
+                }
+            }
             is CreateTransactionAction.OnTransactionNameUpdated -> {
                 _uiState.update {
                     it.copy(
@@ -55,6 +62,14 @@ class CreateTransactionViewModel : ViewModel() {
                 _uiState.update {
                     it.copy(
                         amount = action.amount
+                    )
+                }
+            }
+
+            is CreateTransactionAction.OnNoteUpdated -> {
+                _uiState.update {
+                    it.copy(
+                        note = action.note
                     )
                 }
             }

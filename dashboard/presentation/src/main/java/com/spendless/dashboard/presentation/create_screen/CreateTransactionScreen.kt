@@ -27,6 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.hrishi.core.presentation.designsystem.CloseIcon
+import com.hrishi.core.presentation.designsystem.PlusIcon
 import com.hrishi.core.presentation.designsystem.SpendLessFinanceTrackerTheme
 import com.hrishi.core.presentation.designsystem.components.SegmentedSelector
 import com.hrishi.core.presentation.designsystem.components.text_field.BasicTransactionField
@@ -76,6 +77,8 @@ private fun CreateTransactionScreen(
             .fillMaxSize()
             .padding(horizontal = 16.dp)
     ) {
+
+        Spacer(modifier = Modifier.height(22.dp))
 
         Row(
             modifier = Modifier
@@ -134,6 +137,24 @@ private fun CreateTransactionScreen(
             },
             isExpense = uiState.transactionType == TransactionTypeUI.EXPENSE
         )
+
+        Spacer(modifier = Modifier.height(22.dp))
+
+        BasicTransactionField(
+            modifier = Modifier.align(Alignment.CenterHorizontally),
+            value = uiState.note,
+            hint = uiState.noteHint,
+            icon = PlusIcon,
+            emptyStateStyle = MaterialTheme.typography.bodyMedium.copy(
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.60f)
+            ),
+            nonEmptyStateStyle = MaterialTheme.typography.bodyMedium.copy(
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.60f)
+            ),
+            onValueChange = {
+                onAction(CreateTransactionAction.OnNoteUpdated(it))
+            }
+        )
     }
 }
 
@@ -142,7 +163,7 @@ private fun CreateTransactionScreen(
 private fun PreviewCreateTransactionScreenRoot() {
     SpendLessFinanceTrackerTheme {
         Surface(
-            color = MaterialTheme.colorScheme.background
+            color = MaterialTheme.colorScheme.surfaceContainerLow
         ) {
             CreateTransactionScreen(
                 uiState = CreateTransactionViewState(
@@ -150,6 +171,7 @@ private fun PreviewCreateTransactionScreenRoot() {
                     transactionName = "",
                     transactionNameHint = "Receiver",
                     amount = BigDecimal.ZERO,
+                    noteHint = "Add Note",
                     note = "",
                     categoryType = CategoryTypeUI.OTHER,
                     recurringType = RecurringTypeUI.ONE_TIME,

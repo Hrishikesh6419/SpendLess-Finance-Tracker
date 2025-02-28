@@ -21,6 +21,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.ModalBottomSheetProperties
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
@@ -101,6 +102,10 @@ fun DashboardScreen(
             },
             sheetState = bottomSheetState,
             containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+            properties = ModalBottomSheetProperties(
+                shouldDismissOnBackPress = false
+            ),
+            dragHandle = null,
             modifier = Modifier
                 .fillMaxHeight()
                 .windowInsetsPadding(WindowInsets.statusBars)

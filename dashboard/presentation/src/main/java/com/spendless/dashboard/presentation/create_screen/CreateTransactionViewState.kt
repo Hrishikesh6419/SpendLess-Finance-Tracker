@@ -10,6 +10,7 @@ data class CreateTransactionViewState(
     val transactionName: String,
     val transactionNameHint: String,
     val amount: BigDecimal,
+    val noteHint: String,
     val note: String,
     val categoryType: CategoryTypeUI,
     val recurringType: RecurringTypeUI,
