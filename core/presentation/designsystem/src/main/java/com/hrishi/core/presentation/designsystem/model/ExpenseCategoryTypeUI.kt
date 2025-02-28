@@ -1,6 +1,6 @@
 package com.hrishi.core.presentation.designsystem.model
 
-enum class CategoryTypeUI(val symbol: String, val title: String) {
+enum class ExpenseCategoryTypeUI(val symbol: String, val title: String) {
     HOME("\uD83C\uDFE0", "Home"),
     FOOD("\uD83C\uDF55", "Food & Groceries"),
     ENTERTAINMENT("\uD83D\uDCBB", "Entertainment"),

@@ -29,10 +29,12 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.hrishi.core.presentation.designsystem.CloseIcon
 import com.hrishi.core.presentation.designsystem.PlusIcon
 import com.hrishi.core.presentation.designsystem.SpendLessFinanceTrackerTheme
+import com.hrishi.core.presentation.designsystem.components.CategorySelector
 import com.hrishi.core.presentation.designsystem.components.SegmentedSelector
+import com.hrishi.core.presentation.designsystem.components.buttons.SpendLessButton
 import com.hrishi.core.presentation.designsystem.components.text_field.BasicTransactionField
 import com.hrishi.core.presentation.designsystem.components.text_field.TransactionTextField
-import com.hrishi.core.presentation.designsystem.model.CategoryTypeUI
+import com.hrishi.core.presentation.designsystem.model.ExpenseCategoryTypeUI
 import com.hrishi.core.presentation.designsystem.model.RecurringTypeUI
 import com.hrishi.core.presentation.designsystem.model.TransactionTypeUI
 import com.hrishi.presentation.ui.ObserveAsEvents
@@ -157,6 +159,47 @@ private fun CreateTransactionScreen(
         )
 
         Spacer(modifier = Modifier.height(32.dp))
+
+        CategorySelector(
+            modifier = Modifier
+                .fillMaxWidth(),
+            showIconBackground = true,
+            fontStyle = MaterialTheme.typography.labelMedium,
+            selectedOption = uiState.categoryType,
+            options = ExpenseCategoryTypeUI.entries.toTypedArray(),
+            currencyDisplay = { it.symbol },
+            currencyTitleDisplay = { it.title },
+            onItemSelected = {
+                onAction(CreateTransactionAction.OnCategoryUpdated(it))
+            }
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        CategorySelector(
+            modifier = Modifier
+                .fillMaxWidth(),
+            showIconBackground = true,
+            iconBackgroundColor = MaterialTheme.colorScheme.tertiaryContainer,
+            fontStyle = MaterialTheme.typography.labelMedium,
+            selectedOption = uiState.recurringType,
+            showMenuIcon = false,
+            options = RecurringTypeUI.entries.toTypedArray(),
+            currencyDisplay = { it.symbol },
+            currencyTitleDisplay = { it.title },
+            onItemSelected = {
+                onAction(CreateTransactionAction.OnFrequencyUpdated(it))
+            }
+        )
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        SpendLessButton(
+            buttonText = "Create",
+            onClick = {
+                onAction(CreateTransactionAction.OnCreateClicked)
+            }
+        )
     }
 }
 
@@ -175,7 +218,7 @@ private fun PreviewCreateTransactionScreenRoot() {
                     amount = BigDecimal.ZERO,
                     noteHint = "Add Note",
                     note = "",
-                    categoryType = CategoryTypeUI.OTHER,
+                    categoryType = ExpenseCategoryTypeUI.OTHER,
                     recurringType = RecurringTypeUI.ONE_TIME,
                     isCreateButtonEnabled = false
                 ),

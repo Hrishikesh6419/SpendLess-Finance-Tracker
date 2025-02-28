@@ -1,7 +1,7 @@
 package com.spendless.dashboard.presentation.create_screen
 
 import androidx.lifecycle.ViewModel
-import com.hrishi.core.presentation.designsystem.model.CategoryTypeUI
+import com.hrishi.core.presentation.designsystem.model.ExpenseCategoryTypeUI
 import com.hrishi.core.presentation.designsystem.model.RecurringTypeUI
 import com.hrishi.core.presentation.designsystem.model.TransactionTypeUI
 import kotlinx.coroutines.channels.Channel
@@ -32,7 +32,7 @@ class CreateTransactionViewModel : ViewModel() {
             amount = BigDecimal.ZERO,
             noteHint = "Add Note",
             note = "",
-            categoryType = CategoryTypeUI.OTHER,
+            categoryType = ExpenseCategoryTypeUI.OTHER,
             recurringType = RecurringTypeUI.ONE_TIME,
             isCreateButtonEnabled = false
         )
@@ -40,9 +40,22 @@ class CreateTransactionViewModel : ViewModel() {
 
     fun onAction(action: CreateTransactionAction) {
         when (action) {
-            CreateTransactionAction.OnCategoryClicked -> Unit
             CreateTransactionAction.OnCreateClicked -> Unit
-            CreateTransactionAction.OnFrequencyClicked -> Unit
+            is CreateTransactionAction.OnCategoryUpdated -> {
+                _uiState.update {
+                    it.copy(
+                        categoryType = action.category
+                    )
+                }
+            }
+
+            is CreateTransactionAction.OnFrequencyUpdated -> {
+                _uiState.update {
+                    it.copy(
+                        recurringType = action.frequency
+                    )
+                }
+            }
             is CreateTransactionAction.OnTransactionTypeChanged -> {
                 _uiState.update {
                     it.copy(

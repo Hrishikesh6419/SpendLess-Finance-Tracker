@@ -42,6 +42,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.hrishi.core.presentation.designsystem.SpendLessFinanceTrackerTheme
 import com.hrishi.core.presentation.designsystem.TickIcon
+import com.hrishi.core.presentation.designsystem.model.ExpenseCategoryTypeUI
+import com.hrishi.core.presentation.designsystem.model.RecurringTypeUI
 import com.hrishi.core.presentation.designsystem.primaryFixed
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -262,8 +264,8 @@ fun PreviewCategorySelector() {
                         .padding(16.dp),
                     showIconBackground = true,
                     fontStyle = MaterialTheme.typography.labelMedium,
-                    selectedOption = Expenses.HOME,
-                    options = Expenses.entries.toTypedArray(),
+                    selectedOption = ExpenseCategoryTypeUI.HOME,
+                    options = ExpenseCategoryTypeUI.entries.toTypedArray(),
                     currencyDisplay = { it.symbol },
                     currencyTitleDisplay = { it.title },
                     onItemSelected = {}
@@ -276,9 +278,9 @@ fun PreviewCategorySelector() {
                     showIconBackground = true,
                     iconBackgroundColor = MaterialTheme.colorScheme.tertiaryContainer,
                     fontStyle = MaterialTheme.typography.labelMedium,
-                    selectedOption = Recurring.ONE_TIME,
+                    selectedOption = RecurringTypeUI.ONE_TIME,
                     showMenuIcon = false,
-                    options = Recurring.entries.toTypedArray(),
+                    options = RecurringTypeUI.entries.toTypedArray(),
                     currencyDisplay = { it.symbol },
                     currencyTitleDisplay = { it.title },
                     onItemSelected = {}
@@ -292,26 +294,4 @@ enum class FakeCurrency(val symbol: String, val title: String) {
     INR("₹", "Indian Rupee"),
     USD("$", "US Dollar"),
     EUR("€", "Euro")
-}
-
-enum class Expenses(val symbol: String, val title: String) {
-    HOME("\uD83C\uDFE0", "Home"),
-    FOOD("\uD83C\uDF55", "Food & Groceries"),
-    ENTERTAINMENT("\uD83D\uDCBB", "Entertainment"),
-    CLOTHING("\uD83D\uDC54", "Clothing & Accessories"),
-    HEALTH("❤\uFE0F", "Health & Wellness"),
-    PERSONAL_CARE("\uD83D\uDEC1", "Personal Care"),
-    TRANSPORTATION("\uD83D\uDE97", "Transportation"),
-    EDUCATION("\uD83C\uDF93", "Education"),
-    SAVINGS("\uD83D\uDC8E", "Saving & Investments"),
-    OTHER("⚙\uFE0F", "Other")
-}
-
-enum class Recurring(val symbol: String, val title: String) {
-    ONE_TIME("\uD83D\uDD04", "Does not repeat"),
-    DAILY("\uD83D\uDD04", "Daily"),
-    WEEKLY("\uD83D\uDD04", "Weekly"),
-    WEEKLY_ON_THIS_DAY("\uD83D\uDD04", "Weekly on Monday"),
-    MONTHLY_ON_THIS_DAY("\uD83D\uDD04", "Monthly on the 14th"),
-    YEARLY_ON_THIS_DAY("\uD83D\uDD04", "Yearly on Feb 14th")
 }
