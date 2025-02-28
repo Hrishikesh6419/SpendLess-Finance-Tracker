@@ -147,7 +147,8 @@ fun TransactionTextField(
                             // Negative with parentheses: ($100.00)
                             isExpense && expenseFormat == ExpenseFormat.PARENTHESES -> {
                                 withStyle(spanStyle(signColor)) {
-                                    append("("); append(currencySymbol)
+                                    append("(")
+                                    append(currencySymbol)
                                 }
                                 withStyle(spanStyle(amountColor)) { append(formattedNumber) }
                                 cursorPosition = length
@@ -156,7 +157,8 @@ fun TransactionTextField(
                             // Negative with minus sign: -$100.00
                             isExpense && expenseFormat == ExpenseFormat.MINUS_SIGN -> {
                                 withStyle(spanStyle(signColor)) {
-                                    append("-"); append(currencySymbol)
+                                    append("-")
+                                    append(currencySymbol)
                                 }
                                 withStyle(spanStyle(amountColor)) { append(formattedNumber) }
                                 cursorPosition = length
