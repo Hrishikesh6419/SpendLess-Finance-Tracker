@@ -17,6 +17,8 @@ import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -45,12 +47,15 @@ import com.hrishi.core.presentation.designsystem.components.PopularCategoryView
 import com.hrishi.core.presentation.designsystem.components.PreviousWeekTotalView
 import com.hrishi.core.presentation.designsystem.components.SpendLessScaffold
 import com.hrishi.core.presentation.designsystem.components.SpendLessTopBar
+import com.hrishi.core.presentation.designsystem.components.TransactionItem
 import com.hrishi.core.presentation.designsystem.components.buttons.SpendLessFloatingActionButton
+import com.hrishi.core.presentation.designsystem.model.ExpenseCategoryTypeUI
 import com.hrishi.presentation.ui.ObserveAsEvents
 import com.spendless.dashboard.presentation.create_screen.CreateTransactionScreenRoot
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
+import java.math.BigDecimal
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -92,7 +97,7 @@ fun DashboardScreenRoot(
 @Composable
 fun DashboardScreen(
     modifier: Modifier = Modifier,
-    uiState: DashboardState,
+    uiState: DashboardViewState,
     snackBarHostState: SnackbarHostState,
     bottomSheetState: SheetState,
     scope: CoroutineScope,
@@ -253,9 +258,27 @@ fun DashboardScreen(
                                 )
                             )
                         }
+
+                        uiState.transactions?.let { transactions ->
+                            LazyColumn {
+                                items(transactions) { transaction ->
+                                    TransactionItem(
+                                        icon = transaction.expenseCategory.symbol,
+                                        title = transaction.title,
+                                        category = transaction.expenseCategory.title,
+                                        amount = transaction.amount,
+                                        displayAmount = {
+                                            it.toPlainString()
+                                        },
+                                        onCardClicked = {
+
+                                        }
+                                    )
+                                }
+                            }
+                        }
                     }
                 }
-
             }
         }
     }
@@ -269,7 +292,16 @@ fun PreviewDashboardScreen() {
         Surface(color = MaterialTheme.colorScheme.background) {
             DashboardScreen(
                 modifier = Modifier,
-                uiState = DashboardState(),
+                uiState = DashboardViewState(
+                    transactions = listOf(
+                        TransactionUIItem(
+                            expenseCategory = ExpenseCategoryTypeUI.OTHER,
+                            title = "Amazon",
+                            note = "Hi",
+                            amount = BigDecimal.TEN.negate()
+                        )
+                    )
+                ),
                 snackBarHostState = SnackbarHostState(),
                 scope = rememberCoroutineScope(),
                 onAction = {

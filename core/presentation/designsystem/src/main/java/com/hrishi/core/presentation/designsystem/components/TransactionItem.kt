@@ -88,7 +88,6 @@ fun TransactionItem(
         .padding(4.dp)
         .padding(end = 2.dp)
 
-    // Using BigDecimal.compareTo for comparison
     val amountColor = if (amount.compareTo(BigDecimal.ZERO) > 0) {
         incomeAmountColor
     } else {

@@ -79,6 +79,21 @@ fun ExpenseCategoryTypeUI.toExpenseCategory(): ExpenseCategory {
     }
 }
 
+fun ExpenseCategory.toExpenseCategoryUI(): ExpenseCategoryTypeUI {
+    return when (this) {
+        ExpenseCategory.HOME -> ExpenseCategoryTypeUI.HOME
+        ExpenseCategory.FOOD -> ExpenseCategoryTypeUI.FOOD
+        ExpenseCategory.ENTERTAINMENT -> ExpenseCategoryTypeUI.ENTERTAINMENT
+        ExpenseCategory.CLOTHING -> ExpenseCategoryTypeUI.CLOTHING
+        ExpenseCategory.HEALTH -> ExpenseCategoryTypeUI.HEALTH
+        ExpenseCategory.PERSONAL_CARE -> ExpenseCategoryTypeUI.PERSONAL_CARE
+        ExpenseCategory.TRANSPORTATION -> ExpenseCategoryTypeUI.TRANSPORTATION
+        ExpenseCategory.EDUCATION -> ExpenseCategoryTypeUI.EDUCATION
+        ExpenseCategory.SAVINGS -> ExpenseCategoryTypeUI.SAVINGS
+        ExpenseCategory.OTHER -> ExpenseCategoryTypeUI.OTHER
+    }
+}
+
 fun RecurringTypeUI.toRecurringType(): RecurringType {
     return when (this) {
         RecurringTypeUI.ONE_TIME -> RecurringType.ONE_TIME
