@@ -9,6 +9,7 @@ import com.spendless.core.database.di.databaseModule
 import com.spendless.dashboard.presentation.di.dashboardPresentationModule
 import com.spendless.session_management.data.di.sessionModule
 import com.spendless.session_management.presentation.di.sessionPresentationModule
+import com.spendless.settings.presentation.di.settingsPresentationModule
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import org.koin.android.ext.koin.androidContext
@@ -37,7 +38,8 @@ class SpendLessApp : Application() {
                 databaseModule,
                 sessionModule,
                 dashboardPresentationModule,
-                sessionPresentationModule
+                sessionPresentationModule,
+                settingsPresentationModule,
             )
         }
     }

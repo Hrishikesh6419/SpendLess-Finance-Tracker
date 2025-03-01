@@ -56,7 +56,8 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun DashboardScreenRoot(
     modifier: Modifier = Modifier,
-    viewModel: DashboardViewModel = koinViewModel()
+    viewModel: DashboardViewModel = koinViewModel(),
+    onNavigateToSettings: () -> Unit
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -72,6 +73,8 @@ fun DashboardScreenRoot(
             DashboardEvent.NavigateTest -> {
 
             }
+
+            DashboardEvent.NavigateToSettings -> onNavigateToSettings()
         }
     }
 
@@ -131,6 +134,9 @@ fun DashboardScreen(
                 startIcon = null,
                 endIcon1 = DownloadButton,
                 endIcon2 = SettingsButton,
+                onEndIcon2Click = {
+                    onAction(DashboardAction.OnSettingsClicked)
+                },
                 endIcon1Color = MaterialTheme.colorScheme.onPrimary,
                 endIcon1BackgroundColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.18f),
                 endIcon2Color = MaterialTheme.colorScheme.onPrimary,

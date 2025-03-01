@@ -56,3 +56,7 @@ val PlusIcon: ImageVector
 val CloseIcon: ImageVector
     @Composable
     get() = ImageVector.vectorResource(R.drawable.ic_close)
+
+val LockIcon: ImageVector
+    @Composable
+    get() = ImageVector.vectorResource(R.drawable.ic_lock)

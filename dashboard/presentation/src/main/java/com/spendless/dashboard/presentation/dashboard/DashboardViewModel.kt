@@ -32,6 +32,11 @@ class DashboardViewModel(
     fun onAction(action: DashboardAction) {
         when (action) {
             DashboardAction.NavigationClick -> Unit
+            DashboardAction.OnSettingsClicked -> {
+                viewModelScope.launch {
+                    eventChannel.send(DashboardEvent.NavigateToSettings)
+                }
+            }
             is DashboardAction.UpdatedBottomSheet -> {
                 _uiState.update {
                     it.copy(

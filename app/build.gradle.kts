@@ -46,6 +46,9 @@ dependencies {
     implementation(projects.dashboard.domain)
     implementation(projects.dashboard.data)
     implementation(projects.dashboard.presentation)
+    implementation(projects.settings.domain)
+    implementation(projects.settings.data)
+    implementation(projects.settings.presentation)
 
     implementation(projects.core.domain)
     implementation(projects.core.database)
