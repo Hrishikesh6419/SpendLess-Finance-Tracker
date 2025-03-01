@@ -6,7 +6,7 @@ enum class LockoutDuration : SettingsPreferenceOption {
     ONE_MIN,
     FIVE_MIN;
 
-    override fun displayText(text: String): String {
+    override fun displayText(): String {
         return when (this) {
             FIFTEEN_SECONDS -> "15s"
             THIRTY_SECONDS -> "30s"

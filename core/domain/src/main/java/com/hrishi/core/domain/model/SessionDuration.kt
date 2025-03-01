@@ -7,7 +7,7 @@ enum class SessionDuration : SettingsPreferenceOption {
     THIRTY_MIN,
     ONE_HOUR;
 
-    override fun displayText(text: String): String {
+    override fun displayText(): String {
         return when (this) {
             ONE_MIN -> "1 min"
             FIVE_MIN -> "5 min"

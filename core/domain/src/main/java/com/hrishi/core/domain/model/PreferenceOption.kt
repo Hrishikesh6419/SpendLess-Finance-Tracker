@@ -11,6 +11,6 @@ interface PreferenceOption {
 }
 
 interface SettingsPreferenceOption {
-    fun displayText(text: String): String
+    fun displayText(): String
     fun getValueInLong(): Long
 }

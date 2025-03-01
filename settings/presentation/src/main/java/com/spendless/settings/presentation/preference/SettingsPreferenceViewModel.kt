@@ -3,9 +3,7 @@ package com.spendless.settings.presentation.preference
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hrishi.core.domain.formatting.NumberFormatter
-import com.hrishi.core.domain.model.LockoutDuration
 import com.hrishi.core.domain.model.PinAttempts
-import com.hrishi.core.domain.model.SessionDuration
 import com.hrishi.core.domain.preference.model.UserPreferences
 import com.hrishi.core.domain.preference.usecase.SettingsPreferenceUseCase
 import com.hrishi.core.domain.utils.Result
@@ -33,6 +31,8 @@ class SettingsPreferenceViewModel(
     private val eventChannel = Channel<SettingsPreferencesEvent>()
     val events = eventChannel.receiveAsFlow()
 
+    private var userPreferences: UserPreferences? = null
+
     init {
         fetchUserPreferences()
     }
@@ -44,6 +44,8 @@ class SettingsPreferenceViewModel(
             }
             .onEach { result ->
                 if (result is Result.Success) {
+                    userPreferences = result.data
+
                     updateUiState {
                         it.copy(
                             userId = result.data.userId,
@@ -90,28 +92,30 @@ class SettingsPreferenceViewModel(
 
     private fun handleOnSaveClicked() {
         viewModelScope.launch {
-            val userPreferences = UserPreferences(
-                userId = _uiState.value.userId,
-                expenseFormat = _uiState.value.expenseFormat,
-                currency = _uiState.value.currency,
-                decimalSeparator = _uiState.value.decimalSeparator,
-                thousandsSeparator = _uiState.value.thousandsSeparator,
-                isBiometricEnabled = false,
-                sessionDuration = SessionDuration.ONE_MIN,
-                lockOutDuration = LockoutDuration.FIFTEEN_SECONDS,
-                allowedPinAttempts = PinAttempts.THREE
-            )
+            userPreferences?.let { existingUserPreference ->
+                val userPreferencesUpdated = UserPreferences(
+                    userId = _uiState.value.userId,
+                    expenseFormat = _uiState.value.expenseFormat,
+                    currency = _uiState.value.currency,
+                    decimalSeparator = _uiState.value.decimalSeparator,
+                    thousandsSeparator = _uiState.value.thousandsSeparator,
+                    isBiometricEnabled = existingUserPreference.isBiometricEnabled,
+                    sessionDuration = existingUserPreference.sessionDuration,
+                    lockOutDuration = existingUserPreference.lockOutDuration,
+                    allowedPinAttempts = PinAttempts.THREE
+                )
 
-            val preferencesResult = withContext(Dispatchers.IO) {
-                settingsPreferenceUseCase.setPreferencesUseCase(userPreferences)
-            }
-            when (preferencesResult) {
-                is Result.Error -> {
-                    return@launch
+                val preferencesResult = withContext(Dispatchers.IO) {
+                    settingsPreferenceUseCase.setPreferencesUseCase(userPreferencesUpdated)
                 }
+                when (preferencesResult) {
+                    is Result.Error -> {
+                        return@launch
+                    }
 
-                is Result.Success -> {
-                    eventChannel.send(SettingsPreferencesEvent.PreferencesSaved)
+                    is Result.Success -> {
+                        eventChannel.send(SettingsPreferencesEvent.PreferencesSaved)
+                    }
                 }
             }
         }

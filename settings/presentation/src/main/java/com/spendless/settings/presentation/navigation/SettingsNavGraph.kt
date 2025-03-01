@@ -6,6 +6,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.spendless.settings.presentation.home.SettingsHomeScreenRoot
 import com.spendless.settings.presentation.preference.SettingsPreferenceScreenRoot
+import com.spendless.settings.presentation.security.SettingsSecurityScreenRoot
 
 fun NavGraphBuilder.settingsNavGraph(
     navController: NavHostController,
@@ -20,7 +21,7 @@ fun NavGraphBuilder.settingsNavGraph(
                     navController.navigateToSettingsPreferenceScreen()
                 },
                 onNavigateToSettings = {
-
+                    navController.navigateToSettingsSecurityScreen()
                 },
                 onLogout = onLogout,
                 onNavigateBack = {
@@ -31,6 +32,14 @@ fun NavGraphBuilder.settingsNavGraph(
 
         composable<SettingsPreferenceScreenRoute> {
             SettingsPreferenceScreenRoot(
+                onNavigateBack = {
+                    navController.popBackStack()
+                }
+            )
+        }
+
+        composable<SettingsSecurityScreenRoute> {
+            SettingsSecurityScreenRoot(
                 onNavigateBack = {
                     navController.popBackStack()
                 }

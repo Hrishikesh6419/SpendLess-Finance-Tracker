@@ -29,7 +29,9 @@ class SettingsHomeViewModel: ViewModel() {
                 SettingsHomeAction.OnPreferencesClick -> {
                     eventChannel.send(SettingsHomeEvent.NavigateToPreferencesScreen)
                 }
-                SettingsHomeAction.OnSecurityClick -> Unit
+                SettingsHomeAction.OnSecurityClick -> {
+                    eventChannel.send(SettingsHomeEvent.NavigateToSecurityScreen)
+                }
             }
         }
     }
