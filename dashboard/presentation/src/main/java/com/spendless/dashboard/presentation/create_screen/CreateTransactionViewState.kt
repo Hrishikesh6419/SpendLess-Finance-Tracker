@@ -19,6 +19,7 @@ data class CreateTransactionViewState(
     val showExpenseCategoryType: Boolean,
     val expenseCategoryType: ExpenseCategoryTypeUI,
     val recurringType: RecurringTypeUI,
+    val userId: Long? = null,
     val currency: Currency? = null,
     val expenseFormat: ExpenseFormatUI? = null,
     val decimalSeparatorUI: DecimalSeparatorUI? = null,

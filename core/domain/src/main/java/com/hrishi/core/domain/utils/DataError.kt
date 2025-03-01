@@ -10,6 +10,7 @@ sealed interface DataError : Error {
         USER_FETCH_ERROR,
         INSERT_PREFERENCE_ERROR,
         PREFERENCE_FETCH_ERROR,
-        UNKNOWN_DATABASE_ERROR
+        UNKNOWN_DATABASE_ERROR,
+        TRANSACTION_FETCH_ERROR
     }
 }

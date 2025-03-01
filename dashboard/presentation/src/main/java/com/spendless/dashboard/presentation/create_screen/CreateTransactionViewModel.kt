@@ -3,13 +3,19 @@ package com.spendless.dashboard.presentation.create_screen
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hrishi.core.domain.preference.usecase.SettingsPreferenceUseCase
+import com.hrishi.core.domain.transactions.model.Transaction
+import com.hrishi.core.domain.transactions.usecases.TransactionUseCases
+import com.hrishi.core.domain.utils.CalendarUtils
 import com.hrishi.core.domain.utils.Result
 import com.hrishi.core.presentation.designsystem.model.ExpenseCategoryTypeUI
 import com.hrishi.core.presentation.designsystem.model.RecurringTypeUI
 import com.hrishi.core.presentation.designsystem.model.TransactionTypeUI
 import com.spendless.dashboard.presentation.mapper.toDecimalSeparatorUI
+import com.spendless.dashboard.presentation.mapper.toExpenseCategory
 import com.spendless.dashboard.presentation.mapper.toExpenseFormatUI
+import com.spendless.dashboard.presentation.mapper.toRecurringType
 import com.spendless.dashboard.presentation.mapper.toThousandsSeparatorUI
+import com.spendless.dashboard.presentation.mapper.toTransactionType
 import com.spendless.session_management.domain.usecases.SessionUseCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
@@ -26,7 +32,8 @@ import java.math.BigDecimal
 @OptIn(ExperimentalCoroutinesApi::class)
 class CreateTransactionViewModel(
     private val sessionUseCase: SessionUseCase,
-    private val settingsPreferenceUseCase: SettingsPreferenceUseCase
+    private val settingsPreferenceUseCase: SettingsPreferenceUseCase,
+    private val transactionUseCases: TransactionUseCases
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(initialUiState())
@@ -48,6 +55,7 @@ class CreateTransactionViewModel(
                 if (result is Result.Success) {
                     _uiState.update {
                         it.copy(
+                            userId = result.data.userId,
                             currency = result.data.currency,
                             expenseFormat = result.data.expenseFormat.toExpenseFormatUI(),
                             decimalSeparatorUI = result.data.decimalSeparator.toDecimalSeparatorUI(),
@@ -119,5 +127,33 @@ class CreateTransactionViewModel(
     }
 
     private fun handleCreateTransaction() {
+        viewModelScope.launch {
+            val uiState = _uiState.value
+            uiState.userId?.let {
+                val transaction = Transaction(
+                    transactionId = null,
+                    userId = uiState.userId,
+                    transactionType = uiState.transactionType.toTransactionType(),
+                    transactionName = uiState.transactionName,
+                    amount = if (_uiState.value.transactionType == TransactionTypeUI.INCOME) {
+                        uiState.amount
+                    } else {
+                        uiState.amount.negate()
+                    },
+                    note = uiState.note,
+                    expenseCategory = uiState.expenseCategoryType.toExpenseCategory(),
+                    transactionDate = CalendarUtils.currentEstTime,
+                    recurringTransactionId = null,
+                    recurringType = uiState.recurringType.toRecurringType(),
+                    nextRecurringDate = null,
+                    endDate = null
+                )
+
+                val result = transactionUseCases.insertTransactionUseCase(transaction)
+                if (result is Result.Success) {
+                    eventChannel.send(CreateTransactionEvent.CloseBottomSheet)
+                }
+            }
+        }
     }
 }

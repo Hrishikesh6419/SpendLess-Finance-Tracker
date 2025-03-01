@@ -1,5 +1,6 @@
 package com.hrishi.core.data.di
 
+import com.hrishi.core.data.repository.TransactionRepositoryImpl
 import com.hrishi.core.data.repository.UserInfoRepositoryImpl
 import com.hrishi.core.data.repository.UserPreferencesRepositoryImpl
 import com.hrishi.core.data.security.AesEncryptionService
@@ -13,6 +14,12 @@ import com.hrishi.core.domain.preference.usecase.GetPreferencesUseCase
 import com.hrishi.core.domain.preference.usecase.SetPreferencesUseCase
 import com.hrishi.core.domain.preference.usecase.SettingsPreferenceUseCase
 import com.hrishi.core.domain.security.EncryptionService
+import com.hrishi.core.domain.transactions.repository.TransactionRepository
+import com.hrishi.core.domain.transactions.usecases.GetDueRecurringTransactionsUseCase
+import com.hrishi.core.domain.transactions.usecases.GetRecurringTransactionSeriesUseCase
+import com.hrishi.core.domain.transactions.usecases.GetTransactionsForUserUseCase
+import com.hrishi.core.domain.transactions.usecases.InsertTransactionUseCase
+import com.hrishi.core.domain.transactions.usecases.TransactionUseCases
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
@@ -32,4 +39,11 @@ val coreDataModule = module {
 
     factory { GetUserInfoUseCase(get(), get()) }
     single { UserInfoUseCases(get()) }
+
+    factory { InsertTransactionUseCase(get()) }
+    factory { GetTransactionsForUserUseCase(get()) }
+    factory { GetRecurringTransactionSeriesUseCase(get()) }
+    factory { GetDueRecurringTransactionsUseCase(get()) }
+    single { TransactionUseCases(get(), get(), get(), get()) }
+    singleOf(::TransactionRepositoryImpl).bind<TransactionRepository>()
 }
