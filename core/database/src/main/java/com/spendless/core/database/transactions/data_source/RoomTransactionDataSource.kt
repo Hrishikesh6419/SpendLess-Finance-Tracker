@@ -1,5 +1,6 @@
 package com.spendless.core.database.transactions.data_source
 
+import com.hrishi.core.domain.model.RecurringType
 import com.hrishi.core.domain.transactions.data_source.LocalTransactionDataSource
 import com.hrishi.core.domain.transactions.model.Transaction
 import com.hrishi.core.domain.utils.CalendarUtils
@@ -19,7 +20,18 @@ class RoomTransactionDataSource(
 
     override suspend fun upsertTransaction(transaction: Transaction): Result<Unit, DataError> {
         return try {
-            transactionsDao.upsertTransaction(transaction.toTransactionEntity())
+            val transactionEntity = transaction.toTransactionEntity()
+
+            val insertedId = transactionsDao.upsertTransaction(transactionEntity)
+
+            if (transactionEntity.recurringType != RecurringType.ONE_TIME && transactionEntity.recurringTransactionId == null) {
+                val updatedEntity = transactionEntity.copy(
+                    transactionId = insertedId,
+                    recurringTransactionId = insertedId
+                )
+                transactionsDao.upsertTransaction(updatedEntity)
+            }
+
             Result.Success(Unit)
         } catch (e: Exception) {
             Result.Error(DataError.Local.UNKNOWN_DATABASE_ERROR)
