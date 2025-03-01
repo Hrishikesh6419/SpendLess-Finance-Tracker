@@ -13,6 +13,7 @@ import com.hrishi.core.domain.preference.repository.UserPreferencesRepository
 import com.hrishi.core.domain.preference.usecase.GetPreferencesUseCase
 import com.hrishi.core.domain.preference.usecase.SetPreferencesUseCase
 import com.hrishi.core.domain.preference.usecase.SettingsPreferenceUseCase
+import com.hrishi.core.domain.preference.usecase.ValidateSelectedPreferences
 import com.hrishi.core.domain.security.EncryptionService
 import com.hrishi.core.domain.transactions.repository.TransactionRepository
 import com.hrishi.core.domain.transactions.usecases.GetDueRecurringTransactionsUseCase
@@ -33,7 +34,8 @@ val coreDataModule = module {
 
     factory { SetPreferencesUseCase(get()) }
     factory { GetPreferencesUseCase(get()) }
-    single { SettingsPreferenceUseCase(get(), get()) }
+    factory { ValidateSelectedPreferences() }
+    single { SettingsPreferenceUseCase(get(), get(), get()) }
 
     singleOf(::UserInfoRepositoryImpl).bind<UserInfoRepository>()
 

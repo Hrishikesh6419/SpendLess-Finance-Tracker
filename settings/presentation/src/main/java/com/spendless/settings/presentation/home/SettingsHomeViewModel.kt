@@ -26,7 +26,9 @@ class SettingsHomeViewModel: ViewModel() {
                     eventChannel.send(SettingsHomeEvent.NavigateBack)
                 }
 
-                SettingsHomeAction.OnPreferencesClick -> Unit
+                SettingsHomeAction.OnPreferencesClick -> {
+                    eventChannel.send(SettingsHomeEvent.NavigateToPreferencesScreen)
+                }
                 SettingsHomeAction.OnSecurityClick -> Unit
             }
         }

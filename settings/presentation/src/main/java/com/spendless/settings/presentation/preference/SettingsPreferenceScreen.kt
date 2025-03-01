@@ -1,36 +1,34 @@
-package com.hrishi.auth.presentation.user_preference
+package com.spendless.settings.presentation.preference
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarDuration
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.hrishi.auth.apresentation.R
 import com.hrishi.core.domain.model.Currency
 import com.hrishi.core.domain.model.DecimalSeparator
 import com.hrishi.core.domain.model.ExpenseFormat
@@ -38,88 +36,58 @@ import com.hrishi.core.domain.model.ThousandsSeparator
 import com.hrishi.core.presentation.designsystem.SpendLessFinanceTrackerTheme
 import com.hrishi.core.presentation.designsystem.components.CategorySelector
 import com.hrishi.core.presentation.designsystem.components.SegmentedSelector
-import com.hrishi.core.presentation.designsystem.components.SpendLessSnackBarHost
 import com.hrishi.core.presentation.designsystem.components.SpendLessTopBar
 import com.hrishi.core.presentation.designsystem.components.buttons.SpendLessButton
 import com.hrishi.presentation.ui.ObserveAsEvents
-import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import java.math.BigDecimal
 
 @Composable
-fun OnboardingPreferencesScreenRoot(
+fun SettingsPreferenceScreenRoot(
     modifier: Modifier = Modifier,
-    viewModel: OnboardingPreferencesViewModel = koinViewModel(),
-    onNavigateToDashboardScreen: () -> Unit,
-    onNavigateToRegisterScreen: () -> Unit,
+    viewModel: SettingsPreferenceViewModel = koinViewModel(),
+    onNavigateBack: () -> Unit
 ) {
-    val context = LocalContext.current
-    val scope = rememberCoroutineScope()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val snackBarHostState = remember { SnackbarHostState() }
+    val context = LocalContext.current
 
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
-            OnboardingPreferencesEvent.NavigateToDashboardScreen -> {
-                onNavigateToDashboardScreen()
-            }
-
-            OnboardingPreferencesEvent.NavigateToRegisterScreen -> {
-                onNavigateToRegisterScreen()
-            }
-            is OnboardingPreferencesEvent.Error -> {
-                snackBarHostState.currentSnackbarData?.dismiss()
-                when (event) {
-                    OnboardingPreferencesEvent.Error.DuplicateEntry -> {
-                        scope.launch {
-                            snackBarHostState.showSnackbar(
-                                message = context.getString(R.string.common_error_username_taken),
-                                duration = SnackbarDuration.Short
-                            )
-                        }
-                    }
-
-                    OnboardingPreferencesEvent.Error.Generic -> {
-                        scope.launch {
-                            snackBarHostState.showSnackbar(
-                                message = context.getString(R.string.common_error_something_went_wrong),
-                                duration = SnackbarDuration.Short
-                            )
-                        }
-                    }
-                }
+            SettingsPreferencesEvent.NavigateBack -> onNavigateBack()
+            SettingsPreferencesEvent.PreferencesSaved -> {
+                Toast.makeText(context, "Preferences saved successfully!", Toast.LENGTH_SHORT)
+                    .show()
             }
         }
     }
 
-    OnboardingPreferencesScreen(
+    SettingsPreferencesScreen(
         modifier = modifier,
         uiState = uiState,
-        snackBarHostState = snackBarHostState,
         onAction = viewModel::onAction
     )
 }
 
 @Composable
-fun OnboardingPreferencesScreen(
+fun SettingsPreferencesScreen(
     modifier: Modifier = Modifier,
-    uiState: OnboardingPreferencesViewState,
-    snackBarHostState: SnackbarHostState,
-    onAction: (OnboardingPreferencesAction) -> Unit
+    uiState: SettingsPreferencesViewState,
+    onAction: (SettingsPreferencesAction) -> Unit
 ) {
-
     Scaffold(containerColor = Color.Transparent,
         topBar = {
             SpendLessTopBar(
+                modifier = Modifier
+                    .windowInsetsPadding(WindowInsets.statusBars)
+                    .padding(horizontal = 8.dp),
+                title = "Preferences",
+                titleColor = MaterialTheme.colorScheme.onSurface,
                 onStartIconClick = {
-                    onAction(OnboardingPreferencesAction.OnBackClicked)
+                    onAction(SettingsPreferencesAction.OnBackClicked)
                 }
             )
-        },
-        snackbarHost = {
-            SpendLessSnackBarHost(snackBarHostState)
         }) { contentPadding ->
-        Box( // Wrap everything inside a Box to avoid content overlapping with TopBar when using vertical scroll
+        Box(
             modifier = modifier
                 .fillMaxSize()
                 .padding(contentPadding)
@@ -131,30 +99,15 @@ fun OnboardingPreferencesScreen(
                     .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Text(
-                    modifier = modifier
-                        .fillMaxWidth(),
-                    text = stringResource(R.string.onboarding_preferences_headline),
-                    style = MaterialTheme.typography.headlineMedium
-                )
-
-                Text(
-                    modifier = modifier
-                        .padding(top = 8.dp)
-                        .fillMaxWidth(),
-                    text = stringResource(R.string.onboarding_preferences_sub_headline),
-                    style = MaterialTheme.typography.bodyMedium
-                )
-
                 ExampleFormat(modifier, uiState)
 
                 SegmentedSelector(
                     modifier = Modifier.padding(top = 20.dp),
-                    title = stringResource(R.string.onboarding_preferences_expenses_format_title),
+                    title = "Expense format",
                     options = ExpenseFormat.entries.toTypedArray(),
                     selectedOption = uiState.expenseFormat,
                     onOptionSelected = {
-                        onAction(OnboardingPreferencesAction.OnExpenseFormatUpdate(it))
+                        onAction(SettingsPreferencesAction.OnExpenseFormatUpdate(it))
                     },
                     displayText = {
                         it.displayText(
@@ -167,23 +120,23 @@ fun OnboardingPreferencesScreen(
 
                 CategorySelector(
                     modifier = Modifier.padding(top = 16.dp),
-                    title = stringResource(R.string.onboarding_preferences_currency_title),
+                    title = "Currency",
                     selectedOption = uiState.currency,
                     options = Currency.entries.toTypedArray(),
                     currencyDisplay = { it.symbol },
                     currencyTitleDisplay = { it.title },
                     onItemSelected = {
-                        onAction(OnboardingPreferencesAction.OnCurrencyUpdate(it))
+                        onAction(SettingsPreferencesAction.OnCurrencyUpdate(it))
                     }
                 )
 
                 SegmentedSelector(
                     modifier = Modifier.padding(top = 16.dp),
-                    title = stringResource(R.string.onboarding_preferences_decimal_separator_title),
+                    title = "Decimal separator",
                     options = DecimalSeparator.entries.toTypedArray(),
                     selectedOption = uiState.decimalSeparator,
                     onOptionSelected = {
-                        onAction(OnboardingPreferencesAction.OnDecimalSeparatorUpdate(it))
+                        onAction(SettingsPreferencesAction.OnDecimalSeparatorUpdate(it))
                     },
                     displayText = {
                         it.displayText(
@@ -195,11 +148,11 @@ fun OnboardingPreferencesScreen(
 
                 SegmentedSelector(
                     modifier = Modifier.padding(top = 16.dp),
-                    title = stringResource(R.string.onboarding_preferences_thousands_separator_title),
+                    title = "Thousand separator",
                     options = ThousandsSeparator.entries.toTypedArray(),
                     selectedOption = uiState.thousandsSeparator,
                     onOptionSelected = {
-                        onAction(OnboardingPreferencesAction.OnThousandsSeparatorUpdate(it))
+                        onAction(SettingsPreferencesAction.OnThousandsSeparatorUpdate(it))
                     },
                     displayText = {
                         it.displayText(
@@ -210,11 +163,11 @@ fun OnboardingPreferencesScreen(
                 )
 
                 SpendLessButton(
-                    isEnabled = uiState.enableStartTracking,
+                    isEnabled = uiState.enableSaveButton,
                     modifier = Modifier.padding(vertical = 34.dp),
-                    buttonText = stringResource(R.string.onboarding_preferences_start_button_title)
+                    buttonText = "Save"
                 ) {
-                    onAction(OnboardingPreferencesAction.OnStartClicked)
+                    onAction(SettingsPreferencesAction.OnSaveClicked)
                 }
             }
         }
@@ -224,7 +177,7 @@ fun OnboardingPreferencesScreen(
 @Composable
 private fun ExampleFormat(
     modifier: Modifier,
-    uiState: OnboardingPreferencesViewState
+    uiState: SettingsPreferencesViewState
 ) {
     Box(
         modifier = Modifier
@@ -249,7 +202,7 @@ private fun ExampleFormat(
                 modifier = modifier
                     .padding(top = 8.dp)
                     .fillMaxWidth(),
-                text = stringResource(R.string.onboarding_preferences_money_sent_this_month),
+                text = "spend this month",
                 style = MaterialTheme.typography.bodySmall,
                 textAlign = TextAlign.Center
             )
@@ -257,15 +210,14 @@ private fun ExampleFormat(
     }
 }
 
-@Composable
 @Preview
-fun PreviewOnboardingPreferencesScreen() {
+@Composable
+fun PreviewSettingsPreferenceScreen() {
     SpendLessFinanceTrackerTheme {
         Surface(color = MaterialTheme.colorScheme.background) {
-            OnboardingPreferencesScreen(
+            SettingsPreferencesScreen(
                 modifier = Modifier,
-                uiState = OnboardingPreferencesViewState(),
-                snackBarHostState = SnackbarHostState(),
+                uiState = SettingsPreferencesViewState(),
                 onAction = {
 
                 }
@@ -273,4 +225,3 @@ fun PreviewOnboardingPreferencesScreen() {
         }
     }
 }
-
