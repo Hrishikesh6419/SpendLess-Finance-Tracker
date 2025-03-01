@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hrishi.core.domain.model.BiometricPromptStatus
 import com.hrishi.core.domain.model.LockoutDuration
-import com.hrishi.core.domain.model.PinAttempts
 import com.hrishi.core.domain.model.SessionDuration
 import com.hrishi.core.domain.preference.model.UserPreferences
 import com.hrishi.core.domain.preference.usecase.SettingsPreferenceUseCase
@@ -69,12 +68,15 @@ class SettingsSecurityViewModel(
             is SettingsSecurityAction.OnBiometricSettingUpdated -> updateUiState {
                 it.copy(biometricPromptStatus = action.setting)
             }
+
             is SettingsSecurityAction.OnLockOutDurationUpdated -> updateUiState {
                 it.copy(lockedOutDuration = action.setting)
             }
+
             is SettingsSecurityAction.OnSessionExpiryUpdated -> updateUiState {
                 it.copy(sessionExpiryDuration = action.setting)
             }
+
             SettingsSecurityAction.OnSaveClicked -> handleOnSaveClicked()
         }
     }
