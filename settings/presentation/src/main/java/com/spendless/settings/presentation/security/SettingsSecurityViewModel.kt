@@ -10,17 +10,14 @@ import com.hrishi.core.domain.preference.model.UserPreferences
 import com.hrishi.core.domain.preference.usecase.SettingsPreferenceUseCase
 import com.hrishi.core.domain.utils.Result
 import com.spendless.session_management.domain.usecases.SessionUseCase
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class SettingsSecurityViewModel(
     private val sessionUseCase: SessionUseCase,
@@ -47,92 +44,65 @@ class SettingsSecurityViewModel(
 
     private fun fetchUserPreferences() {
         sessionUseCase.getSessionDataUseCase()
-            .flatMapLatest { sessionData ->
+            .onEach { sessionData ->
                 settingsPreferenceUseCase.getPreferencesUseCase(sessionData.userId)
-            }
-            .onEach { result ->
-                if (result is Result.Success) {
-                    userPreferences = result.data
-
-                    _uiState.update {
-                        it.copy(
-                            biometricPromptStatus = BiometricPromptStatus.convertToBiometricPromptStatus(
-                                result.data.isBiometricEnabled
-                            ),
-                            sessionExpiryDuration = result.data.sessionDuration,
-                            lockedOutDuration = result.data.lockOutDuration
-                        )
+                    .collect { result ->
+                        if (result is Result.Success) {
+                            userPreferences = result.data
+                            _uiState.update {
+                                it.copy(
+                                    biometricPromptStatus = BiometricPromptStatus.convertToBiometricPromptStatus(
+                                        result.data.isBiometricEnabled
+                                    ),
+                                    sessionExpiryDuration = result.data.sessionDuration,
+                                    lockedOutDuration = result.data.lockOutDuration
+                                )
+                            }
+                        }
                     }
-                }
-            }
-            .launchIn(viewModelScope)
+            }.launchIn(viewModelScope)
     }
 
     fun onAction(action: SettingsSecurityAction) {
         when (action) {
-            SettingsSecurityAction.OnBackClicked -> {
-                viewModelScope.launch {
-                    eventChannel.send(SettingsSecurityEvent.NavigateBack)
-                }
+            SettingsSecurityAction.OnBackClicked -> sendEvent(SettingsSecurityEvent.NavigateBack)
+            is SettingsSecurityAction.OnBiometricSettingUpdated -> updateUiState {
+                it.copy(biometricPromptStatus = action.setting)
             }
-
-            is SettingsSecurityAction.OnBiometricSettingUpdated -> {
-                _uiState.update {
-                    it.copy(
-                        biometricPromptStatus = action.setting
-                    )
-                }
+            is SettingsSecurityAction.OnLockOutDurationUpdated -> updateUiState {
+                it.copy(lockedOutDuration = action.setting)
             }
-
-            is SettingsSecurityAction.OnLockOutDurationUpdated -> {
-                _uiState.update {
-                    it.copy(
-                        lockedOutDuration = action.setting
-                    )
-                }
+            is SettingsSecurityAction.OnSessionExpiryUpdated -> updateUiState {
+                it.copy(sessionExpiryDuration = action.setting)
             }
-
-            is SettingsSecurityAction.OnSessionExpiryUpdated -> {
-                _uiState.update {
-                    it.copy(
-                        sessionExpiryDuration = action.setting
-                    )
-                }
-            }
-
             SettingsSecurityAction.OnSaveClicked -> handleOnSaveClicked()
         }
     }
 
     private fun handleOnSaveClicked() {
-        viewModelScope.launch {
-            userPreferences?.let { existingPreference ->
-                val userPreferencesUpdated = UserPreferences(
-                    userId = existingPreference.userId,
-                    expenseFormat = existingPreference.expenseFormat,
-                    currency = existingPreference.currency,
-                    decimalSeparator = existingPreference.decimalSeparator,
-                    thousandsSeparator = existingPreference.thousandsSeparator,
-                    isBiometricEnabled = _uiState.value.biometricPromptStatus.getBooleanValue(),
-                    sessionDuration = _uiState.value.sessionExpiryDuration,
-                    lockOutDuration = _uiState.value.lockedOutDuration,
-                    allowedPinAttempts = PinAttempts.THREE
-                )
+        userPreferences?.let { existingPreference ->
+            val userPreferencesUpdated = existingPreference.copy(
+                isBiometricEnabled = _uiState.value.biometricPromptStatus.getBooleanValue(),
+                sessionDuration = _uiState.value.sessionExpiryDuration,
+                lockOutDuration = _uiState.value.lockedOutDuration
+            )
 
-                val preferencesResult = withContext(Dispatchers.IO) {
-                    settingsPreferenceUseCase.setPreferencesUseCase(userPreferencesUpdated)
-                }
-
-                when (preferencesResult) {
-                    is Result.Error -> {
-                        return@launch
-                    }
-
-                    is Result.Success -> {
-                        eventChannel.send(SettingsSecurityEvent.SecuritySettingsSaved)
-                    }
+            viewModelScope.launch {
+                when (settingsPreferenceUseCase.setPreferencesUseCase(userPreferencesUpdated)) {
+                    is Result.Success -> sendEvent(SettingsSecurityEvent.SecuritySettingsSaved)
+                    is Result.Error -> Unit
                 }
             }
+        }
+    }
+
+    private fun updateUiState(update: (SettingsSecurityViewState) -> SettingsSecurityViewState) {
+        _uiState.update(update)
+    }
+
+    private fun sendEvent(event: SettingsSecurityEvent) {
+        viewModelScope.launch {
+            eventChannel.send(event)
         }
     }
 }
