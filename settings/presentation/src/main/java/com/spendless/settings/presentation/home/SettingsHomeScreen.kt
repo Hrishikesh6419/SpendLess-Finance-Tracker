@@ -47,6 +47,7 @@ fun SettingsHomeScreenRoot(
     onNavigateToPreference: () -> Unit,
     onNavigateToSettings: () -> Unit,
     onLogout: () -> Unit,
+    onNavigateBack: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -55,6 +56,7 @@ fun SettingsHomeScreenRoot(
             SettingsHomeEvent.Logout -> onLogout()
             SettingsHomeEvent.NavigateToPreferencesScreen -> onNavigateToPreference()
             SettingsHomeEvent.NavigateToSecurityScreen -> onNavigateToSettings()
+            SettingsHomeEvent.NavigateBack -> onNavigateBack()
         }
     }
 
@@ -78,6 +80,9 @@ fun SettingsHomeScreen(
                     .windowInsetsPadding(WindowInsets.statusBars)
                     .padding(horizontal = 8.dp),
                 title = "Settings",
+                onStartIconClick = {
+                    onAction(SettingsHomeAction.OnBackClick)
+                },
                 titleColor = MaterialTheme.colorScheme.onSurface
             )
         },

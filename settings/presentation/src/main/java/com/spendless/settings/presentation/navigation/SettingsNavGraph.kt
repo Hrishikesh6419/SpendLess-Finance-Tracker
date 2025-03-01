@@ -21,7 +21,10 @@ fun NavGraphBuilder.settingsNavGraph(
                 onNavigateToSettings = {
 
                 },
-                onLogout = onLogout
+                onLogout = onLogout,
+                onNavigateBack = {
+                    navController.popBackStack()
+                }
             )
         }
     }
