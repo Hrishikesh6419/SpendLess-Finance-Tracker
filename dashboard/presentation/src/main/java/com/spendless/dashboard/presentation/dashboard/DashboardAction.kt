@@ -4,4 +4,5 @@ sealed interface DashboardAction {
     data object NavigationClick : DashboardAction
     data object OnSettingsClicked : DashboardAction
     data class UpdatedBottomSheet(val showSheet: Boolean) : DashboardAction
+    data class OnCardClicked(val transactionId: Long?) : DashboardAction
 }

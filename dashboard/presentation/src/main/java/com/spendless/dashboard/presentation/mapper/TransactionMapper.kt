@@ -24,6 +24,7 @@ fun TransactionGroupItem.toUIItem(): TransactionGroupUIItem {
 
 fun Transaction.toUIItem(): TransactionUIItem {
     return TransactionUIItem(
+        transactionId = this.transactionId ?: 0L,
         transactionCategory = this.transactionCategory.toTransactionCategoryUI(),
         title = this.transactionName,
         note = this.note,

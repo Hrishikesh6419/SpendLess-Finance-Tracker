@@ -292,7 +292,10 @@ fun DashboardScreen(
                                     )
                                 }
 
-                                items(transactionGroup.transactions) { transaction ->
+                                items(
+                                    items = transactionGroup.transactions,
+                                    key = { transaction -> transaction.transactionId }
+                                ) { transaction ->
                                     TransactionItemView(
                                         icon = transaction.transactionCategory.symbol,
                                         title = transaction.title,
@@ -312,7 +315,14 @@ fun DashboardScreen(
                                                     ?: Currency.USD
                                             )
                                         },
-                                        onCardClicked = {}
+                                        isCollapsed = transaction.isCollapsed,
+                                        onCardClicked = {
+                                            onAction(
+                                                DashboardAction.OnCardClicked(
+                                                    transactionId = transaction.transactionId
+                                                )
+                                            )
+                                        }
                                     )
                                 }
 

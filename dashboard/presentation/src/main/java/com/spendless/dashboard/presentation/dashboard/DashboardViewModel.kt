@@ -126,6 +126,22 @@ class DashboardViewModel(
                     )
                 }
             }
+
+            is DashboardAction.OnCardClicked -> {
+                _uiState.update { currentState ->
+                    currentState.copy(
+                        transactions = currentState.transactions?.map { group ->
+                            group.copy(
+                                transactions = group.transactions.map { transaction ->
+                                    if (transaction.transactionId == action.transactionId) {
+                                        transaction.copy(isCollapsed = !transaction.isCollapsed)
+                                    } else transaction
+                                }
+                            )
+                        }
+                    )
+                }
+            }
         }
     }
 

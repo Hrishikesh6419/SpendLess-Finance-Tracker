@@ -29,6 +29,7 @@ data class TransactionGroupUIItem(
 )
 
 data class TransactionUIItem(
+    val transactionId: Long = 0L,
     val transactionCategory: TransactionCategoryTypeUI,
     val title: String,
     val note: String? = null,
