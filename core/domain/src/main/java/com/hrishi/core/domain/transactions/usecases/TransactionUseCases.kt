@@ -5,13 +5,15 @@ import com.hrishi.core.domain.transactions.repository.TransactionRepository
 import com.hrishi.core.domain.utils.DataError
 import com.hrishi.core.domain.utils.Result
 import kotlinx.coroutines.flow.Flow
+import java.math.BigDecimal
 import java.time.LocalDateTime
 
 data class TransactionUseCases(
     val insertTransactionUseCase: InsertTransactionUseCase,
     val getTransactionsForUserUseCase: GetTransactionsForUserUseCase,
     val getRecurringTransactionSeriesUseCase: GetRecurringTransactionSeriesUseCase,
-    val getDueRecurringTransactionsUseCase: GetDueRecurringTransactionsUseCase
+    val getDueRecurringTransactionsUseCase: GetDueRecurringTransactionsUseCase,
+    val getAccountBalanceUseCase: GetAccountBalanceUseCase
 )
 
 class InsertTransactionUseCase(
@@ -43,5 +45,13 @@ class GetDueRecurringTransactionsUseCase(
 ) {
     suspend operator fun invoke(currentDate: LocalDateTime): Result<List<Transaction>, DataError> {
         return transactionRepository.getDueRecurringTransactions(currentDate)
+    }
+}
+
+class GetAccountBalanceUseCase(
+    private val transactionRepository: TransactionRepository
+) {
+    operator fun invoke(userId: Long): Flow<Result<BigDecimal, DataError>> {
+        return transactionRepository.getAccountBalance(userId)
     }
 }

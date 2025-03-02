@@ -12,6 +12,7 @@ import com.spendless.core.database.transactions.utils.toTransactionEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
+import java.math.BigDecimal
 import java.time.LocalDateTime
 
 class RoomTransactionDataSource(
@@ -41,11 +42,7 @@ class RoomTransactionDataSource(
     override fun getTransactionsForUser(userId: Long): Flow<Result<List<Transaction>, DataError>> {
         return transactionsDao.getTransactionsForUser(userId)
             .map { transactions ->
-                if (transactions.isNotEmpty()) {
-                    Result.Success(transactions.map { it.toTransaction() })
-                } else {
-                    Result.Error(DataError.Local.TRANSACTION_FETCH_ERROR)
-                }
+                Result.Success(transactions.map { it.toTransaction() }) as Result<List<Transaction>, DataError>
             }
             .catch {
                 emit(Result.Error(DataError.Local.UNKNOWN_DATABASE_ERROR))
@@ -79,5 +76,19 @@ class RoomTransactionDataSource(
         } catch (e: Exception) {
             Result.Error(DataError.Local.UNKNOWN_DATABASE_ERROR)
         }
+    }
+
+    override fun getAccountBalance(userId: Long): Flow<Result<BigDecimal, DataError>> {
+        return transactionsDao.getAccountBalance(userId)
+            .map { balanceString ->
+                try {
+                    Result.Success(BigDecimal(balanceString))
+                } catch (e: NumberFormatException) {
+                    Result.Error(DataError.Local.UNKNOWN_DATABASE_ERROR)
+                }
+            }
+            .catch {
+                emit(Result.Error(DataError.Local.UNKNOWN_DATABASE_ERROR))
+            }
     }
 }

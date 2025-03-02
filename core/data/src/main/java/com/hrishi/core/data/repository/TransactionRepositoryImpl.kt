@@ -6,6 +6,7 @@ import com.hrishi.core.domain.transactions.repository.TransactionRepository
 import com.hrishi.core.domain.utils.DataError
 import com.hrishi.core.domain.utils.Result
 import kotlinx.coroutines.flow.Flow
+import java.math.BigDecimal
 import java.time.LocalDateTime
 
 class TransactionRepositoryImpl(
@@ -26,5 +27,9 @@ class TransactionRepositoryImpl(
 
     override suspend fun getDueRecurringTransactions(currentDate: LocalDateTime): Result<List<Transaction>, DataError> {
         return localTransactionDataSource.getDueRecurringTransactions(currentDate)
+    }
+
+    override fun getAccountBalance(userId: Long): Flow<Result<BigDecimal, DataError>> {
+        return localTransactionDataSource.getAccountBalance(userId)
     }
 }

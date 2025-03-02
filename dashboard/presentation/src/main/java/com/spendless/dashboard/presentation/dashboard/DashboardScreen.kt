@@ -59,13 +59,14 @@ import com.hrishi.core.presentation.designsystem.model.TransactionCategoryTypeUI
 import com.hrishi.presentation.ui.ObserveAsEvents
 import com.spendless.dashboard.presentation.create_screen.CreateTransactionScreenRoot
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import java.math.BigDecimal
 import java.time.LocalDateTime
 import java.time.Month
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalCoroutinesApi::class)
 @Composable
 fun DashboardScreenRoot(
     modifier: Modifier = Modifier,
@@ -181,7 +182,7 @@ fun DashboardScreen(
                     Spacer(modifier = Modifier.height(36.dp))
                     Text(
                         modifier = Modifier.align(Alignment.CenterHorizontally),
-                        text = "\$10,382.45",
+                        text = uiState.accountBalance,
                         style = MaterialTheme.typography.displayLarge.copy(
                             color = MaterialTheme.colorScheme.onPrimary
                         )
@@ -335,6 +336,7 @@ fun PreviewDashboardScreen() {
             DashboardScreen(
                 modifier = Modifier,
                 uiState = DashboardViewState(
+                    accountBalance = "\$10,382.45",
                     transactions = listOf(
                         TransactionGroupUIItem(
                             dateLabel = "TODAY",

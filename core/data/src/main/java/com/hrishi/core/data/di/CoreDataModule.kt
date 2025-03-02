@@ -16,6 +16,7 @@ import com.hrishi.core.domain.preference.usecase.SettingsPreferenceUseCase
 import com.hrishi.core.domain.preference.usecase.ValidateSelectedPreferences
 import com.hrishi.core.domain.security.EncryptionService
 import com.hrishi.core.domain.transactions.repository.TransactionRepository
+import com.hrishi.core.domain.transactions.usecases.GetAccountBalanceUseCase
 import com.hrishi.core.domain.transactions.usecases.GetDueRecurringTransactionsUseCase
 import com.hrishi.core.domain.transactions.usecases.GetRecurringTransactionSeriesUseCase
 import com.hrishi.core.domain.transactions.usecases.GetTransactionsForUserUseCase
@@ -46,6 +47,7 @@ val coreDataModule = module {
     factory { GetTransactionsForUserUseCase(get()) }
     factory { GetRecurringTransactionSeriesUseCase(get()) }
     factory { GetDueRecurringTransactionsUseCase(get()) }
-    single { TransactionUseCases(get(), get(), get(), get()) }
+    factory { GetAccountBalanceUseCase(get()) }
+    single { TransactionUseCases(get(), get(), get(), get(), get()) }
     singleOf(::TransactionRepositoryImpl).bind<TransactionRepository>()
 }
