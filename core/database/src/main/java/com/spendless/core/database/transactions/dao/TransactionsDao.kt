@@ -3,6 +3,7 @@ package com.spendless.core.database.transactions.dao
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Upsert
+import com.hrishi.core.domain.model.TransactionCategory
 import com.spendless.core.database.transactions.entity.TransactionEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -31,4 +32,16 @@ interface TransactionsDao {
     // COALESCE(..., 0): Ensures that if there are no transactions, it returns 0 instead of null.
     @Query("SELECT COALESCE(SUM(amount), '0') FROM transactions WHERE userId = :userId")
     fun getAccountBalance(userId: Long): Flow<String>
+
+    @Query(
+        """
+    SELECT transactionCategory
+    FROM transactions
+    WHERE transactionType = 'EXPENSE' AND userId = :userId
+    GROUP BY transactionCategory
+    ORDER BY COUNT(transactionCategory) DESC
+    LIMIT 1
+    """
+    )
+    fun getMostPopularExpenseCategory(userId: Long): Flow<TransactionCategory>
 }

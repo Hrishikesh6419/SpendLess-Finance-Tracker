@@ -9,7 +9,7 @@ data class DashboardViewState(
     val username: String = "",
     val preference: UserPreferences? = null,
     val accountBalance: String = "",
-    val mostPopularCategory: String = "",
+    val mostPopularCategory: TransactionCategoryTypeUI? = null,
     val largestTransaction: LargestTransaction? = null,
     val previousWeekTotal: BigDecimal = BigDecimal.ZERO,
     val transactions: List<TransactionGroupUIItem>? = null,

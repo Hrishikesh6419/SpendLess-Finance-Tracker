@@ -1,6 +1,7 @@
 package com.spendless.core.database.transactions.data_source
 
 import com.hrishi.core.domain.model.RecurringType
+import com.hrishi.core.domain.model.TransactionCategory
 import com.hrishi.core.domain.transactions.data_source.LocalTransactionDataSource
 import com.hrishi.core.domain.transactions.model.Transaction
 import com.hrishi.core.domain.utils.CalendarUtils
@@ -86,6 +87,16 @@ class RoomTransactionDataSource(
                 } catch (e: NumberFormatException) {
                     Result.Error(DataError.Local.UNKNOWN_DATABASE_ERROR)
                 }
+            }
+            .catch {
+                emit(Result.Error(DataError.Local.UNKNOWN_DATABASE_ERROR))
+            }
+    }
+
+    override fun getMostPopularExpenseCategory(userId: Long): Flow<Result<TransactionCategory?, DataError>> {
+        return transactionsDao.getMostPopularExpenseCategory(userId)
+            .map { category ->
+                Result.Success(category) as Result<TransactionCategory, DataError>
             }
             .catch {
                 emit(Result.Error(DataError.Local.UNKNOWN_DATABASE_ERROR))

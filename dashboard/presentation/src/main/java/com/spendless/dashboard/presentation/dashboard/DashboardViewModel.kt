@@ -8,6 +8,7 @@ import com.hrishi.core.domain.preference.usecase.SettingsPreferenceUseCase
 import com.hrishi.core.domain.transactions.usecases.TransactionUseCases
 import com.hrishi.core.domain.utils.CombinedResult
 import com.hrishi.core.domain.utils.Result
+import com.spendless.dashboard.presentation.mapper.toTransactionCategoryUI
 import com.spendless.dashboard.presentation.mapper.toTransactionUiItem
 import com.spendless.session_management.domain.usecases.SessionUseCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -56,13 +57,23 @@ class DashboardViewModel(
             },
             sessionUseCases.getSessionDataUseCase().flatMapLatest { sessionData ->
                 transactionUseCases.getAccountBalanceUseCase(sessionData.userId)
+            },
+            sessionUseCases.getSessionDataUseCase().flatMapLatest { sessionData ->
+                transactionUseCases.getMostPopularExpenseCategoryUseCase(sessionData.userId)
             }
-        ) { sessionData, preferenceResult, transactionResult, balanceResult ->
-            CombinedResult(sessionData, preferenceResult, transactionResult, balanceResult)
-        }.onEach { (sessionData, preferenceResult, transactionResult, balanceResult) ->
+        ) { sessionData, preferenceResult, transactionResult, balanceResult, popularCategoryResult ->
+            CombinedResult(
+                sessionData,
+                preferenceResult,
+                transactionResult,
+                balanceResult,
+                popularCategoryResult
+            )
+        }.onEach { (sessionData, preferenceResult, transactionResult, balanceResult, popularCategoryResult) ->
             if (preferenceResult is Result.Success &&
                 transactionResult is Result.Success &&
-                balanceResult is Result.Success
+                balanceResult is Result.Success &&
+                popularCategoryResult is Result.Success
             ) {
                 preference = preferenceResult.data
                 _uiState.update { currentState ->
@@ -70,6 +81,7 @@ class DashboardViewModel(
                         preference = preferenceResult.data,
                         username = sessionData.userName,
                         accountBalance = formatAmount(balanceResult.data),
+                        mostPopularCategory = popularCategoryResult.data?.toTransactionCategoryUI(),
                         transactions = groupTransactionsByDate(transactionResult.data.map { it.toTransactionUiItem() })
                     )
                 }

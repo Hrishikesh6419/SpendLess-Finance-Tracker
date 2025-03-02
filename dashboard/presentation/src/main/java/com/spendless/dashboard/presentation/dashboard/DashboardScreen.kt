@@ -155,7 +155,7 @@ fun DashboardScreen(
                 endIcon1BackgroundColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.18f),
                 endIcon2Color = MaterialTheme.colorScheme.onPrimary,
                 endIcon2BackgroundColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.18f),
-                title = "rockefeller74",
+                title = uiState.username,
             )
         },
         floatingActionButton = {
@@ -199,13 +199,15 @@ fun DashboardScreen(
                         )
                     )
                     Spacer(modifier = Modifier.height(46.dp))
-                    PopularCategoryView(
-                        modifier = Modifier
-                            .padding(horizontal = 16.dp),
-                        icon = "\uD83C\uDF55",
-                        title = "Food & Groceries",
-                        description = "Most popular category"
-                    )
+                    uiState.mostPopularCategory?.let { popularCategory ->
+                        PopularCategoryView(
+                            modifier = Modifier
+                                .padding(horizontal = 16.dp),
+                            icon = popularCategory.symbol,
+                            title = popularCategory.title,
+                            description = "Most popular category"
+                        )
+                    }
                     Row(
                         modifier = Modifier
                             .padding(horizontal = 16.dp)
@@ -336,7 +338,9 @@ fun PreviewDashboardScreen() {
             DashboardScreen(
                 modifier = Modifier,
                 uiState = DashboardViewState(
+                    username = "Hrishi",
                     accountBalance = "\$10,382.45",
+                    mostPopularCategory = TransactionCategoryTypeUI.TRANSPORTATION,
                     transactions = listOf(
                         TransactionGroupUIItem(
                             dateLabel = "TODAY",

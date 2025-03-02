@@ -1,6 +1,7 @@
 package com.spendless.core.database.transactions.utils
 
 import androidx.room.TypeConverter
+import com.hrishi.core.domain.model.TransactionCategory
 import java.math.BigDecimal
 import java.time.Instant
 import java.time.LocalDateTime
@@ -33,5 +34,15 @@ object TransactionConverters {
         return value?.let {
             Instant.ofEpochMilli(it).atZone(zoneId).toLocalDateTime()
         }
+    }
+
+    @TypeConverter
+    fun fromTransactionCategory(category: TransactionCategory): String {
+        return category.name
+    }
+
+    @TypeConverter
+    fun toTransactionCategory(category: String): TransactionCategory {
+        return TransactionCategory.valueOf(category)
     }
 }

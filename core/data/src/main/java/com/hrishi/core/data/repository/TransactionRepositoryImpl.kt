@@ -1,5 +1,6 @@
 package com.hrishi.core.data.repository
 
+import com.hrishi.core.domain.model.TransactionCategory
 import com.hrishi.core.domain.transactions.data_source.LocalTransactionDataSource
 import com.hrishi.core.domain.transactions.model.Transaction
 import com.hrishi.core.domain.transactions.repository.TransactionRepository
@@ -31,5 +32,9 @@ class TransactionRepositoryImpl(
 
     override fun getAccountBalance(userId: Long): Flow<Result<BigDecimal, DataError>> {
         return localTransactionDataSource.getAccountBalance(userId)
+    }
+
+    override fun getMostPopularExpenseCategory(userId: Long): Flow<Result<TransactionCategory?, DataError>> {
+        return localTransactionDataSource.getMostPopularExpenseCategory(userId)
     }
 }

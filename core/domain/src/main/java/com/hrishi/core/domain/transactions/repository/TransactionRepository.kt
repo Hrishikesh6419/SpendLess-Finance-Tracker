@@ -1,5 +1,6 @@
 package com.hrishi.core.domain.transactions.repository
 
+import com.hrishi.core.domain.model.TransactionCategory
 import com.hrishi.core.domain.transactions.model.Transaction
 import com.hrishi.core.domain.utils.DataError
 import com.hrishi.core.domain.utils.Result
@@ -18,4 +19,6 @@ interface TransactionRepository {
     suspend fun getDueRecurringTransactions(currentDate: LocalDateTime): Result<List<Transaction>, DataError>
 
     fun getAccountBalance(userId: Long): Flow<Result<BigDecimal, DataError>>
+
+    fun getMostPopularExpenseCategory(userId: Long): Flow<Result<TransactionCategory?, DataError>>
 }

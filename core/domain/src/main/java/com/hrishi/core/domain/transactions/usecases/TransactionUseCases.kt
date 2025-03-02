@@ -1,5 +1,6 @@
 package com.hrishi.core.domain.transactions.usecases
 
+import com.hrishi.core.domain.model.TransactionCategory
 import com.hrishi.core.domain.transactions.model.Transaction
 import com.hrishi.core.domain.transactions.repository.TransactionRepository
 import com.hrishi.core.domain.utils.DataError
@@ -13,7 +14,8 @@ data class TransactionUseCases(
     val getTransactionsForUserUseCase: GetTransactionsForUserUseCase,
     val getRecurringTransactionSeriesUseCase: GetRecurringTransactionSeriesUseCase,
     val getDueRecurringTransactionsUseCase: GetDueRecurringTransactionsUseCase,
-    val getAccountBalanceUseCase: GetAccountBalanceUseCase
+    val getAccountBalanceUseCase: GetAccountBalanceUseCase,
+    val getMostPopularExpenseCategoryUseCase: GetMostPopularExpenseCategoryUseCase
 )
 
 class InsertTransactionUseCase(
@@ -53,5 +55,13 @@ class GetAccountBalanceUseCase(
 ) {
     operator fun invoke(userId: Long): Flow<Result<BigDecimal, DataError>> {
         return transactionRepository.getAccountBalance(userId)
+    }
+}
+
+class GetMostPopularExpenseCategoryUseCase(
+    private val transactionRepository: TransactionRepository
+) {
+    operator fun invoke(userId: Long): Flow<Result<TransactionCategory?, DataError>> {
+        return transactionRepository.getMostPopularExpenseCategory(userId)
     }
 }
