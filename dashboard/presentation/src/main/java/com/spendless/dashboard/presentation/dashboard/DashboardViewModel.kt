@@ -13,7 +13,7 @@ import com.hrishi.core.domain.utils.DataError
 import com.hrishi.core.domain.utils.Result
 import com.hrishi.core.domain.utils.toShortDateString
 import com.spendless.dashboard.presentation.mapper.toTransactionCategoryUI
-import com.spendless.dashboard.presentation.mapper.toTransactionUiItem
+import com.spendless.dashboard.presentation.mapper.toUIItem
 import com.spendless.session_management.domain.model.SessionData
 import com.spendless.session_management.domain.usecases.SessionUseCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -28,9 +28,6 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-import java.util.Locale
 
 @ExperimentalCoroutinesApi
 class DashboardViewModel(
@@ -107,7 +104,7 @@ class DashboardViewModel(
                         mostPopularCategory = popularCategoryResult.data?.toTransactionCategoryUI(),
                         largestTransaction = largestTransactionResult.data.toLargestTransactionItem(),
                         previousWeekTotal = formatAmount(previousWeekTotalResult.data),
-                        transactions = groupTransactionsByDate(transactionResult.data.map { it.toTransactionUiItem() })
+                        transactions = groupTransactionsByDate(transactionResult.data)
                     )
                 }
             }
@@ -132,26 +129,10 @@ class DashboardViewModel(
         }
     }
 
-    private fun groupTransactionsByDate(transactions: List<TransactionUIItem>): List<TransactionGroupUIItem> {
-        val today = LocalDateTime.now().toLocalDate()
-        val yesterday = today.minusDays(1)
-        val dateFormatter = DateTimeFormatter.ofPattern("MMMM d")
-
-        return transactions
-            .sortedByDescending { it.date }
-            .groupBy { transaction ->
-                when (transaction.date.toLocalDate()) {
-                    today -> "TODAY"
-                    yesterday -> "YESTERDAY"
-                    else -> transaction.date.format(dateFormatter).uppercase(Locale.US)
-                }
-            }
-            .map { (dateLabel, transactions) ->
-                TransactionGroupUIItem(
-                    dateLabel = dateLabel,
-                    transactions = transactions
-                )
-            }
+    private fun groupTransactionsByDate(transactions: List<Transaction>): List<TransactionGroupUIItem> {
+        return transactionUseCases.getTransactionsGroupedByDateUseCase(transactions).map {
+            it.toUIItem()
+        }
     }
 
     private fun formatAmount(amount: BigDecimal): String {

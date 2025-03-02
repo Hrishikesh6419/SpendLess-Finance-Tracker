@@ -23,6 +23,7 @@ import com.hrishi.core.domain.transactions.usecases.GetMostPopularExpenseCategor
 import com.hrishi.core.domain.transactions.usecases.GetPreviousWeekTotalUseCase
 import com.hrishi.core.domain.transactions.usecases.GetRecurringTransactionSeriesUseCase
 import com.hrishi.core.domain.transactions.usecases.GetTransactionsForUserUseCase
+import com.hrishi.core.domain.transactions.usecases.GetTransactionsGroupedByDateUseCase
 import com.hrishi.core.domain.transactions.usecases.InsertTransactionUseCase
 import com.hrishi.core.domain.transactions.usecases.TransactionUseCases
 import org.koin.core.module.dsl.singleOf
@@ -54,6 +55,7 @@ val coreDataModule = module {
     factory { GetMostPopularExpenseCategoryUseCase(get()) }
     factory { GetLargestTransactionUseCase(get()) }
     factory { GetPreviousWeekTotalUseCase(get()) }
-    single { TransactionUseCases(get(), get(), get(), get(), get(), get(), get(), get()) }
+    factory { GetTransactionsGroupedByDateUseCase() }
+    single { TransactionUseCases(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
     singleOf(::TransactionRepositoryImpl).bind<TransactionRepository>()
 }

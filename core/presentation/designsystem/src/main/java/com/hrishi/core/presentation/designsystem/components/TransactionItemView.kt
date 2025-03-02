@@ -43,7 +43,7 @@ import java.math.BigDecimal
 import java.math.RoundingMode
 
 @Composable
-fun TransactionItem(
+fun TransactionItemView(
     modifier: Modifier = Modifier,
     icon: String,
     incomeIcon: String = "\uD83D\uDCB0",
@@ -266,7 +266,7 @@ fun PreviewTransactionItem() {
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             // 1) Collapsed with note
-            TransactionItem(
+            TransactionItemView(
                 icon = "🍔",
                 title = "Burger King",
                 category = "Food",
@@ -278,7 +278,7 @@ fun PreviewTransactionItem() {
             )
 
             // 2) Expanded with note
-            TransactionItem(
+            TransactionItemView(
                 icon = "⚽",
                 title = "Football tickets",
                 category = "Sports",
@@ -290,7 +290,7 @@ fun PreviewTransactionItem() {
             )
 
             // 3) Collapsed with no note
-            TransactionItem(
+            TransactionItemView(
                 icon = "🚗",
                 title = "Parking",
                 category = "Transport",
@@ -302,7 +302,7 @@ fun PreviewTransactionItem() {
             )
 
             // 4) Negative amount (expense) with note, collapsed
-            TransactionItem(
+            TransactionItemView(
                 icon = "📱",
                 title = "Phone Bill",
                 category = "Utilities",
@@ -314,7 +314,7 @@ fun PreviewTransactionItem() {
             )
 
             // 5) Negative amount (expense) but expanded
-            TransactionItem(
+            TransactionItemView(
                 icon = "💻",
                 title = "Laptop Payment",
                 category = "Electronics",

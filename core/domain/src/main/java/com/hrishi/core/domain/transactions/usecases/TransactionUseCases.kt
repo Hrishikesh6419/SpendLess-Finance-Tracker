@@ -2,12 +2,15 @@ package com.hrishi.core.domain.transactions.usecases
 
 import com.hrishi.core.domain.model.TransactionCategory
 import com.hrishi.core.domain.transactions.model.Transaction
+import com.hrishi.core.domain.transactions.model.TransactionGroupItem
 import com.hrishi.core.domain.transactions.repository.TransactionRepository
 import com.hrishi.core.domain.utils.DataError
 import com.hrishi.core.domain.utils.Result
 import kotlinx.coroutines.flow.Flow
 import java.math.BigDecimal
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 data class TransactionUseCases(
     val insertTransactionUseCase: InsertTransactionUseCase,
@@ -18,6 +21,7 @@ data class TransactionUseCases(
     val getMostPopularExpenseCategoryUseCase: GetMostPopularExpenseCategoryUseCase,
     val getLargestTransactionUseCase: GetLargestTransactionUseCase,
     val getPreviousWeekTotalUseCase: GetPreviousWeekTotalUseCase,
+    val getTransactionsGroupedByDateUseCase: GetTransactionsGroupedByDateUseCase,
 )
 
 class InsertTransactionUseCase(
@@ -81,5 +85,29 @@ class GetPreviousWeekTotalUseCase(
 ) {
     operator fun invoke(userId: Long): Flow<Result<BigDecimal, DataError>> {
         return transactionRepository.getPreviousWeekTotal(userId)
+    }
+}
+
+class GetTransactionsGroupedByDateUseCase {
+    operator fun invoke(transactions: List<Transaction>): List<TransactionGroupItem> {
+        val today = LocalDateTime.now().toLocalDate()
+        val yesterday = today.minusDays(1)
+        val dateFormatter = DateTimeFormatter.ofPattern("MMMM d")
+
+        return transactions
+            .sortedByDescending { it.transactionDate }
+            .groupBy { transaction ->
+                when (transaction.transactionDate.toLocalDate()) {
+                    today -> "TODAY"
+                    yesterday -> "YESTERDAY"
+                    else -> transaction.transactionDate.format(dateFormatter).uppercase(Locale.US)
+                }
+            }
+            .map { (dateLabel, transactions) ->
+                TransactionGroupItem(
+                    dateLabel = dateLabel,
+                    transactions = transactions
+                )
+            }
     }
 }

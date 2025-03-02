@@ -53,7 +53,7 @@ import com.hrishi.core.presentation.designsystem.components.PopularCategoryView
 import com.hrishi.core.presentation.designsystem.components.PreviousWeekTotalView
 import com.hrishi.core.presentation.designsystem.components.SpendLessScaffold
 import com.hrishi.core.presentation.designsystem.components.SpendLessTopBar
-import com.hrishi.core.presentation.designsystem.components.TransactionItem
+import com.hrishi.core.presentation.designsystem.components.TransactionItemView
 import com.hrishi.core.presentation.designsystem.components.buttons.SpendLessFloatingActionButton
 import com.hrishi.core.presentation.designsystem.model.TransactionCategoryTypeUI
 import com.hrishi.presentation.ui.ObserveAsEvents
@@ -293,7 +293,7 @@ fun DashboardScreen(
                                 }
 
                                 items(transactionGroup.transactions) { transaction ->
-                                    TransactionItem(
+                                    TransactionItemView(
                                         icon = transaction.transactionCategory.symbol,
                                         title = transaction.title,
                                         category = transaction.transactionCategory.title,
