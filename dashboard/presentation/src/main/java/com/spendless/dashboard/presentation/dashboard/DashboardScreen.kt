@@ -267,6 +267,7 @@ fun DashboardScreen(
                                         title = transaction.title,
                                         category = transaction.expenseCategory.title,
                                         amount = transaction.amount,
+                                        note = transaction.note,
                                         displayAmount = {
                                             it.toPlainString()
                                         },

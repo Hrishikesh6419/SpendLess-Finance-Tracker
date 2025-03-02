@@ -221,11 +221,11 @@ private fun TransactionItemInnerContent(
             }
 
             AnimatedVisibility(
+                modifier = Modifier.padding(top = 6.dp),
                 visible = !note.isNullOrBlank() && !isCollapsed,
                 enter = expandVertically() + fadeIn(),
                 exit = shrinkVertically() + fadeOut()
             ) {
-                Spacer(modifier = Modifier.height(6.dp))
                 Text(
                     text = note.orEmpty(),
                     style = MaterialTheme.typography.bodySmall
