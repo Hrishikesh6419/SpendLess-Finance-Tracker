@@ -4,6 +4,7 @@ import com.hrishi.core.domain.model.TransactionCategory
 import com.hrishi.core.domain.transactions.model.Transaction
 import com.hrishi.core.domain.transactions.model.TransactionGroupItem
 import com.hrishi.core.domain.transactions.repository.TransactionRepository
+import com.hrishi.core.domain.utils.CalendarUtils
 import com.hrishi.core.domain.utils.DataError
 import com.hrishi.core.domain.utils.Result
 import kotlinx.coroutines.flow.Flow
@@ -90,7 +91,7 @@ class GetPreviousWeekTotalUseCase(
 
 class GetTransactionsGroupedByDateUseCase {
     operator fun invoke(transactions: List<Transaction>): List<TransactionGroupItem> {
-        val today = LocalDateTime.now().toLocalDate()
+        val today = CalendarUtils.currentEstDate
         val yesterday = today.minusDays(1)
         val dateFormatter = DateTimeFormatter.ofPattern("MMMM d")
 

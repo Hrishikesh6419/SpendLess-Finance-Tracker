@@ -2,6 +2,7 @@ package com.hrishi.core.domain.utils
 
 import jdk.internal.net.http.common.Log
 import java.time.DayOfWeek
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZoneId
@@ -13,6 +14,9 @@ object CalendarUtils {
 
     val currentEstTime: LocalDateTime
         get() = LocalDateTime.now(zoneId)
+
+    val currentEstDate: LocalDate
+        get() = LocalDate.now(zoneId)
 
     fun toEpochMillis(localDateTime: LocalDateTime): Long {
         return localDateTime.atZone(zoneId).toInstant().toEpochMilli()
