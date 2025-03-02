@@ -2,22 +2,31 @@ package com.spendless.dashboard.presentation.dashboard
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hrishi.core.domain.transactions.model.Transaction
+import com.hrishi.core.domain.preference.usecase.SettingsPreferenceUseCase
 import com.hrishi.core.domain.transactions.usecases.TransactionUseCases
 import com.hrishi.core.domain.utils.Result
 import com.spendless.dashboard.presentation.mapper.toTransactionUiItem
 import com.spendless.session_management.domain.usecases.SessionUseCase
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
+@ExperimentalCoroutinesApi
 class DashboardViewModel(
     private val sessionUseCases: SessionUseCase,
+    private val sessionPreferenceUseCase: SettingsPreferenceUseCase,
     private val transactionUseCases: TransactionUseCases
 ) : ViewModel() {
 
@@ -33,26 +42,44 @@ class DashboardViewModel(
 
     private fun fetchTransactions() {
         sessionUseCases.getSessionDataUseCase()
-            .onEach { sessionData ->
-                transactionUseCases.getTransactionsForUserUseCase(sessionData.userId)
-                    .collect { result ->
-                        when (result) {
-                            is Result.Error -> Unit
-                            is Result.Success -> {
-                                val transactions: List<Transaction> = result.data
-                                _uiState.update {
-                                    it.copy(
-                                        username = sessionData.userName,
-                                        accountBalance = "$1234",
-                                        transactions = transactions.map { transaction ->
-                                            transaction.toTransactionUiItem()
-                                        }
-                                    )
-                                }
-                            }
+            .flatMapLatest { sessionData ->
+                sessionPreferenceUseCase.getPreferencesUseCase(sessionData.userId)
+                    .map { preferenceResult -> sessionData to preferenceResult }
+            }
+            .flatMapLatest { (sessionData, preferenceResult) ->
+                when (preferenceResult) {
+                    is Result.Error -> return@flatMapLatest emptyFlow()
+                    is Result.Success -> transactionUseCases.getTransactionsForUserUseCase(
+                        sessionData.userId
+                    )
+                        .map { transactionResult ->
+                            Triple(
+                                sessionData,
+                                preferenceResult.data,
+                                transactionResult
+                            )
+                        }
+                }
+            }
+            .onEach { (sessionData, preference, transactionResult) ->
+                when (transactionResult) {
+                    is Result.Error -> Unit
+                    is Result.Success -> {
+                        val transactions = transactionResult.data.map { transaction ->
+                            transaction.toTransactionUiItem()
+                        }
+                        _uiState.update { currentState ->
+                            currentState.copy(
+                                preference = preference,
+                                username = sessionData.userName,
+                                accountBalance = "$1234",
+                                transactions = groupTransactionsByDate(transactions)
+                            )
                         }
                     }
-            }.launchIn(viewModelScope)
+                }
+            }
+            .launchIn(viewModelScope)
     }
 
     fun onAction(action: DashboardAction) {
@@ -71,5 +98,27 @@ class DashboardViewModel(
                 }
             }
         }
+    }
+
+    private fun groupTransactionsByDate(transactions: List<TransactionUIItem>): List<TransactionGroupUIItem> {
+        val today = LocalDateTime.now().toLocalDate()
+        val yesterday = today.minusDays(1)
+        val dateFormatter = DateTimeFormatter.ofPattern("MMMM d")
+
+        return transactions
+            .sortedByDescending { it.date }
+            .groupBy { transaction ->
+                when (transaction.date.toLocalDate()) {
+                    today -> "TODAY"
+                    yesterday -> "YESTERDAY"
+                    else -> transaction.date.format(dateFormatter).uppercase(Locale.US)
+                }
+            }
+            .map { (dateLabel, transactions) ->
+                TransactionGroupUIItem(
+                    dateLabel = dateLabel,
+                    transactions = transactions
+                )
+            }
     }
 }

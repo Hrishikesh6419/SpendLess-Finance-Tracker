@@ -8,6 +8,7 @@ fun Transaction.toTransactionUiItem(): TransactionUIItem {
         expenseCategory = expenseCategory.toExpenseCategoryUI(),
         title = transactionName,
         note = note,
+        date = transactionDate,
         amount = amount
     )
 }

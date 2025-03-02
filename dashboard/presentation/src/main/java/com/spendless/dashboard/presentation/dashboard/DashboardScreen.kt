@@ -1,5 +1,6 @@
 package com.spendless.dashboard.presentation.dashboard
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -39,6 +40,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.hrishi.core.domain.formatting.NumberFormatter
+import com.hrishi.core.domain.model.Currency
+import com.hrishi.core.domain.model.DecimalSeparator
+import com.hrishi.core.domain.model.ExpenseFormat
+import com.hrishi.core.domain.model.ThousandsSeparator
 import com.hrishi.core.presentation.designsystem.DownloadButton
 import com.hrishi.core.presentation.designsystem.SettingsButton
 import com.hrishi.core.presentation.designsystem.SpendLessFinanceTrackerTheme
@@ -56,6 +62,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import java.math.BigDecimal
+import java.time.LocalDateTime
+import java.time.Month
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -93,7 +101,7 @@ fun DashboardScreenRoot(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun DashboardScreen(
     modifier: Modifier = Modifier,
@@ -259,25 +267,58 @@ fun DashboardScreen(
                             )
                         }
 
-                        uiState.transactions?.let { transactions ->
-                            LazyColumn {
-                                items(transactions) { transaction ->
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        LazyColumn(
+                            modifier = Modifier.fillMaxSize()
+                        ) {
+                            uiState.transactions?.forEach { transactionGroup ->
+                                stickyHeader {
+                                    Text(
+                                        text = transactionGroup.dateLabel,
+                                        style = MaterialTheme.typography.labelSmall.copy(
+                                            color = MaterialTheme.colorScheme.onSurface.copy(
+                                                alpha = 0.70f
+                                            )
+                                        ),
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .background(MaterialTheme.colorScheme.background)
+                                            .padding(vertical = 8.dp)
+                                            .padding(horizontal = 4.dp)
+                                    )
+                                }
+
+                                items(transactionGroup.transactions) { transaction ->
                                     TransactionItem(
                                         icon = transaction.expenseCategory.symbol,
                                         title = transaction.title,
                                         category = transaction.expenseCategory.title,
                                         amount = transaction.amount,
                                         note = transaction.note,
-                                        displayAmount = {
-                                            it.toPlainString()
+                                        displayAmount = { amount ->
+                                            NumberFormatter.formatAmount(
+                                                amount = amount,
+                                                expenseFormat = uiState.preference?.expenseFormat
+                                                    ?: ExpenseFormat.MINUS_PREFIX,
+                                                decimalSeparator = uiState.preference?.decimalSeparator
+                                                    ?: DecimalSeparator.DOT,
+                                                thousandsSeparator = uiState.preference?.thousandsSeparator
+                                                    ?: ThousandsSeparator.COMMA,
+                                                currency = uiState.preference?.currency
+                                                    ?: Currency.USD
+                                            )
                                         },
-                                        onCardClicked = {
-
-                                        }
+                                        onCardClicked = {}
                                     )
+                                }
+
+                                item {
+                                    Spacer(modifier = Modifier.height(12.dp))
                                 }
                             }
                         }
+
                     }
                 }
             }
@@ -295,11 +336,41 @@ fun PreviewDashboardScreen() {
                 modifier = Modifier,
                 uiState = DashboardViewState(
                     transactions = listOf(
-                        TransactionUIItem(
-                            expenseCategory = ExpenseCategoryTypeUI.OTHER,
-                            title = "Amazon",
-                            note = "Hi",
-                            amount = BigDecimal.TEN.negate()
+                        TransactionGroupUIItem(
+                            dateLabel = "TODAY",
+                            transactions = listOf(
+                                TransactionUIItem(
+                                    expenseCategory = ExpenseCategoryTypeUI.OTHER,
+                                    title = "Amazon",
+                                    note = "Hi",
+                                    amount = BigDecimal.TEN.negate(),
+                                    date = LocalDateTime.of(
+                                        2025,
+                                        Month.MARCH,
+                                        30,
+                                        0,
+                                        0
+                                    )
+                                )
+                            )
+                        ),
+                        TransactionGroupUIItem(
+                            dateLabel = "JANUARY 9",
+                            transactions = listOf(
+                                TransactionUIItem(
+                                    expenseCategory = ExpenseCategoryTypeUI.OTHER,
+                                    title = "Amazon",
+                                    note = "Hi",
+                                    amount = BigDecimal.TEN.negate(),
+                                    date = LocalDateTime.of(
+                                        2025,
+                                        Month.MARCH,
+                                        30,
+                                        0,
+                                        0
+                                    )
+                                )
+                            )
                         )
                     )
                 ),
