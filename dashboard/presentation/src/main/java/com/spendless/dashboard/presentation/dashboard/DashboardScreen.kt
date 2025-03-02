@@ -229,7 +229,7 @@ fun DashboardScreen(
 
                         PreviousWeekTotalView(
                             modifier = Modifier.fillMaxHeight(),
-                            amount = "-\$762.20",
+                            amount = uiState.previousWeekTotal,
                             description = "Previous week"
                         )
                     }
@@ -341,6 +341,7 @@ fun PreviewDashboardScreen() {
                     username = "Hrishi",
                     accountBalance = "\$10,382.45",
                     mostPopularCategory = TransactionCategoryTypeUI.TRANSPORTATION,
+                    previousWeekTotal = "\$100.45",
                     largestTransaction = LargestTransaction(
                         name = "Adobe Yearly",
                         amount = "-\$59.99",

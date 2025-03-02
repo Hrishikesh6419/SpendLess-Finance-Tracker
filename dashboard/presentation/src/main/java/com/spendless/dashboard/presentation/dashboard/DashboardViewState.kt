@@ -11,7 +11,7 @@ data class DashboardViewState(
     val accountBalance: String = "",
     val mostPopularCategory: TransactionCategoryTypeUI? = null,
     val largestTransaction: LargestTransaction? = null,
-    val previousWeekTotal: BigDecimal = BigDecimal.ZERO,
+    val previousWeekTotal: String = "",
     val transactions: List<TransactionGroupUIItem>? = null,
     val isSessionExpired: Boolean = false,
     val showCreateTransactionSheet: Boolean = false

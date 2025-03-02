@@ -68,6 +68,9 @@ class DashboardViewModel(
             },
             sessionUseCases.getSessionDataUseCase().flatMapLatest { sessionData ->
                 transactionUseCases.getLargestTransactionUseCase(sessionData.userId)
+            },
+            sessionUseCases.getSessionDataUseCase().flatMapLatest { sessionData ->
+                transactionUseCases.getPreviousWeekTotalUseCase(sessionData.userId)
             }
         ) { array: Array<Any?> ->
             CombinedResult(
@@ -76,7 +79,8 @@ class DashboardViewModel(
                 array[2] as Result<List<Transaction>, DataError>,
                 array[3] as Result<BigDecimal, DataError>,
                 array[4] as Result<TransactionCategory?, DataError>,
-                array[5] as Result<Transaction?, DataError>
+                array[5] as Result<Transaction?, DataError>,
+                array[6] as Result<BigDecimal, DataError>,
             )
         }.onEach { (
                        sessionData: SessionData,
@@ -85,12 +89,14 @@ class DashboardViewModel(
                        balanceResult: Result<BigDecimal, DataError>,
                        popularCategoryResult: Result<TransactionCategory?, DataError>,
                        largestTransactionResult: Result<Transaction?, DataError>,
+                       previousWeekTotalResult: Result<BigDecimal, DataError>
                    ) ->
             if (preferenceResult is Result.Success &&
                 transactionResult is Result.Success &&
                 balanceResult is Result.Success &&
                 popularCategoryResult is Result.Success &&
-                largestTransactionResult is Result.Success
+                largestTransactionResult is Result.Success &&
+                previousWeekTotalResult is Result.Success
             ) {
                 preference = preferenceResult.data
                 _uiState.update { currentState ->
@@ -100,6 +106,7 @@ class DashboardViewModel(
                         accountBalance = formatAmount(balanceResult.data),
                         mostPopularCategory = popularCategoryResult.data?.toTransactionCategoryUI(),
                         largestTransaction = largestTransactionResult.data.toLargestTransactionItem(),
+                        previousWeekTotal = formatAmount(previousWeekTotalResult.data),
                         transactions = groupTransactionsByDate(transactionResult.data.map { it.toTransactionUiItem() })
                     )
                 }

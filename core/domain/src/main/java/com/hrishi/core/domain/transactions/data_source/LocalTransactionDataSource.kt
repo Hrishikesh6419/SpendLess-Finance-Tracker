@@ -16,4 +16,5 @@ interface LocalTransactionDataSource {
     fun getAccountBalance(userId: Long): Flow<Result<BigDecimal, DataError>>
     fun getMostPopularExpenseCategory(userId: Long): Flow<Result<TransactionCategory?, DataError>>
     fun getLargestTransaction(userId: Long): Flow<Result<Transaction?, DataError>>
+    fun getPreviousWeekTotal(userId: Long): Flow<Result<BigDecimal, DataError>>
 }

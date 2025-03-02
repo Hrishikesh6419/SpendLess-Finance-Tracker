@@ -1,5 +1,6 @@
 package com.spendless.core.database.transactions.data_source
 
+import android.util.Log
 import com.hrishi.core.domain.model.RecurringType
 import com.hrishi.core.domain.model.TransactionCategory
 import com.hrishi.core.domain.transactions.data_source.LocalTransactionDataSource
@@ -113,4 +114,20 @@ class RoomTransactionDataSource(
             }
     }
 
+    override fun getPreviousWeekTotal(userId: Long): Flow<Result<BigDecimal, DataError>> {
+        val (startDate, endDate) = CalendarUtils.getPreviousWeekRange()
+        Log.d("hrishiiii", "Start of previous week: $startDate")
+        Log.d("hrishiiii", "End of previous week: $endDate")
+        return transactionsDao.getPreviousWeekTotal(userId, startDate, endDate)
+            .map { amount ->
+                try {
+                    Result.Success(amount)
+                } catch (e: NumberFormatException) {
+                    Result.Error(DataError.Local.UNKNOWN_DATABASE_ERROR)
+                }
+            }
+            .catch {
+                emit(Result.Error(DataError.Local.UNKNOWN_DATABASE_ERROR))
+            }
+    }
 }

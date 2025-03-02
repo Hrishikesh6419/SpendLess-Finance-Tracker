@@ -6,6 +6,8 @@ import androidx.room.Upsert
 import com.hrishi.core.domain.model.TransactionCategory
 import com.spendless.core.database.transactions.entity.TransactionEntity
 import kotlinx.coroutines.flow.Flow
+import java.math.BigDecimal
+import java.time.LocalDateTime
 
 @Dao
 interface TransactionsDao {
@@ -54,4 +56,18 @@ interface TransactionsDao {
     """
     )
     fun getLargestTransaction(userId: Long): Flow<TransactionEntity?>
+
+    @Query(
+        """
+    SELECT COALESCE(SUM(amount), '0') FROM transactions
+    WHERE transactionType = 'EXPENSE' 
+    AND userId = :userId
+    AND transactionDate BETWEEN :startDate AND :endDate
+    """
+    )
+    fun getPreviousWeekTotal(
+        userId: Long,
+        startDate: LocalDateTime,
+        endDate: LocalDateTime
+    ): Flow<BigDecimal>
 }

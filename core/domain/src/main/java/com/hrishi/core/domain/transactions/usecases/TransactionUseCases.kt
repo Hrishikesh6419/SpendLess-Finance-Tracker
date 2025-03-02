@@ -17,6 +17,7 @@ data class TransactionUseCases(
     val getAccountBalanceUseCase: GetAccountBalanceUseCase,
     val getMostPopularExpenseCategoryUseCase: GetMostPopularExpenseCategoryUseCase,
     val getLargestTransactionUseCase: GetLargestTransactionUseCase,
+    val getPreviousWeekTotalUseCase: GetPreviousWeekTotalUseCase,
 )
 
 class InsertTransactionUseCase(
@@ -72,5 +73,13 @@ class GetLargestTransactionUseCase(
 ) {
     operator fun invoke(userId: Long): Flow<Result<Transaction?, DataError>> {
         return transactionRepository.getLargestTransaction(userId)
+    }
+}
+
+class GetPreviousWeekTotalUseCase(
+    private val transactionRepository: TransactionRepository
+) {
+    operator fun invoke(userId: Long): Flow<Result<BigDecimal, DataError>> {
+        return transactionRepository.getPreviousWeekTotal(userId)
     }
 }

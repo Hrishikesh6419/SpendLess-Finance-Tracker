@@ -41,4 +41,8 @@ class TransactionRepositoryImpl(
     override fun getLargestTransaction(userId: Long): Flow<Result<Transaction?, DataError>> {
         return localTransactionDataSource.getLargestTransaction(userId)
     }
+
+    override fun getPreviousWeekTotal(userId: Long): Flow<Result<BigDecimal, DataError>> {
+        return localTransactionDataSource.getPreviousWeekTotal(userId)
+    }
 }
