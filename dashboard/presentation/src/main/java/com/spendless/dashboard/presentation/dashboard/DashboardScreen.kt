@@ -1,6 +1,7 @@
 package com.spendless.dashboard.presentation.dashboard
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
@@ -37,6 +39,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -56,6 +59,7 @@ import com.hrishi.core.presentation.designsystem.components.SpendLessTopBar
 import com.hrishi.core.presentation.designsystem.components.TransactionItemView
 import com.hrishi.core.presentation.designsystem.components.buttons.SpendLessFloatingActionButton
 import com.hrishi.core.presentation.designsystem.model.TransactionCategoryTypeUI
+import com.hrishi.presentation.designsystem.R.drawable
 import com.hrishi.presentation.ui.ObserveAsEvents
 import com.spendless.dashboard.presentation.create_screen.CreateTransactionScreenRoot
 import kotlinx.coroutines.CoroutineScope
@@ -254,86 +258,119 @@ fun DashboardScreen(
                             .fillMaxSize()
                             .padding(horizontal = 16.dp, vertical = 16.dp)
                     ) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Text(
-                                text = "Latest Transactions",
-                                style = MaterialTheme.typography.titleLarge
-                            )
-                            Text(
-                                text = "Show all",
-                                style = MaterialTheme.typography.titleMedium.copy(
-                                    color = MaterialTheme.colorScheme.primary
-                                )
-                            )
+                        if (uiState.transactions.isNullOrEmpty()) {
+                            EmptyTransactionView()
+                        } else {
+                            LatestTransactionsView(uiState, onAction)
                         }
-
-                        Spacer(modifier = Modifier.height(16.dp))
-
-                        LazyColumn(
-                            modifier = Modifier.fillMaxSize()
-                        ) {
-                            uiState.transactions?.forEach { transactionGroup ->
-                                stickyHeader {
-                                    Text(
-                                        text = transactionGroup.dateLabel,
-                                        style = MaterialTheme.typography.labelSmall.copy(
-                                            color = MaterialTheme.colorScheme.onSurface.copy(
-                                                alpha = 0.70f
-                                            )
-                                        ),
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .background(MaterialTheme.colorScheme.background)
-                                            .padding(vertical = 8.dp)
-                                            .padding(horizontal = 4.dp)
-                                    )
-                                }
-
-                                items(
-                                    items = transactionGroup.transactions,
-                                    key = { transaction -> transaction.transactionId }
-                                ) { transaction ->
-                                    TransactionItemView(
-                                        icon = transaction.transactionCategory.symbol,
-                                        title = transaction.title,
-                                        category = transaction.transactionCategory.title,
-                                        amount = transaction.amount,
-                                        note = transaction.note,
-                                        displayAmount = { amount ->
-                                            NumberFormatter.formatAmount(
-                                                amount = amount,
-                                                expenseFormat = uiState.preference?.expenseFormat
-                                                    ?: ExpenseFormat.MINUS_PREFIX,
-                                                decimalSeparator = uiState.preference?.decimalSeparator
-                                                    ?: DecimalSeparator.DOT,
-                                                thousandsSeparator = uiState.preference?.thousandsSeparator
-                                                    ?: ThousandsSeparator.COMMA,
-                                                currency = uiState.preference?.currency
-                                                    ?: Currency.USD
-                                            )
-                                        },
-                                        isCollapsed = transaction.isCollapsed,
-                                        onCardClicked = {
-                                            onAction(
-                                                DashboardAction.OnCardClicked(
-                                                    transactionId = transaction.transactionId
-                                                )
-                                            )
-                                        }
-                                    )
-                                }
-
-                                item {
-                                    Spacer(modifier = Modifier.height(12.dp))
-                                }
-                            }
-                        }
-
                     }
                 }
+            }
+        }
+    }
+}
+
+@Composable
+private fun EmptyTransactionView() {
+    Column(
+        modifier = Modifier
+            .fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Image(
+            modifier = Modifier.size(96.dp),
+            painter = painterResource(drawable.ic_money),
+            contentDescription = ""
+        )
+        Text(
+            modifier = Modifier.padding(top = 4.dp),
+            text = "No transactions to show",
+            style = MaterialTheme.typography.titleLarge
+        )
+    }
+}
+
+@Composable
+@OptIn(ExperimentalFoundationApi::class)
+private fun LatestTransactionsView(
+    uiState: DashboardViewState,
+    onAction: (DashboardAction) -> Unit
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(
+            text = "Latest Transactions",
+            style = MaterialTheme.typography.titleLarge
+        )
+        Text(
+            text = "Show all",
+            style = MaterialTheme.typography.titleMedium.copy(
+                color = MaterialTheme.colorScheme.primary
+            )
+        )
+    }
+
+    Spacer(modifier = Modifier.height(16.dp))
+
+    LazyColumn(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        uiState.transactions?.forEach { transactionGroup ->
+            stickyHeader {
+                Text(
+                    text = transactionGroup.dateLabel,
+                    style = MaterialTheme.typography.labelSmall.copy(
+                        color = MaterialTheme.colorScheme.onSurface.copy(
+                            alpha = 0.70f
+                        )
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(MaterialTheme.colorScheme.background)
+                        .padding(vertical = 8.dp)
+                        .padding(horizontal = 4.dp)
+                )
+            }
+
+            items(
+                items = transactionGroup.transactions,
+                key = { transaction -> transaction.transactionId }
+            ) { transaction ->
+                TransactionItemView(
+                    icon = transaction.transactionCategory.symbol,
+                    title = transaction.title,
+                    category = transaction.transactionCategory.title,
+                    amount = transaction.amount,
+                    note = transaction.note,
+                    displayAmount = { amount ->
+                        NumberFormatter.formatAmount(
+                            amount = amount,
+                            expenseFormat = uiState.preference?.expenseFormat
+                                ?: ExpenseFormat.MINUS_PREFIX,
+                            decimalSeparator = uiState.preference?.decimalSeparator
+                                ?: DecimalSeparator.DOT,
+                            thousandsSeparator = uiState.preference?.thousandsSeparator
+                                ?: ThousandsSeparator.COMMA,
+                            currency = uiState.preference?.currency
+                                ?: Currency.USD
+                        )
+                    },
+                    isCollapsed = transaction.isCollapsed,
+                    onCardClicked = {
+                        onAction(
+                            DashboardAction.OnCardClicked(
+                                transactionId = transaction.transactionId
+                            )
+                        )
+                    }
+                )
+            }
+
+            item {
+                Spacer(modifier = Modifier.height(12.dp))
             }
         }
     }
@@ -362,6 +399,7 @@ fun PreviewDashboardScreen() {
                             dateLabel = "TODAY",
                             transactions = listOf(
                                 TransactionUIItem(
+                                    transactionId = 1,
                                     transactionCategory = TransactionCategoryTypeUI.OTHER,
                                     title = "Amazon",
                                     note = "Hi",
@@ -380,6 +418,7 @@ fun PreviewDashboardScreen() {
                             dateLabel = "JANUARY 9",
                             transactions = listOf(
                                 TransactionUIItem(
+                                    transactionId = 2,
                                     transactionCategory = TransactionCategoryTypeUI.OTHER,
                                     title = "Amazon",
                                     note = "Hi",
@@ -395,6 +434,37 @@ fun PreviewDashboardScreen() {
                             )
                         )
                     )
+                ),
+                snackBarHostState = SnackbarHostState(),
+                scope = rememberCoroutineScope(),
+                onAction = {
+
+                },
+                bottomSheetState = rememberModalBottomSheetState(),
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+@Preview
+fun PreviewDashboardEmptyScreen() {
+    SpendLessFinanceTrackerTheme {
+        Surface(color = MaterialTheme.colorScheme.background) {
+            DashboardScreen(
+                modifier = Modifier,
+                uiState = DashboardViewState(
+                    username = "Hrishi",
+                    accountBalance = "\$10,382.45",
+                    mostPopularCategory = TransactionCategoryTypeUI.TRANSPORTATION,
+                    previousWeekTotal = "\$100.45",
+                    largestTransaction = LargestTransaction(
+                        name = "Adobe Yearly",
+                        amount = "-\$59.99",
+                        date = "Jan 7, 2025"
+                    ),
+                    transactions = listOf()
                 ),
                 snackBarHostState = SnackbarHostState(),
                 scope = rememberCoroutineScope(),
