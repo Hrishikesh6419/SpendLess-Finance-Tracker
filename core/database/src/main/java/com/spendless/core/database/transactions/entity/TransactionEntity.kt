@@ -5,7 +5,7 @@ import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
-import com.hrishi.core.domain.model.ExpenseCategory
+import com.hrishi.core.domain.model.TransactionCategory
 import com.hrishi.core.domain.model.RecurringType
 import com.hrishi.core.domain.model.TransactionType
 import com.spendless.core.database.auth.entity.UserInfoEntity
@@ -34,7 +34,7 @@ data class TransactionEntity(
     val transactionName: String,
     val amount: BigDecimal,
     val note: String?,
-    val expenseCategory: ExpenseCategory,
+    val transactionCategory: TransactionCategory,
     val transactionDate: LocalDateTime,
     val recurringTransactionId: Long?,
     val recurringType: RecurringType,

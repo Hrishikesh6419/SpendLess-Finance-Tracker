@@ -1,6 +1,6 @@
 package com.hrishi.core.domain.model
 
-enum class ExpenseCategory {
+enum class TransactionCategory {
     HOME,
     FOOD,
     ENTERTAINMENT,
@@ -10,5 +10,6 @@ enum class ExpenseCategory {
     TRANSPORTATION,
     EDUCATION,
     SAVINGS,
-    OTHER
+    OTHER,
+    INCOME
 }

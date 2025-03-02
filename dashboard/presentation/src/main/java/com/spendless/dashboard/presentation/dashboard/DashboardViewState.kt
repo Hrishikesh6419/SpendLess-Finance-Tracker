@@ -1,7 +1,7 @@
 package com.spendless.dashboard.presentation.dashboard
 
 import com.hrishi.core.domain.preference.model.UserPreferences
-import com.hrishi.core.presentation.designsystem.model.ExpenseCategoryTypeUI
+import com.hrishi.core.presentation.designsystem.model.TransactionCategoryTypeUI
 import java.math.BigDecimal
 import java.time.LocalDateTime
 
@@ -29,7 +29,7 @@ data class TransactionGroupUIItem(
 )
 
 data class TransactionUIItem(
-    val expenseCategory: ExpenseCategoryTypeUI,
+    val transactionCategory: TransactionCategoryTypeUI,
     val title: String,
     val note: String? = null,
     val amount: BigDecimal,

@@ -42,7 +42,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.hrishi.core.presentation.designsystem.SpendLessFinanceTrackerTheme
 import com.hrishi.core.presentation.designsystem.TickIcon
-import com.hrishi.core.presentation.designsystem.model.ExpenseCategoryTypeUI
+import com.hrishi.core.presentation.designsystem.model.TransactionCategoryTypeUI
 import com.hrishi.core.presentation.designsystem.model.RecurringTypeUI
 import com.hrishi.core.presentation.designsystem.primaryFixed
 
@@ -264,8 +264,8 @@ fun PreviewCategorySelector() {
                         .padding(16.dp),
                     showIconBackground = true,
                     fontStyle = MaterialTheme.typography.labelMedium,
-                    selectedOption = ExpenseCategoryTypeUI.HOME,
-                    options = ExpenseCategoryTypeUI.entries.toTypedArray(),
+                    selectedOption = TransactionCategoryTypeUI.HOME,
+                    options = TransactionCategoryTypeUI.expenseCategories(),
                     currencyDisplay = { it.symbol },
                     currencyTitleDisplay = { it.title },
                     onItemSelected = {}

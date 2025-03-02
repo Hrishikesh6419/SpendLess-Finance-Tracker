@@ -4,7 +4,7 @@ import com.hrishi.core.domain.model.Currency
 import com.hrishi.core.presentation.designsystem.components.text_field.DecimalSeparatorUI
 import com.hrishi.core.presentation.designsystem.components.text_field.ExpenseFormatUI
 import com.hrishi.core.presentation.designsystem.components.text_field.ThousandsSeparatorUI
-import com.hrishi.core.presentation.designsystem.model.ExpenseCategoryTypeUI
+import com.hrishi.core.presentation.designsystem.model.TransactionCategoryTypeUI
 import com.hrishi.core.presentation.designsystem.model.RecurringTypeUI
 import com.hrishi.core.presentation.designsystem.model.TransactionTypeUI
 import java.math.BigDecimal
@@ -17,7 +17,7 @@ data class CreateTransactionViewState(
     val noteHint: String,
     val note: String,
     val showExpenseCategoryType: Boolean,
-    val expenseCategoryType: ExpenseCategoryTypeUI,
+    val transactionCategoryType: TransactionCategoryTypeUI,
     val recurringType: RecurringTypeUI,
     val userId: Long? = null,
     val currency: Currency? = null,

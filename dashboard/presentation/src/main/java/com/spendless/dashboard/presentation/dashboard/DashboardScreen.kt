@@ -55,7 +55,7 @@ import com.hrishi.core.presentation.designsystem.components.SpendLessScaffold
 import com.hrishi.core.presentation.designsystem.components.SpendLessTopBar
 import com.hrishi.core.presentation.designsystem.components.TransactionItem
 import com.hrishi.core.presentation.designsystem.components.buttons.SpendLessFloatingActionButton
-import com.hrishi.core.presentation.designsystem.model.ExpenseCategoryTypeUI
+import com.hrishi.core.presentation.designsystem.model.TransactionCategoryTypeUI
 import com.hrishi.presentation.ui.ObserveAsEvents
 import com.spendless.dashboard.presentation.create_screen.CreateTransactionScreenRoot
 import kotlinx.coroutines.CoroutineScope
@@ -291,9 +291,9 @@ fun DashboardScreen(
 
                                 items(transactionGroup.transactions) { transaction ->
                                     TransactionItem(
-                                        icon = transaction.expenseCategory.symbol,
+                                        icon = transaction.transactionCategory.symbol,
                                         title = transaction.title,
-                                        category = transaction.expenseCategory.title,
+                                        category = transaction.transactionCategory.title,
                                         amount = transaction.amount,
                                         note = transaction.note,
                                         displayAmount = { amount ->
@@ -340,7 +340,7 @@ fun PreviewDashboardScreen() {
                             dateLabel = "TODAY",
                             transactions = listOf(
                                 TransactionUIItem(
-                                    expenseCategory = ExpenseCategoryTypeUI.OTHER,
+                                    transactionCategory = TransactionCategoryTypeUI.OTHER,
                                     title = "Amazon",
                                     note = "Hi",
                                     amount = BigDecimal.TEN.negate(),
@@ -358,7 +358,7 @@ fun PreviewDashboardScreen() {
                             dateLabel = "JANUARY 9",
                             transactions = listOf(
                                 TransactionUIItem(
-                                    expenseCategory = ExpenseCategoryTypeUI.OTHER,
+                                    transactionCategory = TransactionCategoryTypeUI.OTHER,
                                     title = "Amazon",
                                     note = "Hi",
                                     amount = BigDecimal.TEN.negate(),

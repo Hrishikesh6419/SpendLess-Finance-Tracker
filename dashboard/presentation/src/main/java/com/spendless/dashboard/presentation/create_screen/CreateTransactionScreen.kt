@@ -38,7 +38,7 @@ import com.hrishi.core.presentation.designsystem.components.text_field.BasicTran
 import com.hrishi.core.presentation.designsystem.components.text_field.DecimalSeparatorUI
 import com.hrishi.core.presentation.designsystem.components.text_field.ThousandsSeparatorUI
 import com.hrishi.core.presentation.designsystem.components.text_field.TransactionTextField
-import com.hrishi.core.presentation.designsystem.model.ExpenseCategoryTypeUI
+import com.hrishi.core.presentation.designsystem.model.TransactionCategoryTypeUI
 import com.hrishi.core.presentation.designsystem.model.RecurringTypeUI
 import com.hrishi.core.presentation.designsystem.model.TransactionTypeUI
 import com.hrishi.presentation.ui.ObserveAsEvents
@@ -177,12 +177,12 @@ private fun CreateTransactionScreen(
                     .fillMaxWidth(),
                 showIconBackground = true,
                 fontStyle = MaterialTheme.typography.labelMedium,
-                selectedOption = uiState.expenseCategoryType,
-                options = ExpenseCategoryTypeUI.entries.toTypedArray(),
+                selectedOption = uiState.transactionCategoryType,
+                options = TransactionCategoryTypeUI.expenseCategories(),
                 currencyDisplay = { it.symbol },
                 currencyTitleDisplay = { it.title },
                 onItemSelected = {
-                    onAction(CreateTransactionAction.OnExpenseCategoryUpdated(it))
+                    onAction(CreateTransactionAction.OnTransactionCategoryUpdated(it))
                 }
             )
         }
@@ -232,7 +232,7 @@ private fun PreviewCreateTransactionScreenRoot() {
                     amount = BigDecimal.ZERO,
                     noteHint = "Add Note",
                     note = "",
-                    expenseCategoryType = ExpenseCategoryTypeUI.OTHER,
+                    transactionCategoryType = TransactionCategoryTypeUI.OTHER,
                     showExpenseCategoryType = true,
                     recurringType = RecurringTypeUI.ONE_TIME,
                     isCreateButtonEnabled = false

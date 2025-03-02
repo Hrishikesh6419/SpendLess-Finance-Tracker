@@ -5,7 +5,7 @@ import com.spendless.dashboard.presentation.dashboard.TransactionUIItem
 
 fun Transaction.toTransactionUiItem(): TransactionUIItem {
     return TransactionUIItem(
-        expenseCategory = expenseCategory.toExpenseCategoryUI(),
+        transactionCategory = transactionCategory.toTransactionCategoryUI(),
         title = transactionName,
         note = note,
         date = transactionDate,
