@@ -168,8 +168,27 @@ class CreateTransactionViewModel(
                 val result = transactionUseCases.insertTransactionUseCase(transaction)
                 if (result is Result.Success) {
                     eventChannel.send(CreateTransactionEvent.CloseBottomSheet)
+                    resetScreen()
                 }
             }
+        }
+    }
+
+    private fun resetScreen() {
+        val transactionType = TransactionTypeUI.EXPENSE
+        _uiState.update {
+            it.copy(
+                transactionType = transactionType,
+                transactionName = "",
+                transactionNameHint = getTransactionHint(transactionType),
+                amount = BigDecimal.ZERO,
+                noteHint = "Add Note",
+                note = "",
+                transactionCategoryType = TransactionCategoryTypeUI.OTHER,
+                showExpenseCategoryType = isExpenseCategoryTypeVisible(transactionType),
+                recurringType = RecurringTypeUI.ONE_TIME,
+                isCreateButtonEnabled = false
+            )
         }
     }
 }
