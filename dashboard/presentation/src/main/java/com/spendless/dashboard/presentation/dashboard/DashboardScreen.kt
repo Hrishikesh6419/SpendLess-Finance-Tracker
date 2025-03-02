@@ -218,11 +218,13 @@ fun DashboardScreen(
                             modifier = Modifier
                                 .weight(1f)
                                 .fillMaxHeight(),
-                            title = "Adobe",
+                            isEmptyTransactions = uiState.largestTransaction == null,
+                            title = uiState.largestTransaction?.name.orEmpty(),
                             description = "Largest transaction",
-                            amount = "-\$59.99",
-                            date = "Jan 7, 2025",
+                            amount = uiState.largestTransaction?.amount ?: "",
+                            date = uiState.largestTransaction?.date.orEmpty()
                         )
+
                         Spacer(modifier = Modifier.width(8.dp))
 
                         PreviousWeekTotalView(
@@ -230,8 +232,6 @@ fun DashboardScreen(
                             amount = "-\$762.20",
                             description = "Previous week"
                         )
-
-
                     }
                 }
 
@@ -341,6 +341,11 @@ fun PreviewDashboardScreen() {
                     username = "Hrishi",
                     accountBalance = "\$10,382.45",
                     mostPopularCategory = TransactionCategoryTypeUI.TRANSPORTATION,
+                    largestTransaction = LargestTransaction(
+                        name = "Adobe Yearly",
+                        amount = "-\$59.99",
+                        date = "Jan 7, 2025"
+                    ),
                     transactions = listOf(
                         TransactionGroupUIItem(
                             dateLabel = "TODAY",

@@ -18,6 +18,7 @@ import com.hrishi.core.domain.security.EncryptionService
 import com.hrishi.core.domain.transactions.repository.TransactionRepository
 import com.hrishi.core.domain.transactions.usecases.GetAccountBalanceUseCase
 import com.hrishi.core.domain.transactions.usecases.GetDueRecurringTransactionsUseCase
+import com.hrishi.core.domain.transactions.usecases.GetLargestTransactionUseCase
 import com.hrishi.core.domain.transactions.usecases.GetMostPopularExpenseCategoryUseCase
 import com.hrishi.core.domain.transactions.usecases.GetRecurringTransactionSeriesUseCase
 import com.hrishi.core.domain.transactions.usecases.GetTransactionsForUserUseCase
@@ -50,6 +51,7 @@ val coreDataModule = module {
     factory { GetDueRecurringTransactionsUseCase(get()) }
     factory { GetAccountBalanceUseCase(get()) }
     factory { GetMostPopularExpenseCategoryUseCase(get()) }
-    single { TransactionUseCases(get(), get(), get(), get(), get(), get()) }
+    factory { GetLargestTransactionUseCase(get()) }
+    single { TransactionUseCases(get(), get(), get(), get(), get(), get(), get()) }
     singleOf(::TransactionRepositoryImpl).bind<TransactionRepository>()
 }

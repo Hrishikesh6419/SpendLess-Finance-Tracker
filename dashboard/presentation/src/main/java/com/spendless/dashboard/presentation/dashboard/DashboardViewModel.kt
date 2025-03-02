@@ -3,13 +3,18 @@ package com.spendless.dashboard.presentation.dashboard
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hrishi.core.domain.formatting.NumberFormatter
+import com.hrishi.core.domain.model.TransactionCategory
 import com.hrishi.core.domain.preference.model.UserPreferences
 import com.hrishi.core.domain.preference.usecase.SettingsPreferenceUseCase
+import com.hrishi.core.domain.transactions.model.Transaction
 import com.hrishi.core.domain.transactions.usecases.TransactionUseCases
 import com.hrishi.core.domain.utils.CombinedResult
+import com.hrishi.core.domain.utils.DataError
 import com.hrishi.core.domain.utils.Result
+import com.hrishi.core.domain.utils.toShortDateString
 import com.spendless.dashboard.presentation.mapper.toTransactionCategoryUI
 import com.spendless.dashboard.presentation.mapper.toTransactionUiItem
+import com.spendless.session_management.domain.model.SessionData
 import com.spendless.session_management.domain.usecases.SessionUseCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
@@ -60,20 +65,32 @@ class DashboardViewModel(
             },
             sessionUseCases.getSessionDataUseCase().flatMapLatest { sessionData ->
                 transactionUseCases.getMostPopularExpenseCategoryUseCase(sessionData.userId)
+            },
+            sessionUseCases.getSessionDataUseCase().flatMapLatest { sessionData ->
+                transactionUseCases.getLargestTransactionUseCase(sessionData.userId)
             }
-        ) { sessionData, preferenceResult, transactionResult, balanceResult, popularCategoryResult ->
+        ) { array: Array<Any?> ->
             CombinedResult(
-                sessionData,
-                preferenceResult,
-                transactionResult,
-                balanceResult,
-                popularCategoryResult
+                array[0] as SessionData,
+                array[1] as Result<UserPreferences, DataError>,
+                array[2] as Result<List<Transaction>, DataError>,
+                array[3] as Result<BigDecimal, DataError>,
+                array[4] as Result<TransactionCategory?, DataError>,
+                array[5] as Result<Transaction?, DataError>
             )
-        }.onEach { (sessionData, preferenceResult, transactionResult, balanceResult, popularCategoryResult) ->
+        }.onEach { (
+                       sessionData: SessionData,
+                       preferenceResult: Result<UserPreferences, DataError>,
+                       transactionResult: Result<List<Transaction>, DataError>,
+                       balanceResult: Result<BigDecimal, DataError>,
+                       popularCategoryResult: Result<TransactionCategory?, DataError>,
+                       largestTransactionResult: Result<Transaction?, DataError>,
+                   ) ->
             if (preferenceResult is Result.Success &&
                 transactionResult is Result.Success &&
                 balanceResult is Result.Success &&
-                popularCategoryResult is Result.Success
+                popularCategoryResult is Result.Success &&
+                largestTransactionResult is Result.Success
             ) {
                 preference = preferenceResult.data
                 _uiState.update { currentState ->
@@ -82,6 +99,7 @@ class DashboardViewModel(
                         username = sessionData.userName,
                         accountBalance = formatAmount(balanceResult.data),
                         mostPopularCategory = popularCategoryResult.data?.toTransactionCategoryUI(),
+                        largestTransaction = largestTransactionResult.data.toLargestTransactionItem(),
                         transactions = groupTransactionsByDate(transactionResult.data.map { it.toTransactionUiItem() })
                     )
                 }
@@ -139,5 +157,15 @@ class DashboardViewModel(
                 currency = it.currency
             )
         } ?: ""
+    }
+
+    private fun Transaction?.toLargestTransactionItem(): LargestTransaction? {
+        return this?.let {
+            LargestTransaction(
+                name = this.transactionName,
+                amount = formatAmount(this.amount),
+                date = this.transactionDate.toShortDateString()
+            )
+        }
     }
 }

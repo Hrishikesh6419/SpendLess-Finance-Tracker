@@ -102,4 +102,15 @@ class RoomTransactionDataSource(
                 emit(Result.Error(DataError.Local.UNKNOWN_DATABASE_ERROR))
             }
     }
+
+    override fun getLargestTransaction(userId: Long): Flow<Result<Transaction?, DataError>> {
+        return transactionsDao.getLargestTransaction(userId)
+            .map { transactionEntity ->
+                Result.Success(transactionEntity?.toTransaction()) as Result<Transaction?, DataError>
+            }
+            .catch {
+                emit(Result.Error(DataError.Local.UNKNOWN_DATABASE_ERROR))
+            }
+    }
+
 }

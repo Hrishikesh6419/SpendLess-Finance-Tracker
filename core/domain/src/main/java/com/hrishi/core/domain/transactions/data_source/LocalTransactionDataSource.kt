@@ -15,4 +15,5 @@ interface LocalTransactionDataSource {
     suspend fun getDueRecurringTransactions(currentDate: LocalDateTime): Result<List<Transaction>, DataError>
     fun getAccountBalance(userId: Long): Flow<Result<BigDecimal, DataError>>
     fun getMostPopularExpenseCategory(userId: Long): Flow<Result<TransactionCategory?, DataError>>
+    fun getLargestTransaction(userId: Long): Flow<Result<Transaction?, DataError>>
 }

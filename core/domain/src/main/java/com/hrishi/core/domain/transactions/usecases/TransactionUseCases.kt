@@ -15,7 +15,8 @@ data class TransactionUseCases(
     val getRecurringTransactionSeriesUseCase: GetRecurringTransactionSeriesUseCase,
     val getDueRecurringTransactionsUseCase: GetDueRecurringTransactionsUseCase,
     val getAccountBalanceUseCase: GetAccountBalanceUseCase,
-    val getMostPopularExpenseCategoryUseCase: GetMostPopularExpenseCategoryUseCase
+    val getMostPopularExpenseCategoryUseCase: GetMostPopularExpenseCategoryUseCase,
+    val getLargestTransactionUseCase: GetLargestTransactionUseCase,
 )
 
 class InsertTransactionUseCase(
@@ -63,5 +64,13 @@ class GetMostPopularExpenseCategoryUseCase(
 ) {
     operator fun invoke(userId: Long): Flow<Result<TransactionCategory?, DataError>> {
         return transactionRepository.getMostPopularExpenseCategory(userId)
+    }
+}
+
+class GetLargestTransactionUseCase(
+    private val transactionRepository: TransactionRepository
+) {
+    operator fun invoke(userId: Long): Flow<Result<Transaction?, DataError>> {
+        return transactionRepository.getLargestTransaction(userId)
     }
 }

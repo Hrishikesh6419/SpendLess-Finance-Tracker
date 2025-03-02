@@ -37,4 +37,8 @@ class TransactionRepositoryImpl(
     override fun getMostPopularExpenseCategory(userId: Long): Flow<Result<TransactionCategory?, DataError>> {
         return localTransactionDataSource.getMostPopularExpenseCategory(userId)
     }
+
+    override fun getLargestTransaction(userId: Long): Flow<Result<Transaction?, DataError>> {
+        return localTransactionDataSource.getLargestTransaction(userId)
+    }
 }

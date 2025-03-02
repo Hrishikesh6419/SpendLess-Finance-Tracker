@@ -26,10 +26,10 @@ import com.hrishi.core.presentation.designsystem.primaryFixed
 @Composable
 fun LargestTransactionView(
     modifier: Modifier = Modifier,
-    title: String,
-    description: String,
-    amount: String,
-    date: String,
+    title: String = "",
+    description: String = "",
+    amount: String = "",
+    date: String = "",
     emptyTransactionsText: String = "Your largest transaction will appear here",
     isEmptyTransactions: Boolean = false
 ) {

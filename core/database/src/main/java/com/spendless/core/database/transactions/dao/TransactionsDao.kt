@@ -43,5 +43,15 @@ interface TransactionsDao {
     LIMIT 1
     """
     )
-    fun getMostPopularExpenseCategory(userId: Long): Flow<TransactionCategory>
+    fun getMostPopularExpenseCategory(userId: Long): Flow<TransactionCategory?>
+
+    @Query(
+        """
+    SELECT * FROM transactions
+    WHERE transactionType = 'EXPENSE' AND userId = :userId
+    ORDER BY amount DESC
+    LIMIT 1
+    """
+    )
+    fun getLargestTransaction(userId: Long): Flow<TransactionEntity?>
 }

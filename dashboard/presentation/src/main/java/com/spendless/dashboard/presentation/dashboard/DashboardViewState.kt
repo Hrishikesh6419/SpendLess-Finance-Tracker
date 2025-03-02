@@ -19,8 +19,8 @@ data class DashboardViewState(
 
 data class LargestTransaction(
     val name: String,
-    val amount: BigDecimal,
-    val date: Long
+    val amount: String,
+    val date: String
 )
 
 data class TransactionGroupUIItem(
