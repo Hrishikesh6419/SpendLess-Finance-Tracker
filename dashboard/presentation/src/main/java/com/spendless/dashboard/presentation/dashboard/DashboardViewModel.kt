@@ -114,6 +114,11 @@ class DashboardViewModel(
     fun onAction(action: DashboardAction) {
         when (action) {
             DashboardAction.NavigationClick -> Unit
+            DashboardAction.OnShowAllTransactionsClicked -> {
+                viewModelScope.launch {
+                    eventChannel.send(DashboardEvent.NavigateToAllTransactions)
+                }
+            }
             DashboardAction.OnSettingsClicked -> {
                 viewModelScope.launch {
                     eventChannel.send(DashboardEvent.NavigateToSettings)

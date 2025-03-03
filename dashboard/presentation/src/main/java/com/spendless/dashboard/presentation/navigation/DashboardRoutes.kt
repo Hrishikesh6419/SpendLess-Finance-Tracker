@@ -10,6 +10,13 @@ data object DashboardBaseRoute
 @Serializable
 data object DashboardScreenRoute
 
+@Serializable
+data object AllTransactionsScreenRoute
+
 fun NavController.navigateToDashboardScreen(
     navOptions: NavOptionsBuilder.() -> Unit = {}
 ) = navigate(DashboardScreenRoute, navOptions)
+
+fun NavController.navigateToAllTransactionsScreenRoute(
+    navOptions: NavOptionsBuilder.() -> Unit = {}
+) = navigate(AllTransactionsScreenRoute, navOptions)

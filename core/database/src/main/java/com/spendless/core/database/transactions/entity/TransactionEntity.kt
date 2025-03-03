@@ -4,12 +4,10 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import androidx.room.TypeConverters
-import com.hrishi.core.domain.model.TransactionCategory
 import com.hrishi.core.domain.model.RecurringType
+import com.hrishi.core.domain.model.TransactionCategory
 import com.hrishi.core.domain.model.TransactionType
 import com.spendless.core.database.auth.entity.UserInfoEntity
-import com.spendless.core.database.transactions.utils.TransactionConverters
 import java.math.BigDecimal
 import java.time.LocalDateTime
 
@@ -25,7 +23,6 @@ import java.time.LocalDateTime
     ],
     indices = [Index(value = ["userId"]), Index(value = ["recurringTransactionId"])]
 )
-@TypeConverters(TransactionConverters::class)
 data class TransactionEntity(
     @PrimaryKey(autoGenerate = true)
     val transactionId: Long,
