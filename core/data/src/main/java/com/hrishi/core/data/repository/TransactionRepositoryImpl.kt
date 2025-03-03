@@ -18,8 +18,11 @@ class TransactionRepositoryImpl(
         return localTransactionDataSource.upsertTransaction(transaction)
     }
 
-    override fun getTransactionsForUser(userId: Long): Flow<Result<List<Transaction>, DataError>> {
-        return localTransactionDataSource.getTransactionsForUser(userId)
+    override fun getTransactionsForUser(
+        userId: Long,
+        limit: Int?
+    ): Flow<Result<List<Transaction>, DataError>> {
+        return localTransactionDataSource.getTransactionsForUser(userId, limit)
     }
 
     override fun getRecurringTransactionSeries(recurringId: Long): Flow<Result<List<Transaction>, DataError>> {

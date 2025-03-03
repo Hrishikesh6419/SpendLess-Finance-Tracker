@@ -41,8 +41,11 @@ class RoomTransactionDataSource(
         }
     }
 
-    override fun getTransactionsForUser(userId: Long): Flow<Result<List<Transaction>, DataError>> {
-        return transactionsDao.getTransactionsForUser(userId)
+    override fun getTransactionsForUser(
+        userId: Long,
+        limit: Int?
+    ): Flow<Result<List<Transaction>, DataError>> {
+        return transactionsDao.getTransactionsForUser(userId, limit)
             .map { transactions ->
                 Result.Success(transactions.map { it.toTransaction() }) as Result<List<Transaction>, DataError>
             }

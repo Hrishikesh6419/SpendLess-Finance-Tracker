@@ -55,7 +55,10 @@ class DashboardViewModel(
                 sessionPreferenceUseCase.getPreferencesUseCase(sessionData.userId)
             },
             sessionUseCases.getSessionDataUseCase().flatMapLatest { sessionData ->
-                transactionUseCases.getTransactionsForUserUseCase(sessionData.userId)
+                transactionUseCases.getTransactionsForUserUseCase(
+                    userId = sessionData.userId,
+                    limit = FETCH_TRANSACTIONS_LIMIT
+                )
             },
             sessionUseCases.getSessionDataUseCase().flatMapLatest { sessionData ->
                 transactionUseCases.getAccountBalanceUseCase(sessionData.userId)
@@ -176,5 +179,9 @@ class DashboardViewModel(
                 date = this.transactionDate.toShortDateString()
             )
         }
+    }
+
+    companion object {
+        private const val FETCH_TRANSACTIONS_LIMIT = 20
     }
 }

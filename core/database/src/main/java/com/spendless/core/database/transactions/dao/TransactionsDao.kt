@@ -15,8 +15,16 @@ interface TransactionsDao {
     @Upsert
     suspend fun upsertTransaction(transaction: TransactionEntity): Long
 
-    @Query("SELECT * FROM transactions WHERE userId = :userId ORDER BY transactionDate DESC")
-    fun getTransactionsForUser(userId: Long): Flow<List<TransactionEntity>>
+    @Query(
+        """
+    SELECT * FROM transactions 
+    WHERE userId = :userId 
+    ORDER BY transactionDate DESC 
+    LIMIT CASE WHEN :limit IS NULL THEN -1 ELSE :limit END
+    """
+    )
+    fun getTransactionsForUser(userId: Long, limit: Int? = null): Flow<List<TransactionEntity>>
+
 
     @Query("SELECT * FROM transactions WHERE recurringTransactionId = :recurringId ORDER BY transactionDate ASC")
     fun getRecurringTransactionSeries(recurringId: Long): Flow<List<TransactionEntity>>

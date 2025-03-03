@@ -12,7 +12,10 @@ interface TransactionRepository {
 
     suspend fun insertTransaction(transaction: Transaction): Result<Unit, DataError>
 
-    fun getTransactionsForUser(userId: Long): Flow<Result<List<Transaction>, DataError>>
+    fun getTransactionsForUser(
+        userId: Long,
+        limit: Int? = null
+    ): Flow<Result<List<Transaction>, DataError>>
 
     fun getRecurringTransactionSeries(recurringId: Long): Flow<Result<List<Transaction>, DataError>>
 

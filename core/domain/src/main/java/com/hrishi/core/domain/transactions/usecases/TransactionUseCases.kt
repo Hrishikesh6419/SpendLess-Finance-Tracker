@@ -36,8 +36,11 @@ class InsertTransactionUseCase(
 class GetTransactionsForUserUseCase(
     private val transactionRepository: TransactionRepository
 ) {
-    operator fun invoke(userId: Long): Flow<Result<List<Transaction>, DataError>> {
-        return transactionRepository.getTransactionsForUser(userId)
+    operator fun invoke(
+        userId: Long,
+        limit: Int? = null
+    ): Flow<Result<List<Transaction>, DataError>> {
+        return transactionRepository.getTransactionsForUser(userId, limit)
     }
 }
 
