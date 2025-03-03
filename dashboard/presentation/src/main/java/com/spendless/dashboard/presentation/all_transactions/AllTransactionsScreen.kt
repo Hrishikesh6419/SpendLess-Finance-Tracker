@@ -37,6 +37,7 @@ import com.hrishi.core.domain.model.Currency
 import com.hrishi.core.domain.model.DecimalSeparator
 import com.hrishi.core.domain.model.ExpenseFormat
 import com.hrishi.core.domain.model.ThousandsSeparator
+import com.hrishi.core.presentation.designsystem.DownloadButton
 import com.hrishi.core.presentation.designsystem.SpendLessFinanceTrackerTheme
 import com.hrishi.core.presentation.designsystem.components.SpendLessTopBar
 import com.hrishi.core.presentation.designsystem.components.TransactionItemView
@@ -127,6 +128,11 @@ private fun AllTransactionsScreen(
                 titleColor = MaterialTheme.colorScheme.onSurface,
                 onStartIconClick = {
                     onAction(AllTransactionsAction.OnClickBackButton)
+                },
+                endIcon2 = DownloadButton,
+                endIcon2Color = MaterialTheme.colorScheme.onSurface,
+                endIcon2BackgroundColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.18f),
+                onEndIcon2Click = {
                 }
             )
         },
