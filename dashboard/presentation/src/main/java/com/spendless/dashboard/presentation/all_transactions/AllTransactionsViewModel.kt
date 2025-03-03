@@ -56,10 +56,18 @@ class AllTransactionsViewModel(
                 }
             }
 
-            is AllTransactionsAction.UpdatedBottomSheet -> {
+            is AllTransactionsAction.UpdateCreateBottomSheet -> {
                 _uiState.update {
                     it.copy(
                         showCreateTransactionsSheet = action.showSheet
+                    )
+                }
+            }
+
+            is AllTransactionsAction.UpdateExportBottomSheet -> {
+                _uiState.update {
+                    it.copy(
+                        showExportTransactionsSheet = action.showSheet
                     )
                 }
             }

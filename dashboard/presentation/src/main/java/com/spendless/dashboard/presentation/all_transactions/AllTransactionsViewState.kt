@@ -7,4 +7,5 @@ data class AllTransactionsViewState(
     val preference: UserPreferences? = null,
     val transactions: List<TransactionGroupUIItem>? = null,
     val showCreateTransactionsSheet: Boolean = false,
+    val showExportTransactionsSheet: Boolean = false,
 )

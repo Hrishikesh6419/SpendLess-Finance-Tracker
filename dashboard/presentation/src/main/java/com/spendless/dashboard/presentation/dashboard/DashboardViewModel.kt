@@ -103,10 +103,16 @@ class DashboardViewModel(
                     currentState.copy(
                         preference = preferenceResult.data,
                         username = sessionData.userName,
-                        accountBalance = formatAmount(balanceResult.data),
+                        accountBalance = NumberFormatter.formatAmount(
+                            balanceResult.data,
+                            preference
+                        ),
                         mostPopularCategory = popularCategoryResult.data?.toTransactionCategoryUI(),
                         largestTransaction = largestTransactionResult.data.toLargestTransactionItem(),
-                        previousWeekTotal = formatAmount(previousWeekTotalResult.data),
+                        previousWeekTotal = NumberFormatter.formatAmount(
+                            previousWeekTotalResult.data,
+                            preference
+                        ),
                         transactions = groupTransactionsByDate(transactionResult.data)
                     )
                 }
@@ -159,23 +165,11 @@ class DashboardViewModel(
         }
     }
 
-    private fun formatAmount(amount: BigDecimal): String {
-        return preference?.let {
-            NumberFormatter.formatAmount(
-                amount = amount,
-                expenseFormat = it.expenseFormat,
-                decimalSeparator = it.decimalSeparator,
-                thousandsSeparator = it.thousandsSeparator,
-                currency = it.currency
-            )
-        } ?: ""
-    }
-
     private fun Transaction?.toLargestTransactionItem(): LargestTransaction? {
         return this?.let {
             LargestTransaction(
                 name = this.transactionName,
-                amount = formatAmount(this.amount),
+                amount = NumberFormatter.formatAmount(this.amount, preference),
                 date = this.transactionDate.toShortDateString()
             )
         }

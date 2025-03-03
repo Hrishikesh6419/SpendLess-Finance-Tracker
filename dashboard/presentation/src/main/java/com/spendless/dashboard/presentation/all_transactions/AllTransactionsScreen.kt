@@ -47,6 +47,7 @@ import com.hrishi.presentation.ui.ObserveAsEvents
 import com.spendless.dashboard.presentation.create_screen.CreateTransactionScreenRoot
 import com.spendless.dashboard.presentation.dashboard.TransactionGroupUIItem
 import com.spendless.dashboard.presentation.dashboard.TransactionUIItem
+import com.spendless.dashboard.presentation.export.ExportTransactionsScreenRoot
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -63,7 +64,10 @@ fun AllTransactionsScreenRoot(
 ) {
     val scope = rememberCoroutineScope()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val bottomSheetState = rememberModalBottomSheetState(
+    val createBottomSheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true
+    )
+    val exportBottomSheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = true
     )
 
@@ -76,7 +80,8 @@ fun AllTransactionsScreenRoot(
     AllTransactionsScreen(
         modifier = modifier,
         uiState = uiState,
-        bottomSheetState = bottomSheetState,
+        createBottomSheetState = createBottomSheetState,
+        exportBottomSheetState = exportBottomSheetState,
         scope = scope,
         onAction = viewModel::onAction
     )
@@ -87,16 +92,17 @@ fun AllTransactionsScreenRoot(
 private fun AllTransactionsScreen(
     modifier: Modifier = Modifier,
     uiState: AllTransactionsViewState,
-    bottomSheetState: SheetState,
+    createBottomSheetState: SheetState,
+    exportBottomSheetState: SheetState,
     scope: CoroutineScope,
     onAction: (AllTransactionsAction) -> Unit,
 ) {
     if (uiState.showCreateTransactionsSheet) {
         ModalBottomSheet(
             onDismissRequest = {
-                onAction(AllTransactionsAction.UpdatedBottomSheet(false))
+                onAction(AllTransactionsAction.UpdateCreateBottomSheet(false))
             },
-            sheetState = bottomSheetState,
+            sheetState = createBottomSheetState,
             containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
             properties = ModalBottomSheetProperties(
                 shouldDismissOnBackPress = false
@@ -111,12 +117,42 @@ private fun AllTransactionsScreen(
             ) {
                 CreateTransactionScreenRoot(
                     onDismiss = {
-                        onAction(AllTransactionsAction.UpdatedBottomSheet(false))
+                        onAction(AllTransactionsAction.UpdateCreateBottomSheet(false))
                     }
                 )
             }
         }
     }
+
+    if (uiState.showExportTransactionsSheet) {
+        ModalBottomSheet(
+            onDismissRequest = {
+                onAction(AllTransactionsAction.UpdateExportBottomSheet(false))
+            },
+            sheetState = exportBottomSheetState,
+            containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+            properties = ModalBottomSheetProperties(
+                shouldDismissOnBackPress = false
+            ),
+            dragHandle = null,
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(0.75f)
+            ) {
+                ExportTransactionsScreenRoot(
+                    onDismiss = {
+                        onAction(AllTransactionsAction.UpdateExportBottomSheet(false))
+                    }
+                )
+            }
+        }
+    }
+
+
 
     Scaffold(containerColor = Color.Transparent,
         topBar = {
@@ -133,6 +169,7 @@ private fun AllTransactionsScreen(
                 endIcon2Color = MaterialTheme.colorScheme.onSurface,
                 endIcon2BackgroundColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.18f),
                 onEndIcon2Click = {
+                    onAction(AllTransactionsAction.UpdateExportBottomSheet(true))
                 }
             )
         },
@@ -140,7 +177,7 @@ private fun AllTransactionsScreen(
             SpendLessFloatingActionButton(
                 onClick = {
                     scope.launch {
-                        onAction(AllTransactionsAction.UpdatedBottomSheet(true))
+                        onAction(AllTransactionsAction.UpdateCreateBottomSheet(true))
                     }
                 }
             )
@@ -279,7 +316,8 @@ private fun PreviewAllTransactionsScreen() {
                 onAction = {
 
                 },
-                bottomSheetState = rememberModalBottomSheetState(),
+                createBottomSheetState = rememberModalBottomSheetState(),
+                exportBottomSheetState = rememberModalBottomSheetState(),
             )
         }
     }

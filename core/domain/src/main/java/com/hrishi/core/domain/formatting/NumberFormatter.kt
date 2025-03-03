@@ -4,6 +4,7 @@ import com.hrishi.core.domain.model.Currency
 import com.hrishi.core.domain.model.DecimalSeparator
 import com.hrishi.core.domain.model.ExpenseFormat
 import com.hrishi.core.domain.model.ThousandsSeparator
+import com.hrishi.core.domain.preference.model.UserPreferences
 import java.math.BigDecimal
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
@@ -39,5 +40,17 @@ object NumberFormatter {
         return if (isNegativeNumber) {
             expenseFormat.toValue(formattedNumberWithCurrency)
         } else formattedNumberWithCurrency
+    }
+
+    fun formatAmount(amount: BigDecimal, preferences: UserPreferences?): String {
+        return preferences?.let {
+            formatAmount(
+                amount = amount,
+                expenseFormat = it.expenseFormat,
+                decimalSeparator = it.decimalSeparator,
+                thousandsSeparator = it.thousandsSeparator,
+                currency = it.currency
+            )
+        } ?: ""
     }
 }
