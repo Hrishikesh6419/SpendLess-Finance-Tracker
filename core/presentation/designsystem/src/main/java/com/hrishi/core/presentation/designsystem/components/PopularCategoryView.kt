@@ -80,7 +80,7 @@ fun PopularCategoryView(
 @Composable
 fun PreviewPopularCategoryView() {
     SpendLessFinanceTrackerTheme {
-        TransactionBackground {
+        PrimaryGradientBackground {
             PopularCategoryView(
                 modifier = Modifier
                     .padding(top = 200.dp)

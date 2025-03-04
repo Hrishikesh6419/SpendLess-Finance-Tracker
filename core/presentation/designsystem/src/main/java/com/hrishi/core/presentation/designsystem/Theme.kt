@@ -1,13 +1,9 @@
 package com.hrishi.core.presentation.designsystem
 
-import android.app.Activity
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.SideEffect
-import androidx.compose.ui.platform.LocalView
-import androidx.core.view.WindowCompat
+import androidx.compose.runtime.compositionLocalOf
 
 val primaryFixed = SpendLessPrimaryFixed
 val onPrimaryFixed = SpendLessOnPrimaryFixed
@@ -34,23 +30,18 @@ private val ColorScheme = darkColorScheme(
     tertiaryContainer = SpendLessTertiaryContainer
 )
 
+data class StatusBarAppearance(
+    val isDarkStatusBarIcons: Boolean = true
+)
+
+val LocalStatusBarAppearance = compositionLocalOf { StatusBarAppearance() }
+
 @Composable
 fun SpendLessFinanceTrackerTheme(
-    isLightStatusBar: Boolean = true,
     content: @Composable () -> Unit
 ) {
-    val colorScheme = ColorScheme
-    val view = LocalView.current
-    if (!view.isInEditMode) {
-        SideEffect {
-            val window = (view.context as Activity).window
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars =
-                isLightStatusBar
-        }
-    }
-
     MaterialTheme(
-        colorScheme = colorScheme,
+        colorScheme = ColorScheme,
         typography = Typography,
         content = content
     )

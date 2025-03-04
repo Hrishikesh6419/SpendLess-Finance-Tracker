@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
@@ -22,7 +21,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
@@ -35,6 +33,7 @@ import com.hrishi.auth.apresentation.R
 import com.hrishi.auth.presentation.login.component.SpendLessClickableText
 import com.hrishi.core.presentation.designsystem.LoginIcon
 import com.hrishi.core.presentation.designsystem.SpendLessFinanceTrackerTheme
+import com.hrishi.core.presentation.designsystem.components.SpendLessScaffold
 import com.hrishi.core.presentation.designsystem.components.SpendLessSnackBarHost
 import com.hrishi.core.presentation.designsystem.components.buttons.SpendLessButton
 import com.hrishi.core.presentation.designsystem.components.text_field.SpendLessTextField
@@ -94,9 +93,10 @@ fun LoginScreen(
     snackbarHostState: SnackbarHostState,
     onAction: (LoginAction) -> Unit
 ) {
-    Scaffold(containerColor = Color.Transparent, snackbarHost = {
-        SpendLessSnackBarHost(snackbarHostState)
-    }) { contentPadding ->
+    SpendLessScaffold(
+        snackbarHost = {
+            SpendLessSnackBarHost(snackbarHostState)
+        }) { contentPadding ->
         Column(
             modifier = modifier
                 .fillMaxSize()

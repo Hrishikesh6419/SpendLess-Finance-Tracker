@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 import com.hrishi.core.presentation.designsystem.onPrimaryFixed
 
 @Composable
-fun TransactionBackground(
+fun PrimaryGradientBackground(
     modifier: Modifier = Modifier,
     hasToolbar: Boolean = true,
     gradientStartColor: Color = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
@@ -76,7 +76,7 @@ fun TransactionBackground(
 @Preview
 @Composable
 fun PreviewTransactionBackground() {
-    TransactionBackground {
+    PrimaryGradientBackground {
 
     }
 }

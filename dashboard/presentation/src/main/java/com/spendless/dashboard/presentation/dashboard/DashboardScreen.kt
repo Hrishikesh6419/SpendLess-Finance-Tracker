@@ -34,6 +34,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -49,8 +50,10 @@ import com.hrishi.core.domain.model.DecimalSeparator
 import com.hrishi.core.domain.model.ExpenseFormat
 import com.hrishi.core.domain.model.ThousandsSeparator
 import com.hrishi.core.presentation.designsystem.DownloadButton
+import com.hrishi.core.presentation.designsystem.LocalStatusBarAppearance
 import com.hrishi.core.presentation.designsystem.SettingsButton
 import com.hrishi.core.presentation.designsystem.SpendLessFinanceTrackerTheme
+import com.hrishi.core.presentation.designsystem.StatusBarAppearance
 import com.hrishi.core.presentation.designsystem.components.LargestTransactionView
 import com.hrishi.core.presentation.designsystem.components.PopularCategoryView
 import com.hrishi.core.presentation.designsystem.components.PreviousWeekTotalView
@@ -61,7 +64,6 @@ import com.hrishi.core.presentation.designsystem.components.buttons.SpendLessFlo
 import com.hrishi.core.presentation.designsystem.model.TransactionCategoryTypeUI
 import com.hrishi.presentation.designsystem.R.drawable
 import com.hrishi.presentation.ui.ObserveAsEvents
-import com.hrishi.presentation.ui.UpdateStatusBarAppearance
 import com.spendless.dashboard.presentation.create_screen.CreateTransactionScreenRoot
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -79,7 +81,6 @@ fun DashboardScreenRoot(
     onNavigateToSettings: () -> Unit,
     onNavigateToAllTransactions: () -> Unit,
 ) {
-    UpdateStatusBarAppearance(isDarkStatusBarIcons = false)
     val scope = rememberCoroutineScope()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val bottomSheetState = rememberModalBottomSheetState(
@@ -93,15 +94,18 @@ fun DashboardScreenRoot(
             DashboardEvent.NavigateToSettings -> onNavigateToSettings()
         }
     }
-
-    DashboardScreen(
-        modifier = modifier,
-        uiState = uiState,
-        snackBarHostState = snackBarHostState,
-        bottomSheetState = bottomSheetState,
-        scope = scope,
-        onAction = viewModel::onAction
-    )
+    CompositionLocalProvider(
+        LocalStatusBarAppearance provides StatusBarAppearance(isDarkStatusBarIcons = false)
+    ) {
+        DashboardScreen(
+            modifier = modifier,
+            uiState = uiState,
+            snackBarHostState = snackBarHostState,
+            bottomSheetState = bottomSheetState,
+            scope = scope,
+            onAction = viewModel::onAction
+        )
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
@@ -142,6 +146,7 @@ fun DashboardScreen(
     }
 
     SpendLessScaffold(
+        withGradient = true,
         topAppBar = {
             SpendLessTopBar(
                 modifier = Modifier
