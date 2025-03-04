@@ -3,6 +3,8 @@ package com.hrishi.core.data.export.repository
 import android.os.Environment
 import com.hrishi.core.domain.export.model.ExportType
 import com.hrishi.core.domain.export.repository.ExportRepository
+import com.hrishi.core.domain.formatting.NumberFormatter
+import com.hrishi.core.domain.preference.model.UserPreferences
 import com.hrishi.core.domain.transactions.model.Transaction
 import com.hrishi.core.domain.transactions.repository.TransactionRepository
 import com.hrishi.core.domain.utils.DataError
@@ -18,7 +20,8 @@ class ExportRepositoryImpl(
 
     override suspend fun exportTransactions(
         dateRange: ExportType,
-        userId: Long
+        userId: Long,
+        userPreference: UserPreferences
     ): Result<Boolean, DataError> {
         val (startDate, endDate) = dateRange.getDateRange()
 
@@ -28,7 +31,8 @@ class ExportRepositoryImpl(
 
             when (transactionsResult) {
                 is Result.Success -> {
-                    val exportResult = writeTransactionsToCsv(transactionsResult.data)
+                    val exportResult =
+                        writeTransactionsToCsv(transactionsResult.data, userPreference)
                     if (exportResult) {
                         Result.Success(true)
                     } else {
@@ -43,7 +47,10 @@ class ExportRepositoryImpl(
         }
     }
 
-    private fun writeTransactionsToCsv(transactions: List<Transaction>): Boolean {
+    private fun writeTransactionsToCsv(
+        transactions: List<Transaction>,
+        userPreference: UserPreferences
+    ): Boolean {
         val downloadsDir =
             Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
         if (!downloadsDir.exists()) downloadsDir.mkdirs()
@@ -63,7 +70,7 @@ class ExportRepositoryImpl(
                 writer.appendLine(headers.joinToString(",") { escapeCsv(it) })
 
                 transactions.forEach { transaction ->
-                    val csvLine = buildCsvLine(transaction)
+                    val csvLine = buildCsvLine(transaction, userPreference)
                     writer.appendLine(csvLine)
                 }
                 writer.flush()
@@ -74,11 +81,13 @@ class ExportRepositoryImpl(
         }
     }
 
-
-    private fun buildCsvLine(transaction: Transaction): String {
+    private fun buildCsvLine(transaction: Transaction, userPreference: UserPreferences): String {
         return listOf(
             transaction.transactionType.displayName,
-            transaction.amount.toString(),
+            NumberFormatter.formatAmount(
+                amount = transaction.amount,
+                preferences = userPreference
+            ),
             transaction.transactionDate.toISODateString(),
             transaction.transactionName,
             transaction.transactionCategory.displayName,

@@ -64,6 +64,6 @@ val coreDataModule = module {
     singleOf(::TransactionRepositoryImpl).bind<TransactionRepository>()
     singleOf(::ExportRepositoryImpl).bind<ExportRepository>()
 
-    factory { ExportTransactionUseCase(get()) }
+    factory { ExportTransactionUseCase(get(), get()) }
     single { ExportTransactionsUseCases(get()) }
 }
