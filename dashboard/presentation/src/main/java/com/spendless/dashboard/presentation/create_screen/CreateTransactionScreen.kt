@@ -42,6 +42,7 @@ import com.hrishi.core.presentation.designsystem.model.TransactionCategoryTypeUI
 import com.hrishi.core.presentation.designsystem.model.RecurringTypeUI
 import com.hrishi.core.presentation.designsystem.model.TransactionTypeUI
 import com.hrishi.presentation.ui.ObserveAsEvents
+import com.hrishi.presentation.ui.UpdateStatusBarAppearance
 import org.koin.androidx.compose.koinViewModel
 import java.math.BigDecimal
 
@@ -51,6 +52,7 @@ fun CreateTransactionScreenRoot(
     onDismiss: () -> Unit,
     viewModel: CreateTransactionViewModel = koinViewModel()
 ) {
+    UpdateStatusBarAppearance(isDarkStatusBarIcons = false)
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()

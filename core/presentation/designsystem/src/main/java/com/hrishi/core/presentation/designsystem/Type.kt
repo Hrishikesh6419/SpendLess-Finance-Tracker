@@ -40,7 +40,6 @@ val FigtreeSemiBold = FontFamily(
 )
 
 val Typography = Typography(
-    // 🎨 Display
     displayLarge = TextStyle(
         fontFamily = FigtreeSemiBold,
         fontSize = 45.sp,
@@ -53,7 +52,6 @@ val Typography = Typography(
         color = SpendLessBlack
     ),
 
-    // 📰 Headline
     headlineLarge = TextStyle(
         fontFamily = FigtreeSemiBold,
         fontSize = 32.sp,
@@ -65,7 +63,6 @@ val Typography = Typography(
         lineHeight = 34.sp
     ),
 
-    // 🔠 Title
     titleLarge = TextStyle(
         fontFamily = FigtreeSemiBold,
         fontSize = 20.sp,
@@ -83,7 +80,6 @@ val Typography = Typography(
         color = SpendLessBlack
     ),
 
-    // 🔖 Label
     labelMedium = TextStyle(
         fontFamily = FigtreeMedium,
         fontSize = 16.sp,
@@ -96,7 +92,6 @@ val Typography = Typography(
         lineHeight = 20.sp
     ),
 
-    // 📖 Body
     bodyMedium = TextStyle(
         fontFamily = FigtreeRegular,
         fontSize = 16.sp,

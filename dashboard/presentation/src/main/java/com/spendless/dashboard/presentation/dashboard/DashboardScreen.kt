@@ -61,6 +61,7 @@ import com.hrishi.core.presentation.designsystem.components.buttons.SpendLessFlo
 import com.hrishi.core.presentation.designsystem.model.TransactionCategoryTypeUI
 import com.hrishi.presentation.designsystem.R.drawable
 import com.hrishi.presentation.ui.ObserveAsEvents
+import com.hrishi.presentation.ui.UpdateStatusBarAppearance
 import com.spendless.dashboard.presentation.create_screen.CreateTransactionScreenRoot
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -78,6 +79,7 @@ fun DashboardScreenRoot(
     onNavigateToSettings: () -> Unit,
     onNavigateToAllTransactions: () -> Unit,
 ) {
+    UpdateStatusBarAppearance(isDarkStatusBarIcons = false)
     val scope = rememberCoroutineScope()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val bottomSheetState = rememberModalBottomSheetState(
