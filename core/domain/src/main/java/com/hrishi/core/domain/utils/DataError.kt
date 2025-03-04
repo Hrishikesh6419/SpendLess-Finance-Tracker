@@ -11,6 +11,7 @@ sealed interface DataError : Error {
         INSERT_PREFERENCE_ERROR,
         PREFERENCE_FETCH_ERROR,
         UNKNOWN_DATABASE_ERROR,
-        TRANSACTION_FETCH_ERROR
+        TRANSACTION_FETCH_ERROR,
+        EXPORT_FAILED
     }
 }

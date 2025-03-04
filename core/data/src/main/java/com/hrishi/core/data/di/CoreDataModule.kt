@@ -1,5 +1,6 @@
 package com.hrishi.core.data.di
 
+import com.hrishi.core.data.export.repository.ExportRepositoryImpl
 import com.hrishi.core.data.repository.TransactionRepositoryImpl
 import com.hrishi.core.data.repository.UserInfoRepositoryImpl
 import com.hrishi.core.data.repository.UserPreferencesRepositoryImpl
@@ -8,6 +9,9 @@ import com.hrishi.core.data.security.KeyManager
 import com.hrishi.core.domain.auth.repository.UserInfoRepository
 import com.hrishi.core.domain.auth.usecases.GetUserInfoUseCase
 import com.hrishi.core.domain.auth.usecases.UserInfoUseCases
+import com.hrishi.core.domain.export.repository.ExportRepository
+import com.hrishi.core.domain.export.usecases.ExportTransactionUseCase
+import com.hrishi.core.domain.export.usecases.ExportTransactionsUseCases
 import com.hrishi.core.domain.formatting.NumberFormatter
 import com.hrishi.core.domain.preference.repository.UserPreferencesRepository
 import com.hrishi.core.domain.preference.usecase.GetPreferencesUseCase
@@ -58,4 +62,8 @@ val coreDataModule = module {
     factory { GetTransactionsGroupedByDateUseCase() }
     single { TransactionUseCases(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
     singleOf(::TransactionRepositoryImpl).bind<TransactionRepository>()
+    singleOf(::ExportRepositoryImpl).bind<ExportRepository>()
+
+    factory { ExportTransactionUseCase(get()) }
+    single { ExportTransactionsUseCases(get()) }
 }

@@ -28,4 +28,10 @@ interface TransactionRepository {
     fun getLargestTransaction(userId: Long): Flow<Result<Transaction?, DataError>>
 
     fun getPreviousWeekTotal(userId: Long): Flow<Result<BigDecimal, DataError>>
+
+    suspend fun getTransactionsForDateRange(
+        userId: Long,
+        startDate: LocalDateTime,
+        endDate: LocalDateTime
+    ): Result<List<Transaction>, DataError>
 }

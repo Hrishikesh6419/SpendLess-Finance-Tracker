@@ -1,5 +1,6 @@
 package com.spendless.dashboard.presentation.export
 
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,10 +20,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.hrishi.core.domain.model.ExportType
+import com.hrishi.core.domain.export.model.ExportType
 import com.hrishi.core.presentation.designsystem.CloseIcon
 import com.hrishi.core.presentation.designsystem.SpendLessFinanceTrackerTheme
 import com.hrishi.core.presentation.designsystem.components.CategorySelector
@@ -36,12 +38,20 @@ fun ExportTransactionsScreenRoot(
     onDismiss: () -> Unit,
     viewModel: ExportTransactionsViewModel = koinViewModel()
 ) {
+    val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
             ExportTransactionsEvent.CloseBottomSheet -> onDismiss()
-            ExportTransactionsEvent.ExportSuccessful -> onDismiss()
+            is ExportTransactionsEvent.ExportStatus -> {
+                val message = if (event.isExportSuccess) {
+                    "Exported successfully to downloads"
+                } else {
+                    "Export failed"
+                }
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+            }
         }
     }
 

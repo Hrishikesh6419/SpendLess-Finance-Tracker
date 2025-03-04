@@ -78,4 +78,18 @@ interface TransactionsDao {
         startDate: LocalDateTime,
         endDate: LocalDateTime
     ): Flow<BigDecimal>
+
+    @Query(
+        """
+        SELECT * FROM transactions 
+        WHERE userId = :userId 
+        AND transactionDate BETWEEN :startDate AND :endDate
+        ORDER BY transactionDate DESC
+        """
+    )
+    suspend fun getTransactionsForDateRange(
+        userId: Long,
+        startDate: LocalDateTime,
+        endDate: LocalDateTime
+    ): List<TransactionEntity>
 }

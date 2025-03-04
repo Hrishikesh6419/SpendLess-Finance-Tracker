@@ -2,12 +2,14 @@ package com.spendless.dashboard.presentation.export
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.hrishi.core.domain.export.usecases.ExportTransactionsUseCases
 import com.hrishi.core.domain.preference.model.UserPreferences
 import com.hrishi.core.domain.preference.usecase.SettingsPreferenceUseCase
 import com.hrishi.core.domain.transactions.model.Transaction
 import com.hrishi.core.domain.transactions.usecases.TransactionUseCases
 import com.hrishi.core.domain.utils.Result
 import com.spendless.session_management.domain.usecases.SessionUseCase
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,11 +20,13 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class ExportTransactionsViewModel(
     sessionUseCases: SessionUseCase,
     private val sessionPreferenceUseCase: SettingsPreferenceUseCase,
-    private val transactionUseCases: TransactionUseCases
+    private val transactionUseCases: TransactionUseCases,
+    private val exportTransactionsUseCases: ExportTransactionsUseCases
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ExportTransactionsViewState())
@@ -34,9 +38,12 @@ class ExportTransactionsViewModel(
     private var preferences: UserPreferences? = null
     private var transactions: List<Transaction>? = null
 
+    private var userId: Long? = 0L
+
     init {
         combine(
             sessionUseCases.getSessionDataUseCase().flatMapLatest { sessionData ->
+                userId = sessionData.userId
                 sessionPreferenceUseCase.getPreferencesUseCase(sessionData.userId)
             },
             sessionUseCases.getSessionDataUseCase().flatMapLatest { sessionData ->
@@ -63,7 +70,29 @@ class ExportTransactionsViewModel(
                 }
             }
 
-            ExportTransactionsAction.OnExportClicked -> Unit
+            ExportTransactionsAction.OnExportClicked -> {
+                viewModelScope.launch {
+                    withContext(Dispatchers.IO) {
+                        val exportResult = exportTransactionsUseCases.exportTransactionUseCase(
+                            userId = userId ?: 0L,
+                            exportType = _uiState.value.exportType,
+                        )
+                        when (exportResult) {
+                            is Result.Error -> eventChannel.send(
+                                ExportTransactionsEvent.ExportStatus(
+                                    false
+                                )
+                            )
+
+                            is Result.Success -> eventChannel.send(
+                                ExportTransactionsEvent.ExportStatus(
+                                    true
+                                )
+                            )
+                        }
+                    }
+                }
+            }
 
             is ExportTransactionsAction.OnExportTypeUpdated -> {
                 _uiState.update {

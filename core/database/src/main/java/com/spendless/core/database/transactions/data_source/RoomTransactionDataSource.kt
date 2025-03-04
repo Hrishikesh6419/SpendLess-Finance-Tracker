@@ -133,4 +133,13 @@ class RoomTransactionDataSource(
                 emit(Result.Error(DataError.Local.UNKNOWN_DATABASE_ERROR))
             }
     }
+
+    override suspend fun getTransactionsForDateRange(
+        userId: Long,
+        startDate: LocalDateTime,
+        endDate: LocalDateTime
+    ): List<Transaction> {
+        return transactionsDao.getTransactionsForDateRange(userId, startDate, endDate)
+            .map { it.toTransaction() }
+    }
 }

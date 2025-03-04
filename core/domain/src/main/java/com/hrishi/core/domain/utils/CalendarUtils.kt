@@ -47,3 +47,8 @@ fun LocalDateTime.toShortDateString(): String {
     val formatter = DateTimeFormatter.ofPattern("MMM d, yyyy")
     return this.format(formatter)
 }
+
+fun LocalDateTime.toISODateString(): String {
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+    return this.format(formatter)
+}
