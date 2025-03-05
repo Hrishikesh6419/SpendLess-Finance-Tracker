@@ -32,6 +32,7 @@ composeBom = "2024.11.00"                    # Compose BOM (Bill of Materials) -
 materialIconsExtended = "1.7.5"              # Material Icons Extended for Jetpack Compose
 navigationCompose = "2.8.6"                  # Jetpack Compose Navigation
 material = "1.12.0"                          # Material Design Components
+glanceAppwidget = "1.1.1"
 
 # ──────────────────────────
 # 🔄 Lifecycle & Dependency Injection
@@ -78,6 +79,9 @@ protobufPlugin = "0.9.4"
 protobuf = "4.29.2"
 
 [libraries]
+androidx-glance-material3 = { group = "androidx.glance", name = "glance-material3", version.ref = "glanceAppwidget" }
+androidx-glance-appwidget = { group = "androidx.glance", name = "glance-appwidget", version.ref = "glanceAppwidget" }
+
 protobuf-kotlin-lite = { group = "com.google.protobuf", name = "protobuf-kotlin-lite", version.ref = "protobuf" }
 protobuf-protoc = { group = "com.google.protobuf", name = "protoc", version.ref = "protobuf" }
 
