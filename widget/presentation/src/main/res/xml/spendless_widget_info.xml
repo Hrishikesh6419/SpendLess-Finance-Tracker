@@ -6,4 +6,5 @@
     android:minResizeWidth="182dp"
     android:minResizeHeight="182dp"
     android:updatePeriodMillis="0"
+    android:previewImage="@drawable/create_widget_preview"
     android:widgetCategory="home_screen" />
