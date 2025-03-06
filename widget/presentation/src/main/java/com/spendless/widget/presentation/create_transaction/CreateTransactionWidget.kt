@@ -1,6 +1,7 @@
 package com.spendless.widget.presentation.create_transaction
 
 import android.content.Context
+import android.content.Intent
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
@@ -9,8 +10,11 @@ import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
 import androidx.glance.Image
 import androidx.glance.ImageProvider
+import androidx.glance.LocalContext
+import androidx.glance.action.clickable
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetReceiver
+import androidx.glance.appwidget.action.actionStartActivity
 import androidx.glance.appwidget.provideContent
 import androidx.glance.background
 import androidx.glance.layout.Box
@@ -30,6 +34,11 @@ import com.spendless.widget.presentation.ui.LoginWidgetIcon
 
 class CreateTransactionWidget : GlanceAppWidget() {
 
+    companion object {
+        const val INTENT_SOURCE_KEY = "source"
+        const val SOURCE = "CreateTransactionWidget"
+    }
+
     override suspend fun provideGlance(context: Context, id: GlanceId) {
         provideContent {
             CreateTransactionWidgetContent()
@@ -39,6 +48,7 @@ class CreateTransactionWidget : GlanceAppWidget() {
 
 @Composable
 private fun CreateTransactionWidgetContent() {
+    val context = LocalContext.current
     Box(
         modifier = GlanceModifier
             .background(
@@ -46,6 +56,11 @@ private fun CreateTransactionWidgetContent() {
                 contentScale = ContentScale.Crop
             )
             .padding(20.dp)
+            .clickable(
+                actionStartActivity(
+                    intent = createMainActivityIntent(context)
+                )
+            )
     ) {
         Column {
             Image(
@@ -65,6 +80,14 @@ private fun CreateTransactionWidgetContent() {
                 )
             )
         }
+    }
+}
+
+private fun createMainActivityIntent(context: Context): Intent {
+    return Intent().apply {
+        setClassName(context.packageName, "com.hrishi.spendless.MainActivity")
+        putExtra(CreateTransactionWidget.INTENT_SOURCE_KEY, CreateTransactionWidget.SOURCE)
+        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
     }
 }
 
