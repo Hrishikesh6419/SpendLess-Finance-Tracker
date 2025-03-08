@@ -32,12 +32,12 @@ object CalendarUtils {
         val now = currentEstTime
 
         val startOfPreviousWeek = now
-            .with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY))
+            .with(TemporalAdjusters.previous(DayOfWeek.SUNDAY))
             .minusWeeks(1)
             .with(LocalTime.MIN)
 
-        val endOfPreviousWeek = now
-            .with(TemporalAdjusters.previousOrSame(DayOfWeek.SATURDAY))
+        val endOfPreviousWeek = startOfPreviousWeek
+            .plusDays(6)
             .with(LocalTime.MAX)
         return startOfPreviousWeek to endOfPreviousWeek
     }
