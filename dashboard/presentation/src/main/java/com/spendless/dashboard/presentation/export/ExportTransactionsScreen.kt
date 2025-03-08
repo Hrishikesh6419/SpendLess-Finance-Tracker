@@ -29,6 +29,7 @@ import com.hrishi.core.presentation.designsystem.CloseIcon
 import com.hrishi.core.presentation.designsystem.SpendLessFinanceTrackerTheme
 import com.hrishi.core.presentation.designsystem.components.CategorySelector
 import com.hrishi.core.presentation.designsystem.components.buttons.SpendLessButton
+import com.hrishi.presentation.ui.LocalAuthActionHandler
 import com.hrishi.presentation.ui.ObserveAsEvents
 import org.koin.androidx.compose.koinViewModel
 
@@ -38,6 +39,7 @@ fun ExportTransactionsScreenRoot(
     onDismiss: () -> Unit,
     viewModel: ExportTransactionsViewModel = koinViewModel()
 ) {
+    val authActionHandler = LocalAuthActionHandler.current
     val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -58,7 +60,17 @@ fun ExportTransactionsScreenRoot(
     ExportTransactionsScreen(
         modifier = modifier,
         uiState = uiState,
-        onAction = viewModel::onAction
+        onAction = { action ->
+            when (action) {
+                ExportTransactionsAction.OnExportClicked -> {
+                    authActionHandler?.invoke {
+                        viewModel.onAction(action)
+                    }
+                }
+
+                else -> viewModel.onAction(action)
+            }
+        }
     )
 }
 

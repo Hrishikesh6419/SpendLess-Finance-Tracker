@@ -43,6 +43,7 @@ import com.hrishi.core.presentation.designsystem.components.SpendLessTopBar
 import com.hrishi.core.presentation.designsystem.components.TransactionItemView
 import com.hrishi.core.presentation.designsystem.components.buttons.SpendLessFloatingActionButton
 import com.hrishi.core.presentation.designsystem.model.TransactionCategoryTypeUI
+import com.hrishi.presentation.ui.LocalAuthActionHandler
 import com.hrishi.presentation.ui.ObserveAsEvents
 import com.spendless.dashboard.presentation.create_screen.CreateTransactionScreenRoot
 import com.spendless.dashboard.presentation.dashboard.TransactionGroupUIItem
@@ -62,6 +63,7 @@ fun AllTransactionsScreenRoot(
     viewModel: AllTransactionsViewModel = koinViewModel(),
     onNavigateBack: () -> Unit
 ) {
+    val authActionHandler = LocalAuthActionHandler.current
     val scope = rememberCoroutineScope()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val createBottomSheetState = rememberModalBottomSheetState(
@@ -83,7 +85,31 @@ fun AllTransactionsScreenRoot(
         createBottomSheetState = createBottomSheetState,
         exportBottomSheetState = exportBottomSheetState,
         scope = scope,
-        onAction = viewModel::onAction
+        onAction = { action ->
+            when (action) {
+                is AllTransactionsAction.UpdateCreateBottomSheet -> {
+                    if (action.showSheet) {
+                        authActionHandler?.invoke {
+                            viewModel.onAction(action)
+                        }
+                    } else {
+                        viewModel.onAction(action)
+                    }
+                }
+
+                is AllTransactionsAction.UpdateExportBottomSheet -> {
+                    if (action.showSheet) {
+                        authActionHandler?.invoke {
+                            viewModel.onAction(action)
+                        }
+                    } else {
+                        viewModel.onAction(action)
+                    }
+                }
+
+                else -> viewModel.onAction(action)
+            }
+        }
     )
 }
 

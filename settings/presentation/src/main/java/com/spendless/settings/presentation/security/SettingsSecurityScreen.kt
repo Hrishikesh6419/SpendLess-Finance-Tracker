@@ -29,6 +29,7 @@ import com.hrishi.core.presentation.designsystem.SpendLessFinanceTrackerTheme
 import com.hrishi.core.presentation.designsystem.components.SegmentedSelector
 import com.hrishi.core.presentation.designsystem.components.SpendLessTopBar
 import com.hrishi.core.presentation.designsystem.components.buttons.SpendLessButton
+import com.hrishi.presentation.ui.LocalAuthActionHandler
 import com.hrishi.presentation.ui.ObserveAsEvents
 import org.koin.androidx.compose.koinViewModel
 
@@ -38,6 +39,7 @@ fun SettingsSecurityScreenRoot(
     onNavigateBack: () -> Unit,
     viewModel: SettingsSecurityViewModel = koinViewModel(),
 ) {
+    val authActionHandler = LocalAuthActionHandler.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
 
@@ -58,7 +60,17 @@ fun SettingsSecurityScreenRoot(
     SettingsSecurityScreen(
         modifier = modifier,
         uiState = uiState,
-        onAction = viewModel::onAction
+        onAction = { action ->
+            when (action) {
+                SettingsSecurityAction.OnSaveClicked -> {
+                    authActionHandler?.invoke {
+                        viewModel.onAction(action)
+                    }
+                }
+
+                else -> viewModel.onAction(action)
+            }
+        }
     )
 }
 

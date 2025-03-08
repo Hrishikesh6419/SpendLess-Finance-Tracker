@@ -38,6 +38,7 @@ import com.hrishi.core.presentation.designsystem.components.CategorySelector
 import com.hrishi.core.presentation.designsystem.components.SegmentedSelector
 import com.hrishi.core.presentation.designsystem.components.SpendLessTopBar
 import com.hrishi.core.presentation.designsystem.components.buttons.SpendLessButton
+import com.hrishi.presentation.ui.LocalAuthActionHandler
 import com.hrishi.presentation.ui.ObserveAsEvents
 import org.koin.androidx.compose.koinViewModel
 import java.math.BigDecimal
@@ -48,6 +49,7 @@ fun SettingsPreferenceScreenRoot(
     viewModel: SettingsPreferenceViewModel = koinViewModel(),
     onNavigateBack: () -> Unit
 ) {
+    val authActionHandler = LocalAuthActionHandler.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
 
@@ -64,7 +66,17 @@ fun SettingsPreferenceScreenRoot(
     SettingsPreferencesScreen(
         modifier = modifier,
         uiState = uiState,
-        onAction = viewModel::onAction
+        onAction = { action ->
+            when (action) {
+                SettingsPreferencesAction.OnSaveClicked -> {
+                    authActionHandler?.invoke {
+                        viewModel.onAction(action)
+                    }
+                }
+
+                else -> viewModel.onAction(action)
+            }
+        }
     )
 }
 
