@@ -34,6 +34,8 @@ dependencies {
     // Debug dependencies
     debugImplementation(libs.bundles.compose.debug)
 
+    implementation(libs.androidx.core.splashscreen)
+
     // Timber
     implementation(libs.timber)
 

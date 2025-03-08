@@ -3,9 +3,26 @@ package com.hrishi.presentation.ui
 import android.net.Uri
 import android.os.Bundle
 import androidx.lifecycle.SavedStateHandle
+import androidx.navigation.NavController
+import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.NavType
+import com.hrishi.presentation.ui.navigation.AppRoute
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
+
+data class AppNavRoute(
+    val pendingRoute: AppRoute?,
+    val navOptions: NavOptionsBuilder.() -> Unit = {}
+)
+
+fun NavController.navigateToRoute(appNavRoute: AppNavRoute) {
+    val route = appNavRoute.pendingRoute ?: return
+    navigate(route = route, builder = appNavRoute.navOptions)
+}
+
+interface NavigationRequestHandler {
+    fun navigateWithAuthCheck(appNavRoute: AppNavRoute)
+}
 
 object SerializableNavType {
     inline fun <reified T : Any> create(serializer: KSerializer<T>) =

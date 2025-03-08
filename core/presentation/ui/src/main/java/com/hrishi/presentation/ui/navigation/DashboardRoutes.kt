@@ -1,17 +1,17 @@
-package com.spendless.dashboard.presentation.navigation
+package com.hrishi.presentation.ui.navigation
 
 import androidx.navigation.NavController
 import androidx.navigation.NavOptionsBuilder
 import kotlinx.serialization.Serializable
 
 @Serializable
-data object DashboardBaseRoute
+data object DashboardBaseRoute : AppRoute
 
 @Serializable
-data object DashboardScreenRoute
+data object DashboardScreenRoute : AppRoute
 
 @Serializable
-data object AllTransactionsScreenRoute
+data object AllTransactionsScreenRoute : AppRoute
 
 fun NavController.navigateToDashboardScreen(
     navOptions: NavOptionsBuilder.() -> Unit = {}

@@ -81,7 +81,7 @@ fun PinPromptScreenRoot(
 }
 
 @Composable
-fun PinPromptScreen(
+private fun PinPromptScreen(
     modifier: Modifier = Modifier,
     snackbarHostState: SnackbarHostState,
     uiState: PinPromptState,

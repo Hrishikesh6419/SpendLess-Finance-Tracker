@@ -13,9 +13,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.hrishi.auth.apresentation.R
 import com.hrishi.auth.presentation.create_pin.component.CreatePinScreenComponent
-import com.hrishi.auth.presentation.navigation.model.PreferencesScreenData
 import com.hrishi.core.presentation.designsystem.SpendLessFinanceTrackerTheme
 import com.hrishi.presentation.ui.ObserveAsEvents
+import com.hrishi.presentation.ui.navigation.PreferencesScreenData
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 

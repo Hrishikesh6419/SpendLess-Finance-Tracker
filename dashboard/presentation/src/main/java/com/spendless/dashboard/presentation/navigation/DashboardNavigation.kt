@@ -4,6 +4,11 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
+import com.hrishi.presentation.ui.AppNavRoute
+import com.hrishi.presentation.ui.NavigationRequestHandler
+import com.hrishi.presentation.ui.navigation.AllTransactionsScreenRoute
+import com.hrishi.presentation.ui.navigation.DashboardBaseRoute
+import com.hrishi.presentation.ui.navigation.DashboardScreenRoute
 import com.spendless.dashboard.presentation.all_transactions.AllTransactionsScreenRoot
 import com.spendless.dashboard.presentation.dashboard.DashboardScreenRoot
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -11,7 +16,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 @OptIn(ExperimentalCoroutinesApi::class)
 fun NavGraphBuilder.dashboardNavGraph(
     navController: NavHostController,
-    onNavigateToSettings: () -> Unit
+    onNavigateToSettings: () -> Unit,
+    navigationRequestHandler: NavigationRequestHandler
 ) {
     navigation<DashboardBaseRoute>(
         startDestination = DashboardScreenRoute
@@ -20,7 +26,11 @@ fun NavGraphBuilder.dashboardNavGraph(
             DashboardScreenRoot(
                 onNavigateToSettings = onNavigateToSettings,
                 onNavigateToAllTransactions = {
-                    navController.navigateToAllTransactionsScreenRoute()
+                    navigationRequestHandler.navigateWithAuthCheck(
+                        AppNavRoute(
+                            pendingRoute = AllTransactionsScreenRoute
+                        )
+                    )
                 }
             )
         }

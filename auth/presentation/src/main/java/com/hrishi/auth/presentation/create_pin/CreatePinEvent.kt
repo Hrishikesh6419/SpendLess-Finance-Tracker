@@ -1,7 +1,7 @@
 package com.hrishi.auth.presentation.create_pin
 
-import com.hrishi.auth.presentation.navigation.model.CreatePinScreenData
-import com.hrishi.auth.presentation.navigation.model.PreferencesScreenData
+import com.hrishi.presentation.ui.navigation.CreatePinScreenData
+import com.hrishi.presentation.ui.navigation.PreferencesScreenData
 
 sealed interface CreatePinEvent {
     data class NavigateToConfirmPinScreen(val screenData: CreatePinScreenData) : CreatePinEvent

@@ -1,14 +1,14 @@
-package com.spendless.session_management.presentation.navigation
+package com.hrishi.presentation.ui.navigation
 
 import androidx.navigation.NavController
 import androidx.navigation.NavOptionsBuilder
 import kotlinx.serialization.Serializable
 
 @Serializable
-data object SessionBaseRoute
+data object SessionBaseRoute : AppRoute
 
 @Serializable
-data object PinPromptScreenRoute
+data object PinPromptScreenRoute : AppRoute
 
 fun NavController.navigateToPinPromptScreen(
     navOptions: NavOptionsBuilder.() -> Unit = {}

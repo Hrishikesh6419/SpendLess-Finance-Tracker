@@ -33,6 +33,7 @@ materialIconsExtended = "1.7.5"              # Material Icons Extended for Jetpa
 navigationCompose = "2.8.6"                  # Jetpack Compose Navigation
 material = "1.12.0"                          # Material Design Components
 glanceAppwidget = "1.1.1"
+coreSplashscreen = "1.0.1"
 
 # ──────────────────────────
 # 🔄 Lifecycle & Dependency Injection
@@ -108,6 +109,7 @@ androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version
 androidx-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "materialIconsExtended" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 androidx-security-crypto-ktx = { module = "androidx.security:security-crypto-ktx", version.ref = "securityCryptoKtx" }
+androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
 
 # ──────────────────────────
 # ⚡ Kotlin & Coroutines

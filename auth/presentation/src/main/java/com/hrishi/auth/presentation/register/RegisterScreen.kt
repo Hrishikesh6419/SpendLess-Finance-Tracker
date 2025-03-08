@@ -29,14 +29,14 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.hrishi.auth.apresentation.R
 import com.hrishi.auth.presentation.login.component.SpendLessClickableText
-import com.hrishi.auth.presentation.navigation.model.CreatePinScreenData
 import com.hrishi.core.presentation.designsystem.ArrowForward
 import com.hrishi.core.presentation.designsystem.LoginIcon
 import com.hrishi.core.presentation.designsystem.SpendLessFinanceTrackerTheme
-import com.hrishi.core.presentation.designsystem.components.buttons.SpendLessButton
 import com.hrishi.core.presentation.designsystem.components.SpendLessHeadlineTextField
 import com.hrishi.core.presentation.designsystem.components.SpendLessSnackBarHost
+import com.hrishi.core.presentation.designsystem.components.buttons.SpendLessButton
 import com.hrishi.presentation.ui.ObserveAsEvents
+import com.hrishi.presentation.ui.navigation.CreatePinScreenData
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 

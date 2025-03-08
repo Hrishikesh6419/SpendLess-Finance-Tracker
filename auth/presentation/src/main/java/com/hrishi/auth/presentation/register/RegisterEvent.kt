@@ -1,6 +1,6 @@
 package com.hrishi.auth.presentation.register
 
-import com.hrishi.auth.presentation.navigation.model.CreatePinScreenData
+import com.hrishi.presentation.ui.navigation.CreatePinScreenData
 
 sealed interface RegisterEvent {
     data object UsernameTaken : RegisterEvent

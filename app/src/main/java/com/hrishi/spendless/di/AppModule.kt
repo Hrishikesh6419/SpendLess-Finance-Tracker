@@ -1,5 +1,6 @@
 package com.hrishi.spendless.di
 
+import com.hrishi.presentation.ui.NavigationRequestHandler
 import com.hrishi.spendless.MainViewModel
 import com.hrishi.spendless.SpendLessApp
 import kotlinx.coroutines.CoroutineScope
@@ -13,4 +14,7 @@ val appModule = module {
     }
 
     viewModelOf(::MainViewModel)
+    factory<NavigationRequestHandler> {
+        get<MainViewModel>()
+    }
 }

@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import com.hrishi.auth.domain.usecase.EncryptionUseCases
 import com.hrishi.auth.domain.usecase.OnboardingPreferenceUseCases
 import com.hrishi.auth.domain.usecase.RegisterUseCases
-import com.hrishi.auth.presentation.navigation.model.PreferencesScreenData
 import com.hrishi.core.domain.auth.model.UserInfo
 import com.hrishi.core.domain.formatting.NumberFormatter
 import com.hrishi.core.domain.model.LockoutDuration
@@ -17,6 +16,7 @@ import com.hrishi.core.domain.preference.usecase.SettingsPreferenceUseCase
 import com.hrishi.core.domain.utils.DataError
 import com.hrishi.core.domain.utils.Result
 import com.hrishi.presentation.ui.getRouteData
+import com.hrishi.presentation.ui.navigation.PreferencesScreenData
 import com.spendless.session_management.domain.model.SessionData
 import com.spendless.session_management.domain.usecases.SessionUseCase
 import kotlinx.coroutines.Dispatchers

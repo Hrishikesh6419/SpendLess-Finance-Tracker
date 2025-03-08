@@ -3,10 +3,10 @@ package com.hrishi.auth.presentation.create_pin
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hrishi.auth.presentation.navigation.model.CreatePinScreenData
-import com.hrishi.auth.presentation.navigation.model.PreferencesScreenData
 import com.hrishi.presentation.ui.MAX_PIN_LENGTH
 import com.hrishi.presentation.ui.getRouteData
+import com.hrishi.presentation.ui.navigation.CreatePinScreenData
+import com.hrishi.presentation.ui.navigation.PreferencesScreenData
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

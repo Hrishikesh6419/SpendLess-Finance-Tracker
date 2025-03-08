@@ -7,11 +7,22 @@ import androidx.navigation.compose.navigation
 import com.hrishi.auth.presentation.create_pin.ConfirmPinScreenRoot
 import com.hrishi.auth.presentation.create_pin.CreatePinScreenRoot
 import com.hrishi.auth.presentation.login.LoginScreenRoot
-import com.hrishi.auth.presentation.navigation.model.CreatePinScreenData
-import com.hrishi.auth.presentation.navigation.model.PreferencesScreenData
 import com.hrishi.auth.presentation.register.RegisterScreenRoot
 import com.hrishi.auth.presentation.user_preference.OnboardingPreferencesScreenRoot
 import com.hrishi.presentation.ui.SerializableNavType
+import com.hrishi.presentation.ui.navigation.AuthBaseRoute
+import com.hrishi.presentation.ui.navigation.ConfirmPinRoute
+import com.hrishi.presentation.ui.navigation.CreatePinRoute
+import com.hrishi.presentation.ui.navigation.CreatePinScreenData
+import com.hrishi.presentation.ui.navigation.LoginRoute
+import com.hrishi.presentation.ui.navigation.PreferencesRoute
+import com.hrishi.presentation.ui.navigation.PreferencesScreenData
+import com.hrishi.presentation.ui.navigation.RegisterRoute
+import com.hrishi.presentation.ui.navigation.navigateToConfirmPinScreen
+import com.hrishi.presentation.ui.navigation.navigateToCreatePinScreen
+import com.hrishi.presentation.ui.navigation.navigateToLoginRoute
+import com.hrishi.presentation.ui.navigation.navigateToPreferencesScreen
+import com.hrishi.presentation.ui.navigation.navigateToRegisterScreen
 import kotlinx.serialization.serializer
 import kotlin.reflect.typeOf
 

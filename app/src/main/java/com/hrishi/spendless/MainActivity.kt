@@ -1,41 +1,63 @@
 package com.hrishi.spendless
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.ui.Modifier
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import com.hrishi.core.presentation.designsystem.SpendLessFinanceTrackerTheme
+import com.hrishi.presentation.ui.navigateToRoute
+import com.hrishi.presentation.ui.navigation.AuthBaseRoute
+import com.hrishi.presentation.ui.navigation.SessionBaseRoute
+import com.hrishi.presentation.ui.navigation.navigateToLoginRoute
 import com.hrishi.spendless.navigation.NavigationRoot
-import com.spendless.widget.presentation.create_transaction.CreateTransactionWidget
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : ComponentActivity() {
+
+    private val mainViewModel by viewModel<MainViewModel>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        val source = intent?.getStringExtra(CreateTransactionWidget.INTENT_SOURCE_KEY)
-        if (source == CreateTransactionWidget.SOURCE) {
-            Log.d("hrishiii", "onCreate: Clicked from Create Transaction widget")
-        } else {
-            Log.d("hrishiii", "onCreate: Source is null or not from widget")
-        }
-
         setContent {
             SpendLessFinanceTrackerTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    val navController = rememberNavController()
-                    NavigationRoot(navController = navController)
+                val uiState by mainViewModel.uiState.collectAsStateWithLifecycle()
+                val navController = rememberNavController()
+
+                LaunchedEffect(uiState.showPinPrompt) {
+                    if (uiState.showPinPrompt) {
+                        navController.navigate(SessionBaseRoute)
+                    }
                 }
+
+                uiState.pendingRoute?.let { route ->
+                    if (!uiState.isSessionExpired && uiState.isUserLoggedIn) {
+                        navController.navigateToRoute(route)
+                        mainViewModel.mainViewModelClearPendingRoute()
+                    }
+                }
+
+                NavigationRoot(
+                    navController = navController,
+                    navigationRequestHandler = mainViewModel,
+                    onSessionVerified = { mainViewModel.startSession() },
+                    onLogout = {
+                        navController.navigateToLoginRoute {
+                            popUpTo<AuthBaseRoute>()
+                        }
+                    }
+                )
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mainViewModel.setSessionToExpired()
     }
 }

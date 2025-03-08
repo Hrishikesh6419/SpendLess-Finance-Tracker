@@ -1,20 +1,20 @@
-package com.spendless.settings.presentation.navigation
+package com.hrishi.presentation.ui.navigation
 
 import androidx.navigation.NavController
 import androidx.navigation.NavOptionsBuilder
 import kotlinx.serialization.Serializable
 
 @Serializable
-data object SettingsBaseRoute
+data object SettingsBaseRoute : AppRoute
 
 @Serializable
-data object SettingsHomeScreenRoute
+data object SettingsHomeScreenRoute : AppRoute
 
 @Serializable
-data object SettingsPreferenceScreenRoute
+data object SettingsPreferenceScreenRoute : AppRoute
 
 @Serializable
-data object SettingsSecurityScreenRoute
+data object SettingsSecurityScreenRoute : AppRoute
 
 fun NavController.navigateToSettingsHomeScreen(
     navOptions: NavOptionsBuilder.() -> Unit = {}
