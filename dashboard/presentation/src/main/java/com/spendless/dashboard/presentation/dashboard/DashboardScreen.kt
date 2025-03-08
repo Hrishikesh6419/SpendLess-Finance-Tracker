@@ -121,6 +121,16 @@ fun DashboardScreenRoot(
                         }
                     }
 
+                    is DashboardAction.UpdateExportBottomSheet -> {
+                        if (action.showSheet) {
+                            authActionHandler?.invoke {
+                                viewModel.onAction(action)
+                            }
+                        } else {
+                            viewModel.onAction(action)
+                        }
+                    }
+
                     else -> viewModel.onAction(action)
                 }
             }
