@@ -2,6 +2,7 @@ package com.hrishi.presentation.ui
 
 import android.net.Uri
 import android.os.Bundle
+import androidx.compose.runtime.compositionLocalOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NavController
 import androidx.navigation.NavOptionsBuilder
@@ -14,6 +15,8 @@ data class AppNavRoute(
     val pendingRoute: AppRoute?,
     val navOptions: NavOptionsBuilder.() -> Unit = {}
 )
+
+val LocalAuthActionHandler = compositionLocalOf<((() -> Unit) -> Unit)?> { null }
 
 fun NavController.navigateToRoute(appNavRoute: AppNavRoute) {
     val route = appNavRoute.pendingRoute ?: return

@@ -1,10 +1,12 @@
 package com.hrishi.spendless.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.hrishi.auth.presentation.navigation.authGraph
+import com.hrishi.presentation.ui.LocalAuthActionHandler
 import com.hrishi.presentation.ui.NavigationRequestHandler
 import com.hrishi.presentation.ui.navigation.AuthBaseRoute
 import com.hrishi.presentation.ui.navigation.navigateToDashboardScreen
@@ -21,42 +23,48 @@ fun NavigationRoot(
     onLogout: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
-    NavHost(
-        navController = navController,
-        startDestination = AuthBaseRoute,
-        modifier = modifier
+    CompositionLocalProvider(
+        LocalAuthActionHandler provides { onVerified: () -> Unit ->
+            navigationRequestHandler.runWithAuthCheck(onVerified)
+        }
     ) {
-        authGraph(
+        NavHost(
             navController = navController,
-            onNavigateToDashboardScreen = {
-                navController.navigateToDashboardScreen {
-                    popUpTo<AuthBaseRoute> { inclusive = true }
+            startDestination = AuthBaseRoute,
+            modifier = modifier
+        ) {
+            authGraph(
+                navController = navController,
+                onNavigateToDashboardScreen = {
+                    navController.navigateToDashboardScreen {
+                        popUpTo<AuthBaseRoute> { inclusive = true }
+                    }
                 }
-            }
-        )
-        dashboardNavGraph(
-            navigationRequestHandler = navigationRequestHandler,
-            navController = navController,
-            onNavigateToSettings = {
-                navController.navigateToSettingsHomeScreen()
-            }
-        )
-        sessionNavGraph(
-            navController = navController,
-            onVerificationSuccess = {
-                onSessionVerified()
-                navController.popBackStack()
-            },
-            onLogout = {
-                onLogout()
-            }
-        )
-        settingsNavGraph(
-            navController = navController,
-            onLogout = {
-                onLogout()
-            }
-        )
+            )
+            dashboardNavGraph(
+                navigationRequestHandler = navigationRequestHandler,
+                navController = navController,
+                onNavigateToSettings = {
+                    navController.navigateToSettingsHomeScreen()
+                }
+            )
+            sessionNavGraph(
+                navController = navController,
+                onVerificationSuccess = {
+                    onSessionVerified()
+                    navController.popBackStack()
+                },
+                onLogout = {
+                    onLogout()
+                }
+            )
+            settingsNavGraph(
+                navController = navController,
+                onLogout = {
+                    onLogout()
+                }
+            )
+        }
     }
 }
 

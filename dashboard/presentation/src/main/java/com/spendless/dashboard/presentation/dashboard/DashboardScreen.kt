@@ -63,6 +63,7 @@ import com.hrishi.core.presentation.designsystem.components.TransactionItemView
 import com.hrishi.core.presentation.designsystem.components.buttons.SpendLessFloatingActionButton
 import com.hrishi.core.presentation.designsystem.model.TransactionCategoryTypeUI
 import com.hrishi.presentation.designsystem.R.drawable
+import com.hrishi.presentation.ui.LocalAuthActionHandler
 import com.hrishi.presentation.ui.ObserveAsEvents
 import com.spendless.dashboard.presentation.create_screen.CreateTransactionScreenRoot
 import kotlinx.coroutines.CoroutineScope
@@ -78,9 +79,9 @@ fun DashboardScreenRoot(
     modifier: Modifier = Modifier,
     viewModel: DashboardViewModel = koinViewModel(),
     onNavigateToSettings: () -> Unit,
-    onNavigateToAllTransactions: () -> Unit,
-    onRequestAuthentication: (onVerified: () -> Unit) -> Unit
+    onNavigateToAllTransactions: () -> Unit
 ) {
+    val authActionHandler = LocalAuthActionHandler.current
     val scope = rememberCoroutineScope()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val bottomSheetState = rememberModalBottomSheetState(
@@ -105,18 +106,18 @@ fun DashboardScreenRoot(
             scope = scope,
             onAction = { action ->
                 when (action) {
-                    DashboardAction.OnSettingsClicked -> {
-                        onRequestAuthentication {
+                    is DashboardAction.UpdatedBottomSheet -> {
+                        if (action.showSheet) {
+                            authActionHandler?.invoke {
+                                viewModel.onAction(action)
+                            }
+                        } else {
                             viewModel.onAction(action)
                         }
                     }
 
-                    is DashboardAction.UpdatedBottomSheet -> {
-                        if (action.showSheet) {
-                            onRequestAuthentication {
-                                viewModel.onAction(action)
-                            }
-                        } else {
+                    DashboardAction.OnSettingsClicked -> {
+                        authActionHandler?.invoke {
                             viewModel.onAction(action)
                         }
                     }

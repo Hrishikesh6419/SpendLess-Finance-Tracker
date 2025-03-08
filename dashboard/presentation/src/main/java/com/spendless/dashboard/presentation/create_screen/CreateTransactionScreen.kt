@@ -41,6 +41,7 @@ import com.hrishi.core.presentation.designsystem.components.text_field.Transacti
 import com.hrishi.core.presentation.designsystem.model.TransactionCategoryTypeUI
 import com.hrishi.core.presentation.designsystem.model.RecurringTypeUI
 import com.hrishi.core.presentation.designsystem.model.TransactionTypeUI
+import com.hrishi.presentation.ui.LocalAuthActionHandler
 import com.hrishi.presentation.ui.ObserveAsEvents
 import com.hrishi.presentation.ui.UpdateStatusBarAppearance
 import org.koin.androidx.compose.koinViewModel
@@ -52,6 +53,7 @@ fun CreateTransactionScreenRoot(
     onDismiss: () -> Unit,
     viewModel: CreateTransactionViewModel = koinViewModel()
 ) {
+    val authActionHandler = LocalAuthActionHandler.current
     UpdateStatusBarAppearance(isDarkStatusBarIcons = false)
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -69,7 +71,17 @@ fun CreateTransactionScreenRoot(
         modifier = modifier,
         uiState = uiState,
         snackbarHostState = snackBarHostState,
-        onAction = viewModel::onAction
+        onAction = { action ->
+            when (action) {
+                CreateTransactionAction.OnCreateClicked -> {
+                    authActionHandler?.invoke {
+                        viewModel.onAction(action)
+                    }
+                }
+
+                else -> viewModel.onAction(action)
+            }
+        }
     )
 }
 
