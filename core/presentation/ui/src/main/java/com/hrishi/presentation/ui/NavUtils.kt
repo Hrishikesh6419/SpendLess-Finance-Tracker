@@ -16,6 +16,7 @@ data class AppNavRoute(
     val navOptions: NavOptionsBuilder.() -> Unit = {}
 )
 
+val LocalAuthNavigationHandler = compositionLocalOf<((AppNavRoute) -> Unit)?> { null }
 val LocalAuthActionHandler = compositionLocalOf<((() -> Unit) -> Unit)?> { null }
 
 fun NavController.navigateToRoute(appNavRoute: AppNavRoute) {

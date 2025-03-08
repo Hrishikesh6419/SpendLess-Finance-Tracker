@@ -5,7 +5,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import com.hrishi.presentation.ui.AppNavRoute
-import com.hrishi.presentation.ui.NavigationRequestHandler
+import com.hrishi.presentation.ui.LocalAuthNavigationHandler
 import com.hrishi.presentation.ui.navigation.AllTransactionsScreenRoute
 import com.hrishi.presentation.ui.navigation.DashboardBaseRoute
 import com.hrishi.presentation.ui.navigation.DashboardScreenRoute
@@ -16,17 +16,17 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 @OptIn(ExperimentalCoroutinesApi::class)
 fun NavGraphBuilder.dashboardNavGraph(
     navController: NavHostController,
-    onNavigateToSettings: () -> Unit,
-    navigationRequestHandler: NavigationRequestHandler
+    onNavigateToSettings: () -> Unit
 ) {
     navigation<DashboardBaseRoute>(
         startDestination = DashboardScreenRoute
     ) {
         composable<DashboardScreenRoute> {
+            val authNavigationHandler = LocalAuthNavigationHandler.current
             DashboardScreenRoot(
                 onNavigateToSettings = onNavigateToSettings,
                 onNavigateToAllTransactions = {
-                    navigationRequestHandler.navigateWithAuthCheck(
+                    authNavigationHandler?.invoke(
                         AppNavRoute(
                             pendingRoute = AllTransactionsScreenRoute
                         )

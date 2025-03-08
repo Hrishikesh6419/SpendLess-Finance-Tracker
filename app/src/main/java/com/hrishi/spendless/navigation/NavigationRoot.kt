@@ -6,11 +6,13 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.hrishi.auth.presentation.navigation.authGraph
+import com.hrishi.presentation.ui.AppNavRoute
 import com.hrishi.presentation.ui.LocalAuthActionHandler
+import com.hrishi.presentation.ui.LocalAuthNavigationHandler
 import com.hrishi.presentation.ui.NavigationRequestHandler
 import com.hrishi.presentation.ui.navigation.AuthBaseRoute
+import com.hrishi.presentation.ui.navigation.SettingsHomeScreenRoute
 import com.hrishi.presentation.ui.navigation.navigateToDashboardScreen
-import com.hrishi.presentation.ui.navigation.navigateToSettingsHomeScreen
 import com.spendless.dashboard.presentation.navigation.dashboardNavGraph
 import com.spendless.session_management.presentation.navigation.sessionNavGraph
 import com.spendless.settings.presentation.navigation.settingsNavGraph
@@ -26,6 +28,9 @@ fun NavigationRoot(
     CompositionLocalProvider(
         LocalAuthActionHandler provides { onVerified: () -> Unit ->
             navigationRequestHandler.runWithAuthCheck(onVerified)
+        },
+        LocalAuthNavigationHandler provides { appNavRoute: AppNavRoute ->
+            navigationRequestHandler.navigateWithAuthCheck(appNavRoute)
         }
     ) {
         NavHost(
@@ -42,10 +47,13 @@ fun NavigationRoot(
                 }
             )
             dashboardNavGraph(
-                navigationRequestHandler = navigationRequestHandler,
                 navController = navController,
                 onNavigateToSettings = {
-                    navController.navigateToSettingsHomeScreen()
+                    navigationRequestHandler.navigateWithAuthCheck(
+                        AppNavRoute(
+                            pendingRoute = SettingsHomeScreenRoute
+                        )
+                    )
                 }
             )
             sessionNavGraph(
