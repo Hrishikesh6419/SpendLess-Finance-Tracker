@@ -14,7 +14,8 @@ data class DashboardViewState(
     val previousWeekTotal: String = "",
     val transactions: List<TransactionGroupUIItem>? = null,
     val isSessionExpired: Boolean = false,
-    val showCreateTransactionSheet: Boolean = false
+    val showCreateTransactionSheet: Boolean = false,
+    val showExportTransactionSheet: Boolean = false
 )
 
 data class LargestTransaction(

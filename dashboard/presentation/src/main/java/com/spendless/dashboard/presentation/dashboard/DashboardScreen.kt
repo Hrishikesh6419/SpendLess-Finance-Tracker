@@ -66,6 +66,7 @@ import com.hrishi.presentation.designsystem.R.drawable
 import com.hrishi.presentation.ui.LocalAuthActionHandler
 import com.hrishi.presentation.ui.ObserveAsEvents
 import com.spendless.dashboard.presentation.create_screen.CreateTransactionScreenRoot
+import com.spendless.dashboard.presentation.export.ExportTransactionsScreenRoot
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.koin.androidx.compose.koinViewModel
@@ -84,7 +85,10 @@ fun DashboardScreenRoot(
     val authActionHandler = LocalAuthActionHandler.current
     val scope = rememberCoroutineScope()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val bottomSheetState = rememberModalBottomSheetState(
+    val createBottomSheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true
+    )
+    val exportBottomSheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = true
     )
     val snackBarHostState = remember { SnackbarHostState() }
@@ -102,7 +106,8 @@ fun DashboardScreenRoot(
             modifier = modifier,
             uiState = uiState,
             snackBarHostState = snackBarHostState,
-            bottomSheetState = bottomSheetState,
+            createBottomSheetState = createBottomSheetState,
+            exportBottomSheetState = exportBottomSheetState,
             scope = scope,
             onAction = { action ->
                 when (action) {
@@ -129,7 +134,8 @@ fun DashboardScreen(
     modifier: Modifier = Modifier,
     uiState: DashboardViewState,
     snackBarHostState: SnackbarHostState,
-    bottomSheetState: SheetState,
+    createBottomSheetState: SheetState,
+    exportBottomSheetState: SheetState,
     scope: CoroutineScope,
     onAction: (DashboardAction) -> Unit,
 ) {
@@ -138,7 +144,7 @@ fun DashboardScreen(
             onDismissRequest = {
                 onAction(DashboardAction.UpdatedBottomSheet(false))
             },
-            sheetState = bottomSheetState,
+            sheetState = createBottomSheetState,
             containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
             properties = ModalBottomSheetProperties(
                 shouldDismissOnBackPress = false
@@ -156,6 +162,34 @@ fun DashboardScreen(
         }
     }
 
+    if (uiState.showExportTransactionSheet) {
+        ModalBottomSheet(
+            onDismissRequest = {
+                onAction(DashboardAction.UpdateExportBottomSheet(false))
+            },
+            sheetState = exportBottomSheetState,
+            containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+            properties = ModalBottomSheetProperties(
+                shouldDismissOnBackPress = false
+            ),
+            dragHandle = null,
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(0.75f)
+            ) {
+                ExportTransactionsScreenRoot(
+                    onDismiss = {
+                        onAction(DashboardAction.UpdateExportBottomSheet(false))
+                    }
+                )
+            }
+        }
+    }
+
     SpendLessScaffold(
         withGradient = true,
         topAppBar = {
@@ -165,6 +199,9 @@ fun DashboardScreen(
                     .padding(horizontal = 8.dp),
                 startIcon = null,
                 endIcon1 = DownloadButton,
+                onEndIcon1Click = {
+                    onAction(DashboardAction.UpdateExportBottomSheet(true))
+                },
                 endIcon2 = SettingsButton,
                 onEndIcon2Click = {
                     onAction(DashboardAction.OnSettingsClicked)
@@ -455,7 +492,8 @@ private fun PreviewDashboardScreen() {
                 onAction = {
 
                 },
-                bottomSheetState = rememberModalBottomSheetState(),
+                createBottomSheetState = rememberModalBottomSheetState(),
+                exportBottomSheetState = rememberModalBottomSheetState(),
             )
         }
     }
@@ -486,7 +524,8 @@ private fun PreviewDashboardEmptyScreen() {
                 onAction = {
 
                 },
-                bottomSheetState = rememberModalBottomSheetState(),
+                createBottomSheetState = rememberModalBottomSheetState(),
+                exportBottomSheetState = rememberModalBottomSheetState()
             )
         }
     }
