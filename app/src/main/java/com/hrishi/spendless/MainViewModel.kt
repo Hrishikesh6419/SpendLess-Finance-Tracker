@@ -21,15 +21,18 @@ class MainViewModel(
     val uiState: StateFlow<MainState> = _uiState.asStateFlow()
 
     init {
+        initializeSession()
+    }
+
+    private fun initializeSession() {
         viewModelScope.launch {
             val userPresent = isUserIdPresent()
-            sessionUseCases.isSessionExpiredUseCase().collect { expired ->
-                _uiState.update {
-                    it.copy(
-                        isSessionExpired = expired,
-                        isUserLoggedIn = userPresent
-                    )
-                }
+            val isSessionExpired = sessionUseCases.isSessionExpiredUseCase().first()
+            _uiState.update {
+                it.copy(
+                    isSessionExpired = isSessionExpired,
+                    isUserLoggedIn = userPresent
+                )
             }
         }
     }
