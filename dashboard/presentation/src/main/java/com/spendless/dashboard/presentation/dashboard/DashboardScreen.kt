@@ -67,7 +67,6 @@ import com.hrishi.presentation.ui.ObserveAsEvents
 import com.spendless.dashboard.presentation.create_screen.CreateTransactionScreenRoot
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import java.math.BigDecimal
 import java.time.LocalDateTime
@@ -80,7 +79,7 @@ fun DashboardScreenRoot(
     viewModel: DashboardViewModel = koinViewModel(),
     onNavigateToSettings: () -> Unit,
     onNavigateToAllTransactions: () -> Unit,
-    onRequestCreateTransaction: (onVerified: () -> Unit) -> Unit
+    onRequestAuthentication: (onVerified: () -> Unit) -> Unit
 ) {
     val scope = rememberCoroutineScope()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -94,7 +93,7 @@ fun DashboardScreenRoot(
             DashboardEvent.NavigateToAllTransactions -> onNavigateToAllTransactions()
             DashboardEvent.NavigateToSettings -> onNavigateToSettings()
             DashboardEvent.RequestCreateTransaction -> {
-                onRequestCreateTransaction {
+                onRequestAuthentication {
                     viewModel.onAction(DashboardAction.UpdatedBottomSheet(true))
                 }
             }
@@ -109,7 +108,17 @@ fun DashboardScreenRoot(
             snackBarHostState = snackBarHostState,
             bottomSheetState = bottomSheetState,
             scope = scope,
-            onAction = viewModel::onAction
+            onAction = { action ->
+                when (action) {
+                    DashboardAction.OnSettingsClicked -> {
+                        onRequestAuthentication {
+                            viewModel.onAction(DashboardAction.OnSettingsClicked)
+                        }
+                    }
+
+                    else -> viewModel.onAction(action)
+                }
+            }
         )
     }
 }
