@@ -92,11 +92,6 @@ fun DashboardScreenRoot(
         when (it) {
             DashboardEvent.NavigateToAllTransactions -> onNavigateToAllTransactions()
             DashboardEvent.NavigateToSettings -> onNavigateToSettings()
-            DashboardEvent.RequestCreateTransaction -> {
-                onRequestAuthentication {
-                    viewModel.onAction(DashboardAction.UpdatedBottomSheet(true))
-                }
-            }
         }
     }
     CompositionLocalProvider(
@@ -112,7 +107,17 @@ fun DashboardScreenRoot(
                 when (action) {
                     DashboardAction.OnSettingsClicked -> {
                         onRequestAuthentication {
-                            viewModel.onAction(DashboardAction.OnSettingsClicked)
+                            viewModel.onAction(action)
+                        }
+                    }
+
+                    is DashboardAction.UpdatedBottomSheet -> {
+                        if (action.showSheet) {
+                            onRequestAuthentication {
+                                viewModel.onAction(action)
+                            }
+                        } else {
+                            viewModel.onAction(action)
                         }
                     }
 
@@ -183,7 +188,7 @@ fun DashboardScreen(
         floatingActionButton = {
             SpendLessFloatingActionButton(
                 onClick = {
-                    onAction(DashboardAction.OnCreateTransactionClicked)
+                    onAction(DashboardAction.UpdatedBottomSheet(true))
                 }
             )
         },

@@ -122,12 +122,6 @@ class DashboardViewModel(
 
     fun onAction(action: DashboardAction) {
         when (action) {
-            DashboardAction.OnCreateTransactionClicked -> {
-                viewModelScope.launch {
-                    eventChannel.send(DashboardEvent.RequestCreateTransaction)
-                }
-            }
-
             DashboardAction.NavigationClick -> Unit
             DashboardAction.OnShowAllTransactionsClicked -> {
                 viewModelScope.launch {

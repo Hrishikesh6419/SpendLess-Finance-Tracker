@@ -1,7 +1,6 @@
 package com.spendless.dashboard.presentation.dashboard
 
 sealed interface DashboardAction {
-    data object OnCreateTransactionClicked : DashboardAction
     data object NavigationClick : DashboardAction
     data object OnSettingsClicked : DashboardAction
     data object OnShowAllTransactionsClicked : DashboardAction
