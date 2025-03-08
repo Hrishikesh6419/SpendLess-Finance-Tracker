@@ -80,6 +80,7 @@ fun DashboardScreenRoot(
     viewModel: DashboardViewModel = koinViewModel(),
     onNavigateToSettings: () -> Unit,
     onNavigateToAllTransactions: () -> Unit,
+    onRequestCreateTransaction: (onVerified: () -> Unit) -> Unit
 ) {
     val scope = rememberCoroutineScope()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -92,6 +93,11 @@ fun DashboardScreenRoot(
         when (it) {
             DashboardEvent.NavigateToAllTransactions -> onNavigateToAllTransactions()
             DashboardEvent.NavigateToSettings -> onNavigateToSettings()
+            DashboardEvent.RequestCreateTransaction -> {
+                onRequestCreateTransaction {
+                    viewModel.onAction(DashboardAction.UpdatedBottomSheet(true))
+                }
+            }
         }
     }
     CompositionLocalProvider(
@@ -168,9 +174,7 @@ fun DashboardScreen(
         floatingActionButton = {
             SpendLessFloatingActionButton(
                 onClick = {
-                    scope.launch {
-                        onAction(DashboardAction.UpdatedBottomSheet(true))
-                    }
+                    onAction(DashboardAction.OnCreateTransactionClicked)
                 }
             )
         },

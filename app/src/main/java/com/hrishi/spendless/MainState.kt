@@ -6,5 +6,6 @@ data class MainState(
     val isSessionExpired: Boolean = false,
     val isUserLoggedIn: Boolean = false,
     val showPinPrompt: Boolean = false,
-    val pendingRoute: AppNavRoute? = null
+    val pendingRoute: AppNavRoute? = null,
+    val pendingActionAfterAuth: (() -> Unit)? = null
 )

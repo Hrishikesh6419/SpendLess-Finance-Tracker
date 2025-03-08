@@ -22,6 +22,7 @@ fun NavController.navigateToRoute(appNavRoute: AppNavRoute) {
 
 interface NavigationRequestHandler {
     fun navigateWithAuthCheck(appNavRoute: AppNavRoute)
+    fun runWithAuthCheck(action: () -> Unit)
 }
 
 object SerializableNavType {

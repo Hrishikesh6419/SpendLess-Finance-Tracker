@@ -55,6 +55,26 @@ class MainViewModel(
         }
     }
 
+    override fun runWithAuthCheck(action: () -> Unit) {
+        viewModelScope.launch {
+            val expiredNow = sessionUseCases.isSessionExpiredUseCase().first()
+            if (expiredNow) {
+                _uiState.update {
+                    it.copy(
+                        pendingActionAfterAuth = action,
+                        showPinPrompt = true
+                    )
+                }
+            } else {
+                action()
+            }
+        }
+    }
+
+    fun clearPendingActionAfterAuth() {
+        _uiState.update { it.copy(pendingActionAfterAuth = null) }
+    }
+
     fun mainViewModelClearPendingRoute() {
         _uiState.update { it.copy(pendingRoute = null) }
     }

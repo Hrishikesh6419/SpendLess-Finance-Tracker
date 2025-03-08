@@ -45,7 +45,11 @@ class MainActivity : ComponentActivity() {
                 NavigationRoot(
                     navController = navController,
                     navigationRequestHandler = mainViewModel,
-                    onSessionVerified = { mainViewModel.startSession() },
+                    onSessionVerified = {
+                        mainViewModel.startSession()
+                        uiState.pendingActionAfterAuth?.invoke()
+                        mainViewModel.clearPendingActionAfterAuth()
+                    },
                     onLogout = {
                         navController.navigateToLoginRoute {
                             popUpTo<AuthBaseRoute>()
