@@ -153,15 +153,11 @@ fun DashboardScreen(
                 .fillMaxHeight()
                 .windowInsetsPadding(WindowInsets.statusBars)
         ) {
-            Column(
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                CreateTransactionScreenRoot(
-                    onDismiss = {
-                        onAction(DashboardAction.UpdatedBottomSheet(false))
-                    }
-                )
-            }
+            CreateTransactionScreenRoot(
+                onDismiss = {
+                    onAction(DashboardAction.UpdatedBottomSheet(false))
+                }
+            )
         }
     }
 
