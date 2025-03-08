@@ -26,12 +26,18 @@ class MainViewModel(
 
     private fun initializeSession() {
         viewModelScope.launch {
+            _uiState.update {
+                it.copy(
+                    isCheckingAuth = true
+                )
+            }
             val userPresent = isUserIdPresent()
             val isSessionExpired = sessionUseCases.isSessionExpiredUseCase().first()
             _uiState.update {
                 it.copy(
                     isSessionExpired = isSessionExpired,
-                    isUserLoggedIn = userPresent
+                    isUserLoggedIn = userPresent,
+                    isCheckingAuth = false
                 )
             }
         }
