@@ -33,35 +33,38 @@ class MainActivity : ComponentActivity() {
         setContent {
             SpendLessFinanceTrackerTheme {
                 val uiState by mainViewModel.uiState.collectAsStateWithLifecycle()
-                val navController = rememberNavController()
+                if (!uiState.isCheckingAuth) {
+                    val navController = rememberNavController()
 
-                LaunchedEffect(uiState.showPinPrompt) {
-                    if (uiState.showPinPrompt) {
-                        navController.navigate(SessionBaseRoute)
-                    }
-                }
-
-                uiState.pendingRoute?.let { route ->
-                    if (!uiState.isSessionExpired && uiState.isUserLoggedIn) {
-                        navController.navigateToRoute(route)
-                        mainViewModel.mainViewModelClearPendingRoute()
-                    }
-                }
-
-                NavigationRoot(
-                    navController = navController,
-                    navigationRequestHandler = mainViewModel,
-                    onSessionVerified = {
-                        mainViewModel.startSession()
-                        uiState.pendingActionAfterAuth?.invoke()
-                        mainViewModel.clearPendingActionAfterAuth()
-                    },
-                    onLogout = {
-                        navController.navigateToLoginRoute {
-                            popUpTo<AuthBaseRoute>()
+                    LaunchedEffect(uiState.showPinPrompt) {
+                        if (uiState.showPinPrompt) {
+                            navController.navigate(SessionBaseRoute)
                         }
                     }
-                )
+
+                    uiState.pendingRoute?.let { route ->
+                        if (!uiState.isSessionExpired && uiState.isUserLoggedIn) {
+                            navController.navigateToRoute(route)
+                            mainViewModel.mainViewModelClearPendingRoute()
+                        }
+                    }
+
+                    NavigationRoot(
+                        navController = navController,
+                        navigationRequestHandler = mainViewModel,
+                        onSessionVerified = {
+                            mainViewModel.startSession()
+                            uiState.pendingActionAfterAuth?.invoke()
+                            mainViewModel.clearPendingActionAfterAuth()
+                        },
+                        onLogout = {
+                            navController.navigateToLoginRoute {
+                                popUpTo<AuthBaseRoute>()
+                            }
+                        },
+                        authNavigationDestination = uiState.authNavigationDestination
+                    )
+                }
             }
         }
     }

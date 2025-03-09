@@ -11,8 +11,12 @@ import com.hrishi.presentation.ui.LocalAuthActionHandler
 import com.hrishi.presentation.ui.LocalAuthNavigationHandler
 import com.hrishi.presentation.ui.NavigationRequestHandler
 import com.hrishi.presentation.ui.navigation.AuthBaseRoute
+import com.hrishi.presentation.ui.navigation.DashboardBaseRoute
+import com.hrishi.presentation.ui.navigation.RegisterRoute
+import com.hrishi.presentation.ui.navigation.SessionBaseRoute
 import com.hrishi.presentation.ui.navigation.SettingsHomeScreenRoute
 import com.hrishi.presentation.ui.navigation.navigateToDashboardScreen
+import com.hrishi.spendless.AuthNavigationDestination
 import com.spendless.dashboard.presentation.navigation.dashboardNavGraph
 import com.spendless.session_management.presentation.navigation.sessionNavGraph
 import com.spendless.settings.presentation.navigation.settingsNavGraph
@@ -23,6 +27,7 @@ fun NavigationRoot(
     navigationRequestHandler: NavigationRequestHandler,
     onSessionVerified: () -> Unit = {},
     onLogout: () -> Unit = {},
+    authNavigationDestination: AuthNavigationDestination,
     modifier: Modifier = Modifier,
 ) {
     CompositionLocalProvider(
@@ -35,7 +40,7 @@ fun NavigationRoot(
     ) {
         NavHost(
             navController = navController,
-            startDestination = AuthBaseRoute,
+            startDestination = getStartDestination(authNavigationDestination),
             modifier = modifier
         ) {
             authGraph(
@@ -75,4 +80,13 @@ fun NavigationRoot(
         }
     }
 }
+
+private fun getStartDestination(authNavigationDestination: AuthNavigationDestination) =
+    when (authNavigationDestination) {
+        is AuthNavigationDestination.DashboardScreen -> DashboardBaseRoute
+        AuthNavigationDestination.LoginScreen -> AuthBaseRoute
+        AuthNavigationDestination.None -> AuthBaseRoute
+        AuthNavigationDestination.PinScreen -> SessionBaseRoute
+        AuthNavigationDestination.RegisterScreen -> RegisterRoute
+    }
 

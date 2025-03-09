@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hrishi.presentation.ui.AppNavRoute
 import com.hrishi.presentation.ui.NavigationRequestHandler
+import com.hrishi.presentation.ui.navigation.DashboardBaseRoute
 import com.spendless.session_management.domain.usecases.SessionUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -26,40 +27,52 @@ class MainViewModel(
 
     private fun initializeSession() {
         viewModelScope.launch {
-            _uiState.update {
-                it.copy(
-                    isCheckingAuth = true
-                )
-            }
-            val userPresent = isUserIdPresent()
+            val isUserPresent = isUserIdPresent()
             val isSessionExpired = sessionUseCases.isSessionExpiredUseCase().first()
+            val authNavigationDestination = getAuthNavigationDestination(
+                isUserPresent = isUserPresent,
+                isSessionExpired = isSessionExpired
+            )
+
             _uiState.update {
                 it.copy(
                     isSessionExpired = isSessionExpired,
-                    isUserLoggedIn = userPresent,
-                    isCheckingAuth = false
+                    isUserLoggedIn = isUserPresent,
+                    isCheckingAuth = false,
+                    authNavigationDestination = authNavigationDestination,
+                    pendingRoute = if (authNavigationDestination == AuthNavigationDestination.PinScreen) {
+                        AppNavRoute(pendingRoute = DashboardBaseRoute)
+                    } else null
                 )
             }
+        }
+    }
+
+    private fun getAuthNavigationDestination(
+        isUserPresent: Boolean,
+        isSessionExpired: Boolean
+    ): AuthNavigationDestination {
+        return when {
+            isUserPresent && !isSessionExpired -> {
+                AuthNavigationDestination.DashboardScreen(false)
+            }
+
+            isUserPresent && isSessionExpired -> {
+                AuthNavigationDestination.PinScreen
+            }
+
+            else -> AuthNavigationDestination.LoginScreen
         }
     }
 
     override fun navigateWithAuthCheck(appNavRoute: AppNavRoute) {
         viewModelScope.launch {
             val expiredNow = sessionUseCases.isSessionExpiredUseCase().first()
-            if (expiredNow) {
-                _uiState.update {
-                    it.copy(
-                        pendingRoute = appNavRoute,
-                        showPinPrompt = true
-                    )
-                }
-            } else {
-                _uiState.update {
-                    it.copy(
-                        pendingRoute = appNavRoute,
-                        showPinPrompt = false
-                    )
-                }
+            _uiState.update {
+                it.copy(
+                    pendingRoute = appNavRoute,
+                    showPinPrompt = expiredNow
+                )
             }
         }
     }
