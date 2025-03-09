@@ -116,7 +116,10 @@ class CreateTransactionViewModel(
             is CreateTransactionAction.OnAmountUpdated -> updateState { copy(amount = action.amount) }
             is CreateTransactionAction.OnNoteUpdated -> updateState { copy(note = action.note) }
             CreateTransactionAction.OnCreateClicked -> handleCreateTransaction()
-            CreateTransactionAction.OnBottomSheetCloseClicked -> sendEvent(CreateTransactionEvent.CloseBottomSheet)
+            CreateTransactionAction.OnBottomSheetCloseClicked -> {
+                resetScreen()
+                sendEvent(CreateTransactionEvent.CloseBottomSheet)
+            }
         }
     }
 
