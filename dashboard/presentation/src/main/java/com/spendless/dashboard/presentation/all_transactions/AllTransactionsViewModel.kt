@@ -13,7 +13,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -75,28 +75,27 @@ class AllTransactionsViewModel(
     }
 
     init {
-        combine(
-            sessionUseCases.getSessionDataUseCase().flatMapLatest { sessionData ->
-                sessionPreferenceUseCase.getPreferencesUseCase(sessionData.userId)
-            },
-            sessionUseCases.getSessionDataUseCase().flatMapLatest { sessionData ->
+        viewModelScope.launch {
+            val sessionData = sessionUseCases.getSessionDataUseCase().first()
+            combine(
+                sessionPreferenceUseCase.getPreferencesUseCase(sessionData.userId),
                 transactionUseCases.getTransactionsForUserUseCase(sessionData.userId)
-            }
-        ) { preferences, transactions ->
-            Pair(preferences, transactions)
-        }.onEach { (preferencesResult, transactionsResult) ->
-            if (
-                preferencesResult is Result.Success &&
-                transactionsResult is Result.Success
-            ) {
-                _uiState.update { currentState ->
-                    currentState.copy(
-                        preference = preferencesResult.data,
-                        transactions = groupTransactionsByDate(transactionsResult.data)
-                    )
+            ) { preferences, transactions ->
+                Pair(preferences, transactions)
+            }.onEach { (preferencesResult, transactionsResult) ->
+                if (
+                    preferencesResult is Result.Success &&
+                    transactionsResult is Result.Success
+                ) {
+                    _uiState.update { currentState ->
+                        currentState.copy(
+                            preference = preferencesResult.data,
+                            transactions = groupTransactionsByDate(transactionsResult.data)
+                        )
+                    }
                 }
-            }
-        }.launchIn(viewModelScope)
+            }.launchIn(viewModelScope)
+        }
     }
 
     private fun groupTransactionsByDate(transactions: List<Transaction>): List<TransactionGroupUIItem> {
