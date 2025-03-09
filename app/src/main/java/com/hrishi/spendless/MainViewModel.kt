@@ -81,8 +81,7 @@ class MainViewModel(
             it.copy(
                 showPinPrompt = false,
                 isSessionExpired = false,
-                isUserLoggedIn = true,
-                isCheckingAuth = false
+                isUserLoggedIn = true
             )
         }
     }
