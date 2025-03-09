@@ -80,7 +80,9 @@ class MainViewModel(
         _uiState.update {
             it.copy(
                 showPinPrompt = false,
-                isSessionExpired = false
+                isSessionExpired = false,
+                isUserLoggedIn = true,
+                isCheckingAuth = false
             )
         }
     }
