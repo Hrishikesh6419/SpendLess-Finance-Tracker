@@ -55,6 +55,7 @@ class MainActivity : ComponentActivity() {
                         onSessionVerified = {
                             mainViewModel.startSession()
                             uiState.pendingActionAfterAuth?.invoke()
+                            mainViewModel.onPinVerified()
                             mainViewModel.clearPendingActionAfterAuth()
                         },
                         onLogout = {
@@ -67,6 +68,11 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mainViewModel.onAppResumed()
     }
 
     override fun onDestroy() {

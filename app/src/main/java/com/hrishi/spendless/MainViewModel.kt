@@ -1,6 +1,5 @@
 package com.hrishi.spendless
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -57,6 +56,32 @@ class MainViewModel(
                     } else null
                 )
             }
+        }
+    }
+
+    fun onAppResumed() {
+        viewModelScope.launch {
+            if (!isUserIdPresent()) {
+                return@launch
+            }
+            val isSessionExpired = sessionUseCases.isSessionExpiredUseCase().first()
+            if (isSessionExpired) {
+                _uiState.update {
+                    it.copy(
+                        showPinPrompt = true,
+                        pendingRoute = null
+                    )
+                }
+            }
+        }
+    }
+
+    fun onPinVerified() {
+        _uiState.update {
+            it.copy(
+                showPinPrompt = false,
+                isSessionExpired = false
+            )
         }
     }
 
