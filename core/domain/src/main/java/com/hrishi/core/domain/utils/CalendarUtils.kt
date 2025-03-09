@@ -41,6 +41,19 @@ object CalendarUtils {
             .with(LocalTime.MAX)
         return startOfPreviousWeek to endOfPreviousWeek
     }
+
+    fun getCurrentDayOfWeek(): String {
+        return currentEstDate.dayOfWeek.name.lowercase().replaceFirstChar { it.uppercase() }
+    }
+
+    fun getCurrentDayOfMonth(): String {
+        return currentEstDate.dayOfMonth.toString()
+    }
+
+    fun getCurrentMonthAndDay(): String {
+        val formatter = DateTimeFormatter.ofPattern("MMM d")
+        return currentEstDate.format(formatter)
+    }
 }
 
 fun LocalDateTime.toShortDateString(): String {

@@ -38,12 +38,13 @@ import com.hrishi.core.presentation.designsystem.components.text_field.BasicTran
 import com.hrishi.core.presentation.designsystem.components.text_field.DecimalSeparatorUI
 import com.hrishi.core.presentation.designsystem.components.text_field.ThousandsSeparatorUI
 import com.hrishi.core.presentation.designsystem.components.text_field.TransactionTextField
-import com.hrishi.core.presentation.designsystem.model.TransactionCategoryTypeUI
 import com.hrishi.core.presentation.designsystem.model.RecurringTypeUI
+import com.hrishi.core.presentation.designsystem.model.TransactionCategoryTypeUI
 import com.hrishi.core.presentation.designsystem.model.TransactionTypeUI
 import com.hrishi.presentation.ui.LocalAuthActionHandler
 import com.hrishi.presentation.ui.ObserveAsEvents
 import com.hrishi.presentation.ui.UpdateStatusBarAppearance
+import com.hrishi.presentation.ui.utils.getFormattedTitle
 import org.koin.androidx.compose.koinViewModel
 import java.math.BigDecimal
 
@@ -213,7 +214,7 @@ private fun CreateTransactionScreen(
             showMenuIcon = false,
             options = RecurringTypeUI.entries.toTypedArray(),
             currencyDisplay = { it.symbol },
-            currencyTitleDisplay = { it.title },
+            currencyTitleDisplay = { it.getFormattedTitle() },
             onItemSelected = {
                 onAction(CreateTransactionAction.OnFrequencyUpdated(it))
             }
