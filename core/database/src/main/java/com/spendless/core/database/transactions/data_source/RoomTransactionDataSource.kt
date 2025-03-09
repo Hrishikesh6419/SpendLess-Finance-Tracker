@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import java.math.BigDecimal
 import java.time.LocalDateTime
+import kotlin.coroutines.cancellation.CancellationException
 
 class RoomTransactionDataSource(
     private val transactionsDao: TransactionsDao
@@ -100,9 +101,10 @@ class RoomTransactionDataSource(
     override fun getMostPopularExpenseCategory(userId: Long): Flow<Result<TransactionCategory?, DataError>> {
         return transactionsDao.getMostPopularExpenseCategory(userId)
             .map { category ->
-                Result.Success(category) as Result<TransactionCategory, DataError>
+                Result.Success(category) as Result<TransactionCategory?, DataError>
             }
-            .catch {
+            .catch { exception ->
+                if (exception is CancellationException) throw exception
                 emit(Result.Error(DataError.Local.UNKNOWN_DATABASE_ERROR))
             }
     }
