@@ -8,14 +8,14 @@ import kotlinx.serialization.Serializable
 data object DashboardBaseRoute : AppRoute
 
 @Serializable
-data object DashboardScreenRoute : AppRoute
+data class DashboardScreenRoute(val isLaunchedFromWidget: Boolean = false) : AppRoute
 
 @Serializable
 data object AllTransactionsScreenRoute : AppRoute
 
 fun NavController.navigateToDashboardScreen(
     navOptions: NavOptionsBuilder.() -> Unit = {}
-) = navigate(DashboardScreenRoute, navOptions)
+) = navigate(DashboardScreenRoute(), navOptions)
 
 fun NavController.navigateToAllTransactionsScreenRoute(
     navOptions: NavOptionsBuilder.() -> Unit = {}

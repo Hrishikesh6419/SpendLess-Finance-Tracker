@@ -13,6 +13,6 @@ val appModule = module {
         (androidApplication() as SpendLessApp).applicationScope
     }
 
-    viewModel { MainViewModel(get()) }
+    viewModel { MainViewModel(get(), get()) }
     factory<NavigationRequestHandler> { get<MainViewModel>() }
 }

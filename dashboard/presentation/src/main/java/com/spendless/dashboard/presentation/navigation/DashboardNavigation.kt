@@ -16,10 +16,11 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 @OptIn(ExperimentalCoroutinesApi::class)
 fun NavGraphBuilder.dashboardNavGraph(
     navController: NavHostController,
+    isLaunchedFromWidget: Boolean,
     onNavigateToSettings: () -> Unit
 ) {
     navigation<DashboardBaseRoute>(
-        startDestination = DashboardScreenRoute
+        startDestination = DashboardScreenRoute(isLaunchedFromWidget)
     ) {
         composable<DashboardScreenRoute> {
             val authNavigationHandler = LocalAuthNavigationHandler.current

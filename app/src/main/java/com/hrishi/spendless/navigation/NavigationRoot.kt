@@ -53,6 +53,8 @@ fun NavigationRoot(
             )
             dashboardNavGraph(
                 navController = navController,
+                isLaunchedFromWidget = (authNavigationDestination as? AuthNavigationDestination.DashboardScreen)?.isLaunchedFromWidget
+                    ?: false,
                 onNavigateToSettings = {
                     navigationRequestHandler.navigateWithAuthCheck(
                         AppNavRoute(

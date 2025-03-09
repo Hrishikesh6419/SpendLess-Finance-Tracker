@@ -1,7 +1,10 @@
 package com.spendless.dashboard.presentation.dashboard
 
+import android.util.Log
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
 import com.hrishi.core.domain.formatting.NumberFormatter
 import com.hrishi.core.domain.model.TransactionCategory
 import com.hrishi.core.domain.preference.model.UserPreferences
@@ -12,6 +15,7 @@ import com.hrishi.core.domain.utils.CombinedResult
 import com.hrishi.core.domain.utils.DataError
 import com.hrishi.core.domain.utils.Result
 import com.hrishi.core.domain.utils.toShortDateString
+import com.hrishi.presentation.ui.navigation.DashboardScreenRoute
 import com.spendless.dashboard.presentation.mapper.toTransactionCategoryUI
 import com.spendless.dashboard.presentation.mapper.toUIItem
 import com.spendless.session_management.domain.model.SessionData
@@ -31,6 +35,7 @@ import java.math.BigDecimal
 
 @ExperimentalCoroutinesApi
 class DashboardViewModel(
+    savedStateHandle: SavedStateHandle,
     private val sessionUseCases: SessionUseCase,
     private val sessionPreferenceUseCase: SettingsPreferenceUseCase,
     private val transactionUseCases: TransactionUseCases
@@ -43,6 +48,9 @@ class DashboardViewModel(
     val events = eventChannel.receiveAsFlow()
 
     private var preference: UserPreferences? = null
+
+    private val isLaunchedFromWidget =
+        savedStateHandle.toRoute<DashboardScreenRoute>().isLaunchedFromWidget
 
     init {
         fetchTransactions()
@@ -113,7 +121,8 @@ class DashboardViewModel(
                             previousWeekTotalResult.data,
                             preference
                         ),
-                        transactions = groupTransactionsByDate(transactionResult.data)
+                        transactions = groupTransactionsByDate(transactionResult.data),
+                        showCreateTransactionSheet = isLaunchedFromWidget
                     )
                 }
             }

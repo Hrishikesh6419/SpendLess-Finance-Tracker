@@ -1,11 +1,14 @@
 package com.hrishi.spendless
 
+import android.util.Log
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hrishi.presentation.ui.AppNavRoute
 import com.hrishi.presentation.ui.NavigationRequestHandler
-import com.hrishi.presentation.ui.navigation.DashboardBaseRoute
+import com.hrishi.presentation.ui.navigation.DashboardScreenRoute
 import com.spendless.session_management.domain.usecases.SessionUseCase
+import com.spendless.widget.presentation.create_transaction.CreateTransactionWidget
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -15,11 +18,15 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class MainViewModel(
+    savedStateHandle: SavedStateHandle,
     private val sessionUseCases: SessionUseCase
 ) : ViewModel(), NavigationRequestHandler {
 
     private val _uiState = MutableStateFlow(MainState())
     val uiState: StateFlow<MainState> = _uiState.asStateFlow()
+
+    private val isLaunchedFromWidget: Boolean =
+        savedStateHandle.get<String>(CreateTransactionWidget.INTENT_SOURCE_KEY) == CreateTransactionWidget.SOURCE
 
     init {
         initializeSession()
@@ -31,7 +38,8 @@ class MainViewModel(
             val isSessionExpired = sessionUseCases.isSessionExpiredUseCase().first()
             val authNavigationDestination = getAuthNavigationDestination(
                 isUserPresent = isUserPresent,
-                isSessionExpired = isSessionExpired
+                isSessionExpired = isSessionExpired,
+                isLaunchedFromWidget = isLaunchedFromWidget
             )
 
             _uiState.update {
@@ -41,7 +49,11 @@ class MainViewModel(
                     isCheckingAuth = false,
                     authNavigationDestination = authNavigationDestination,
                     pendingRoute = if (authNavigationDestination == AuthNavigationDestination.PinScreen) {
-                        AppNavRoute(pendingRoute = DashboardBaseRoute)
+                        AppNavRoute(
+                            pendingRoute = DashboardScreenRoute(
+                                isLaunchedFromWidget = isLaunchedFromWidget
+                            )
+                        )
                     } else null
                 )
             }
@@ -50,11 +62,12 @@ class MainViewModel(
 
     private fun getAuthNavigationDestination(
         isUserPresent: Boolean,
-        isSessionExpired: Boolean
+        isSessionExpired: Boolean,
+        isLaunchedFromWidget: Boolean
     ): AuthNavigationDestination {
         return when {
             isUserPresent && !isSessionExpired -> {
-                AuthNavigationDestination.DashboardScreen(false)
+                AuthNavigationDestination.DashboardScreen(isLaunchedFromWidget)
             }
 
             isUserPresent && isSessionExpired -> {
