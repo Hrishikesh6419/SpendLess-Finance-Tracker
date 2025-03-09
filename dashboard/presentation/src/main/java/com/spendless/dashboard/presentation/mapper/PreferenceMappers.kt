@@ -101,9 +101,8 @@ fun RecurringTypeUI.toRecurringType(): RecurringType {
         RecurringTypeUI.ONE_TIME -> RecurringType.ONE_TIME
         RecurringTypeUI.DAILY -> RecurringType.DAILY
         RecurringTypeUI.WEEKLY -> RecurringType.WEEKLY
-        RecurringTypeUI.WEEKLY_ON_THIS_DAY -> RecurringType.WEEKLY_ON_THIS_DAY
-        RecurringTypeUI.MONTHLY_ON_THIS_DAY -> RecurringType.MONTHLY_ON_THIS_DAY
-        RecurringTypeUI.YEARLY_ON_THIS_DAY -> RecurringType.YEARLY_ON_THIS_DAY
+        RecurringTypeUI.MONTHLY -> RecurringType.MONTHLY
+        RecurringTypeUI.YEARLY -> RecurringType.YEARLY
     }
 }
 
@@ -112,8 +111,7 @@ fun RecurringType.toRecurringTypeUI(): RecurringTypeUI {
         RecurringType.ONE_TIME -> RecurringTypeUI.ONE_TIME
         RecurringType.DAILY -> RecurringTypeUI.DAILY
         RecurringType.WEEKLY -> RecurringTypeUI.WEEKLY
-        RecurringType.WEEKLY_ON_THIS_DAY -> RecurringTypeUI.WEEKLY_ON_THIS_DAY
-        RecurringType.MONTHLY_ON_THIS_DAY -> RecurringTypeUI.MONTHLY_ON_THIS_DAY
-        RecurringType.YEARLY_ON_THIS_DAY -> RecurringTypeUI.YEARLY_ON_THIS_DAY
+        RecurringType.MONTHLY -> RecurringTypeUI.MONTHLY
+        RecurringType.YEARLY -> RecurringTypeUI.YEARLY
     }
 }
