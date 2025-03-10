@@ -1,5 +1,6 @@
 package com.hrishi.core.domain.transactions.usecases
 
+import com.hrishi.core.domain.model.RecurringType
 import com.hrishi.core.domain.model.TransactionCategory
 import com.hrishi.core.domain.transactions.model.Transaction
 import com.hrishi.core.domain.transactions.model.TransactionGroupItem
@@ -11,6 +12,7 @@ import kotlinx.coroutines.flow.Flow
 import java.math.BigDecimal
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.time.YearMonth
 import java.util.Locale
 
 data class TransactionUseCases(
@@ -23,6 +25,7 @@ data class TransactionUseCases(
     val getLargestTransactionUseCase: GetLargestTransactionUseCase,
     val getPreviousWeekTotalUseCase: GetPreviousWeekTotalUseCase,
     val getTransactionsGroupedByDateUseCase: GetTransactionsGroupedByDateUseCase,
+    val getNextRecurringDateUseCase: GetNextRecurringDateUseCase
 )
 
 class InsertTransactionUseCase(
@@ -113,5 +116,51 @@ class GetTransactionsGroupedByDateUseCase {
                     transactions = transactions
                 )
             }
+    }
+}
+
+class GetNextRecurringDateUseCase {
+    operator fun invoke(
+        startDate: LocalDateTime = CalendarUtils.currentEstTime,
+        lastTransactionDate: LocalDateTime? = null,
+        recurringType: RecurringType,
+    ): LocalDateTime? {
+        return when (recurringType) {
+            RecurringType.ONE_TIME -> null
+
+            RecurringType.DAILY -> {
+                lastTransactionDate?.plusDays(1) ?: startDate.plusDays(1)
+            }
+
+            RecurringType.WEEKLY -> {
+                lastTransactionDate?.plusWeeks(1) ?: startDate.plusWeeks(1)
+            }
+
+            RecurringType.MONTHLY -> {
+                if (lastTransactionDate != null) {
+                    val nextTransactionDate = lastTransactionDate.plusMonths(1)
+
+                    // Check if the start date is the last day of the month.
+                    // If the start date was on the 31st, adding a month might set the date to the 30th or earlier
+                    // in shorter months. To maintain the "last day of the month" pattern, adjust the
+                    // nextTransactionDate to the last day of the next month if needed.
+                    val isLastDayOfMonth =
+                        startDate.dayOfMonth == YearMonth.from(startDate).lengthOfMonth()
+
+                    return if (isLastDayOfMonth) {
+                        val nextMonth = YearMonth.from(nextTransactionDate)
+                        nextTransactionDate.withDayOfMonth(nextMonth.lengthOfMonth())
+                    } else {
+                        nextTransactionDate
+                    }
+                } else {
+                    startDate.plusMonths(1)
+                }
+            }
+
+            RecurringType.YEARLY -> {
+                lastTransactionDate?.plusYears(1) ?: startDate.plusYears(1)
+            }
+        }
     }
 }

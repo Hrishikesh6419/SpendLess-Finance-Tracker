@@ -145,6 +145,10 @@ class CreateTransactionViewModel(
         viewModelScope.launch {
             val uiState = _uiState.value
             uiState.userId?.let {
+                val recurringType = uiState.recurringType.toRecurringType()
+                val nextRecurringDate = transactionUseCases.getNextRecurringDateUseCase(
+                    recurringType = recurringType
+                )
                 val transaction = Transaction(
                     transactionId = null,
                     userId = uiState.userId,
@@ -163,8 +167,8 @@ class CreateTransactionViewModel(
                     },
                     transactionDate = CalendarUtils.currentEstTime,
                     recurringTransactionId = null,
-                    recurringType = uiState.recurringType.toRecurringType(),
-                    nextRecurringDate = null,
+                    recurringType = recurringType,
+                    nextRecurringDate = nextRecurringDate,
                     endDate = null
                 )
 

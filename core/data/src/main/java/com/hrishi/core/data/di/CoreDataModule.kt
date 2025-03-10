@@ -24,6 +24,7 @@ import com.hrishi.core.domain.transactions.usecases.GetAccountBalanceUseCase
 import com.hrishi.core.domain.transactions.usecases.GetDueRecurringTransactionsUseCase
 import com.hrishi.core.domain.transactions.usecases.GetLargestTransactionUseCase
 import com.hrishi.core.domain.transactions.usecases.GetMostPopularExpenseCategoryUseCase
+import com.hrishi.core.domain.transactions.usecases.GetNextRecurringDateUseCase
 import com.hrishi.core.domain.transactions.usecases.GetPreviousWeekTotalUseCase
 import com.hrishi.core.domain.transactions.usecases.GetRecurringTransactionSeriesUseCase
 import com.hrishi.core.domain.transactions.usecases.GetTransactionsForUserUseCase
@@ -60,7 +61,8 @@ val coreDataModule = module {
     factory { GetLargestTransactionUseCase(get()) }
     factory { GetPreviousWeekTotalUseCase(get()) }
     factory { GetTransactionsGroupedByDateUseCase() }
-    single { TransactionUseCases(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
+    factory { GetNextRecurringDateUseCase() }
+    single { TransactionUseCases(get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
     singleOf(::TransactionRepositoryImpl).bind<TransactionRepository>()
     singleOf(::ExportRepositoryImpl).bind<ExportRepository>()
 
