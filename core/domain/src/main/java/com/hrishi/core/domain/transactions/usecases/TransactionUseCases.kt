@@ -100,7 +100,7 @@ class GetTransactionsGroupedByDateUseCase {
     operator fun invoke(transactions: List<Transaction>): List<TransactionGroupItem> {
         val today = CalendarUtils.currentEstDate
         val yesterday = today.minusDays(1)
-        val dateFormatter = DateTimeFormatter.ofPattern("MMMM d")
+        val dateFormatter = DateTimeFormatter.ofPattern("MMMM d, yyyy")
 
         return transactions
             .sortedByDescending { it.transactionDate }
