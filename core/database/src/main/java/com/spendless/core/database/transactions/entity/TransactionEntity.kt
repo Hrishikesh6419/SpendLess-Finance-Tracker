@@ -33,6 +33,7 @@ data class TransactionEntity(
     val note: String?,
     val transactionCategory: TransactionCategory,
     val transactionDate: LocalDateTime,
+    val recurringStartDate: LocalDateTime,
     val recurringTransactionId: Long?,
     val recurringType: RecurringType,
     val nextRecurringDate: LocalDateTime?,

@@ -37,7 +37,7 @@ interface TransactionsDao {
         AND (endDate IS NULL OR nextRecurringDate <= endDate)
     """
     )
-    suspend fun getDueRecurringTransactions(currentDate: Long): List<TransactionEntity>
+    suspend fun getDueRecurringTransactions(currentDate: LocalDateTime): List<TransactionEntity>
 
     // COALESCE(..., 0): Ensures that if there are no transactions, it returns 0 instead of null.
     @Query("SELECT COALESCE(SUM(amount), '0') FROM transactions WHERE userId = :userId")

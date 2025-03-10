@@ -8,14 +8,14 @@ import com.hrishi.core.domain.transactions.model.Transaction
 import com.hrishi.core.domain.transactions.usecases.TransactionUseCases
 import com.hrishi.core.domain.utils.CalendarUtils
 import com.hrishi.core.domain.utils.Result
-import com.hrishi.core.presentation.designsystem.model.TransactionCategoryTypeUI
 import com.hrishi.core.presentation.designsystem.model.RecurringTypeUI
+import com.hrishi.core.presentation.designsystem.model.TransactionCategoryTypeUI
 import com.hrishi.core.presentation.designsystem.model.TransactionTypeUI
 import com.spendless.dashboard.presentation.mapper.toDecimalSeparatorUI
-import com.spendless.dashboard.presentation.mapper.toTransactionCategory
 import com.spendless.dashboard.presentation.mapper.toExpenseFormatUI
 import com.spendless.dashboard.presentation.mapper.toRecurringType
 import com.spendless.dashboard.presentation.mapper.toThousandsSeparatorUI
+import com.spendless.dashboard.presentation.mapper.toTransactionCategory
 import com.spendless.dashboard.presentation.mapper.toTransactionType
 import com.spendless.session_management.domain.usecases.SessionUseCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -166,6 +166,7 @@ class CreateTransactionViewModel(
                         uiState.transactionCategoryType.toTransactionCategory()
                     },
                     transactionDate = CalendarUtils.currentEstTime,
+                    recurringStartDate = CalendarUtils.currentEstTime,
                     recurringTransactionId = null,
                     recurringType = recurringType,
                     nextRecurringDate = nextRecurringDate,

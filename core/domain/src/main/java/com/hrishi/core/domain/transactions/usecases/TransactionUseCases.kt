@@ -11,8 +11,8 @@ import com.hrishi.core.domain.utils.Result
 import kotlinx.coroutines.flow.Flow
 import java.math.BigDecimal
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import java.time.YearMonth
+import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 data class TransactionUseCases(
@@ -25,7 +25,8 @@ data class TransactionUseCases(
     val getLargestTransactionUseCase: GetLargestTransactionUseCase,
     val getPreviousWeekTotalUseCase: GetPreviousWeekTotalUseCase,
     val getTransactionsGroupedByDateUseCase: GetTransactionsGroupedByDateUseCase,
-    val getNextRecurringDateUseCase: GetNextRecurringDateUseCase
+    val getNextRecurringDateUseCase: GetNextRecurringDateUseCase,
+    val processRecurringTransactionsUseCase: ProcessRecurringTransactionsUseCase
 )
 
 class InsertTransactionUseCase(
@@ -161,6 +162,70 @@ class GetNextRecurringDateUseCase {
             RecurringType.YEARLY -> {
                 lastTransactionDate?.plusYears(1) ?: startDate.plusYears(1)
             }
+        }
+    }
+}
+
+class ProcessRecurringTransactionsUseCase(
+    private val getDueRecurringTransactionsUseCase: GetDueRecurringTransactionsUseCase,
+    private val insertTransactionUseCase: InsertTransactionUseCase,
+    private val getNextRecurringDateUseCase: GetNextRecurringDateUseCase
+) {
+    suspend operator fun invoke(currentEstTimeAtEndOfDay: LocalDateTime = CalendarUtils.currentEstTimeAtEndOfDay) {
+
+        val dueTransactionsResult = getDueRecurringTransactionsUseCase(currentEstTimeAtEndOfDay)
+
+        if (dueTransactionsResult is Result.Success) {
+            val dueTransactions = dueTransactionsResult.data
+
+            if (dueTransactions.isEmpty()) {
+                println("No recurring transactions due for $currentEstTimeAtEndOfDay")
+                return
+            }
+
+            println("Processing ${dueTransactions.size} due recurring transactions")
+
+            for (transaction in dueTransactions) {
+                var nextRecurringDate = transaction.nextRecurringDate
+
+                while (nextRecurringDate != null && !nextRecurringDate.isAfter(
+                        currentEstTimeAtEndOfDay
+                    )
+                ) {
+                    val transactionToInsert = transaction.copy(
+                        transactionId = null,
+                        transactionDate = nextRecurringDate,
+                        nextRecurringDate = null // Prevents reuse of this specific transaction
+                    )
+
+                    insertTransactionUseCase(transactionToInsert)
+                    println("Inserted transaction for ${transaction.transactionId} on $nextRecurringDate")
+
+                    nextRecurringDate = getNextRecurringDateUseCase(
+                        startDate = transaction.recurringStartDate,
+                        lastTransactionDate = nextRecurringDate,
+                        recurringType = transaction.recurringType
+                    )
+
+                    // Avoid infinite loops
+                    if (nextRecurringDate?.toLocalDate() == transactionToInsert.transactionDate.toLocalDate()) {
+                        println("Recurring date did not advance, stopping processing to avoid infinite loop.")
+                        break
+                    }
+
+                    if (nextRecurringDate != null) {
+                        val updatedTransaction = transaction.copy(
+                            transactionId = transaction.transactionId,
+                            nextRecurringDate = nextRecurringDate
+                        )
+
+                        insertTransactionUseCase(updatedTransaction)
+                        println("Updated transaction ${transaction.transactionId} with next recurring date $nextRecurringDate")
+                    }
+                }
+            }
+        } else if (dueTransactionsResult is Result.Error) {
+            println("Failed to get due recurring transactions: ${dueTransactionsResult.error}")
         }
     }
 }

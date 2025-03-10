@@ -30,6 +30,7 @@ import com.hrishi.core.domain.transactions.usecases.GetRecurringTransactionSerie
 import com.hrishi.core.domain.transactions.usecases.GetTransactionsForUserUseCase
 import com.hrishi.core.domain.transactions.usecases.GetTransactionsGroupedByDateUseCase
 import com.hrishi.core.domain.transactions.usecases.InsertTransactionUseCase
+import com.hrishi.core.domain.transactions.usecases.ProcessRecurringTransactionsUseCase
 import com.hrishi.core.domain.transactions.usecases.TransactionUseCases
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
@@ -62,7 +63,22 @@ val coreDataModule = module {
     factory { GetPreviousWeekTotalUseCase(get()) }
     factory { GetTransactionsGroupedByDateUseCase() }
     factory { GetNextRecurringDateUseCase() }
-    single { TransactionUseCases(get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
+    factory { ProcessRecurringTransactionsUseCase(get(), get(), get()) }
+    single {
+        TransactionUseCases(
+            get(),
+            get(),
+            get(),
+            get(),
+            get(),
+            get(),
+            get(),
+            get(),
+            get(),
+            get(),
+            get()
+        )
+    }
     singleOf(::TransactionRepositoryImpl).bind<TransactionRepository>()
     singleOf(::ExportRepositoryImpl).bind<ExportRepository>()
 

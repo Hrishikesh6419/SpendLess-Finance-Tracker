@@ -12,11 +12,18 @@ import java.time.temporal.TemporalAdjusters
 object CalendarUtils {
     private val zoneId: ZoneId = ZoneId.of("America/New_York")
 
+    // TODO: Revisit these dateTime
     val currentEstTime: LocalDateTime
         get() = LocalDateTime.now(zoneId)
 
     val currentEstDate: LocalDate
         get() = LocalDate.now(zoneId)
+
+    val currentEstTimeAtStartOfDay: LocalDateTime
+        get() = currentEstDate.atStartOfDay()
+
+    val currentEstTimeAtEndOfDay: LocalDateTime
+        get() = currentEstDate.atTime(23, 59, 59, 999999999)
 
     fun toEpochMillis(localDateTime: LocalDateTime): Long {
         return localDateTime.atZone(zoneId).toInstant().toEpochMilli()

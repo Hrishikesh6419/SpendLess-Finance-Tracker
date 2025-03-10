@@ -71,9 +71,7 @@ class RoomTransactionDataSource(
 
     override suspend fun getDueRecurringTransactions(currentDate: LocalDateTime): Result<List<Transaction>, DataError> {
         return try {
-            val currentDateMillis = CalendarUtils.toEpochMillis(currentDate)
-
-            val transactions = transactionsDao.getDueRecurringTransactions(currentDateMillis)
+            val transactions = transactionsDao.getDueRecurringTransactions(currentDate)
             if (transactions.isNotEmpty()) {
                 Result.Success(transactions.map { it.toTransaction() })
             } else {

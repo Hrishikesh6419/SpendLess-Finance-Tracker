@@ -3,6 +3,7 @@ package com.hrishi.spendless
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.hrishi.core.domain.transactions.usecases.TransactionUseCases
 import com.hrishi.presentation.ui.AppNavRoute
 import com.hrishi.presentation.ui.NavigationRequestHandler
 import com.hrishi.presentation.ui.navigation.DashboardScreenRoute
@@ -18,7 +19,8 @@ import kotlinx.coroutines.launch
 
 class MainViewModel(
     savedStateHandle: SavedStateHandle,
-    private val sessionUseCases: SessionUseCase
+    private val sessionUseCases: SessionUseCase,
+    private val transactionUseCases: TransactionUseCases
 ) : ViewModel(), NavigationRequestHandler {
 
     private val _uiState = MutableStateFlow(MainState())
@@ -33,6 +35,7 @@ class MainViewModel(
 
     private fun initializeSession() {
         viewModelScope.launch {
+            transactionUseCases.processRecurringTransactionsUseCase()
             val isUserPresent = isUserIdPresent()
             val isSessionExpired = sessionUseCases.isSessionExpiredUseCase().first()
             val authNavigationDestination = getAuthNavigationDestination(
