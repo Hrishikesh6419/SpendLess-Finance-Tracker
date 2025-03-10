@@ -78,6 +78,7 @@ securityCrypto = "1.1.0-alpha06"
 datastorePreferences = "1.1.2"
 protobufPlugin = "0.9.4"
 protobuf = "4.29.2"
+junitJunit = "4.13.2"
 
 [libraries]
 androidx-glance-material3 = { group = "androidx.glance", name = "glance-material3", version.ref = "glanceAppwidget" }
@@ -176,6 +177,7 @@ material = { group = "com.google.android.material", name = "material", version.r
 annotation = { group = "androidx.annotation", name = "annotation", version.ref = "annotation" }
 androidx-security-crypto = { group = "androidx.security", name = "security-crypto", version.ref = "securityCrypto" }
 androidx-datastore-preference = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastorePreferences" }
+junit-junit = { group = "junit", name = "junit", version.ref = "junitJunit" }
 
 
 # ──────────────────────────
