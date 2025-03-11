@@ -37,5 +37,4 @@ data class TransactionEntity(
     val recurringTransactionId: Long?,
     val recurringType: RecurringType,
     val nextRecurringDate: LocalDateTime?,
-    val endDate: LocalDateTime?
 )

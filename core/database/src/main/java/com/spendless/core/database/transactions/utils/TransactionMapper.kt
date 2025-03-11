@@ -17,7 +17,6 @@ fun Transaction.toTransactionEntity(): TransactionEntity {
         recurringTransactionId = this.recurringTransactionId,
         recurringType = this.recurringType,
         nextRecurringDate = this.nextRecurringDate,
-        endDate = this.endDate
     )
 }
 
@@ -35,6 +34,5 @@ fun TransactionEntity.toTransaction(): Transaction {
         recurringTransactionId = this.recurringTransactionId,
         recurringType = this.recurringType,
         nextRecurringDate = this.nextRecurringDate,
-        endDate = this.endDate
     )
 }

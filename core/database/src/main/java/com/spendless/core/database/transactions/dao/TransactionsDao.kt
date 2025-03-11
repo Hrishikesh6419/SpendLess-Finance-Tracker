@@ -34,8 +34,7 @@ interface TransactionsDao {
         SELECT * FROM transactions 
         WHERE nextRecurringDate <= :currentDate 
         AND recurringType != 'ONE_TIME'
-        AND (endDate IS NULL OR nextRecurringDate <= endDate)
-    """
+        """
     )
     suspend fun getDueRecurringTransactions(currentDate: LocalDateTime): List<TransactionEntity>
 

@@ -18,6 +18,5 @@ data class Transaction(
     val recurringStartDate: LocalDateTime,
     val recurringTransactionId: Long?,
     val recurringType: RecurringType,
-    val nextRecurringDate: LocalDateTime?,
-    val endDate: LocalDateTime?
+    val nextRecurringDate: LocalDateTime?
 )

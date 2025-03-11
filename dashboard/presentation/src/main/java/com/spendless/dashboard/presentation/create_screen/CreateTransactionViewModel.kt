@@ -169,8 +169,7 @@ class CreateTransactionViewModel(
                     recurringStartDate = CalendarUtils.currentEstTime,
                     recurringTransactionId = null,
                     recurringType = recurringType,
-                    nextRecurringDate = nextRecurringDate,
-                    endDate = null
+                    nextRecurringDate = nextRecurringDate
                 )
 
                 val result = transactionUseCases.insertTransactionUseCase(transaction)
