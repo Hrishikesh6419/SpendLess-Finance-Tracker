@@ -18,7 +18,6 @@ import java.util.Locale
 data class TransactionUseCases(
     val insertTransactionUseCase: InsertTransactionUseCase,
     val getTransactionsForUserUseCase: GetTransactionsForUserUseCase,
-    val getRecurringTransactionSeriesUseCase: GetRecurringTransactionSeriesUseCase,
     val getDueRecurringTransactionsUseCase: GetDueRecurringTransactionsUseCase,
     val getAccountBalanceUseCase: GetAccountBalanceUseCase,
     val getMostPopularExpenseCategoryUseCase: GetMostPopularExpenseCategoryUseCase,
@@ -45,14 +44,6 @@ class GetTransactionsForUserUseCase(
         limit: Int? = null
     ): Flow<Result<List<Transaction>, DataError>> {
         return transactionRepository.getTransactionsForUser(userId, limit)
-    }
-}
-
-class GetRecurringTransactionSeriesUseCase(
-    private val transactionRepository: TransactionRepository
-) {
-    operator fun invoke(recurringId: Long): Flow<Result<List<Transaction>, DataError>> {
-        return transactionRepository.getRecurringTransactionSeries(recurringId)
     }
 }
 

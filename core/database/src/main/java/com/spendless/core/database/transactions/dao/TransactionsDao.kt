@@ -25,10 +25,6 @@ interface TransactionsDao {
     )
     fun getTransactionsForUser(userId: Long, limit: Int? = null): Flow<List<TransactionEntity>>
 
-
-    @Query("SELECT * FROM transactions WHERE recurringTransactionId = :recurringId ORDER BY transactionDate ASC")
-    fun getRecurringTransactionSeries(recurringId: Long): Flow<List<TransactionEntity>>
-
     @Query(
         """
         SELECT * FROM transactions 

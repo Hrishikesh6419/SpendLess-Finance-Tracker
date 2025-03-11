@@ -25,10 +25,6 @@ class TransactionRepositoryImpl(
         return localTransactionDataSource.getTransactionsForUser(userId, limit)
     }
 
-    override fun getRecurringTransactionSeries(recurringId: Long): Flow<Result<List<Transaction>, DataError>> {
-        return localTransactionDataSource.getRecurringTransactionSeries(recurringId)
-    }
-
     override suspend fun getDueRecurringTransactions(currentDate: LocalDateTime): Result<List<Transaction>, DataError> {
         return localTransactionDataSource.getDueRecurringTransactions(currentDate)
     }

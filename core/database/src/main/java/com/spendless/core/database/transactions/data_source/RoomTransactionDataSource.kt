@@ -55,20 +55,6 @@ class RoomTransactionDataSource(
             }
     }
 
-    override fun getRecurringTransactionSeries(recurringId: Long): Flow<Result<List<Transaction>, DataError>> {
-        return transactionsDao.getRecurringTransactionSeries(recurringId)
-            .map { transactions ->
-                if (transactions.isNotEmpty()) {
-                    Result.Success(transactions.map { it.toTransaction() })
-                } else {
-                    Result.Error(DataError.Local.TRANSACTION_FETCH_ERROR)
-                }
-            }
-            .catch {
-                emit(Result.Error(DataError.Local.UNKNOWN_DATABASE_ERROR))
-            }
-    }
-
     override suspend fun getDueRecurringTransactions(currentDate: LocalDateTime): Result<List<Transaction>, DataError> {
         return try {
             val transactions = transactionsDao.getDueRecurringTransactions(currentDate)

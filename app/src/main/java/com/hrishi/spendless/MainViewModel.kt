@@ -113,7 +113,8 @@ class MainViewModel(
             _uiState.update {
                 it.copy(
                     pendingRoute = appNavRoute,
-                    showPinPrompt = expiredNow
+                    showPinPrompt = expiredNow,
+                    isUserLoggedIn = true
                 )
             }
         }
