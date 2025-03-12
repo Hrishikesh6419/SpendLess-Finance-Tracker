@@ -81,11 +81,16 @@ class RoomTransactionDataSource(
     }
 
     override fun getAccountBalance(userId: Long): Flow<Result<BigDecimal, DataError>> {
-        return transactionsDao.getAccountBalance(userId)
-            .map { balanceString ->
+        return transactionsDao.getAllTransactionAmounts(userId)
+            .map { encryptedAmounts ->
                 try {
-                    Result.Success(BigDecimal(balanceString))
-                } catch (e: NumberFormatException) {
+                    val total = encryptedAmounts
+                        .map { encryptionService.decrypt(it) }
+                        .mapNotNull { it.toBigDecimalOrNull() }
+                        .reduceOrNull(BigDecimal::add) ?: BigDecimal.ZERO
+
+                    Result.Success(total)
+                } catch (e: Exception) {
                     Result.Error(DataError.Local.UNKNOWN_DATABASE_ERROR)
                 }
             }
@@ -120,9 +125,12 @@ class RoomTransactionDataSource(
     }
 
     override fun getLargestTransaction(userId: Long): Flow<Result<Transaction?, DataError>> {
-        return transactionsDao.getLargestTransaction(userId)
-            .map { transactionEntity ->
-                Result.Success(transactionEntity?.toTransaction(encryptionService)) as Result<Transaction?, DataError>
+        return transactionsDao.getAllExpenses(userId)
+            .map { transactions ->
+                val decryptedTransactions = transactions.map { it.toTransaction(encryptionService) }
+                val largestTransaction = decryptedTransactions.minByOrNull { it.amount }
+
+                Result.Success(largestTransaction) as Result<Transaction?, DataError>
             }
             .catch {
                 emit(Result.Error(DataError.Local.UNKNOWN_DATABASE_ERROR))
@@ -133,11 +141,15 @@ class RoomTransactionDataSource(
         val (startDate, endDate) = CalendarUtils.getPreviousWeekRange()
         Log.d("hrishiiii", "Start of previous week: $startDate")
         Log.d("hrishiiii", "End of previous week: $endDate")
-        return transactionsDao.getPreviousWeekTotal(userId, startDate, endDate)
-            .map { amount ->
+        return transactionsDao.getPreviousWeekTransactionAmounts(userId, startDate, endDate)
+            .map { encryptedAmounts ->
                 try {
-                    Result.Success(amount)
-                } catch (e: NumberFormatException) {
+                    val total = encryptedAmounts
+                        .map { encryptionService.decrypt(it) }
+                        .mapNotNull { it.toBigDecimalOrNull() }
+                        .reduceOrNull(BigDecimal::add) ?: BigDecimal.ZERO
+                    Result.Success(total)
+                } catch (e: Exception) {
                     Result.Error(DataError.Local.UNKNOWN_DATABASE_ERROR)
                 }
             }

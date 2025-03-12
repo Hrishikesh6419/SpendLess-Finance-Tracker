@@ -5,6 +5,7 @@ import com.hrishi.core.domain.model.TransactionCategory
 import com.hrishi.core.domain.security.EncryptionService
 import com.hrishi.core.domain.transactions.model.Transaction
 import com.spendless.core.database.transactions.entity.TransactionEntity
+import java.math.BigDecimal
 
 fun Transaction.toTransactionEntity(encryptionService: EncryptionService): TransactionEntity {
     return TransactionEntity(
@@ -12,7 +13,7 @@ fun Transaction.toTransactionEntity(encryptionService: EncryptionService): Trans
         userId = this.userId,
         transactionType = this.transactionType,
         transactionNameEncrypted = encryptionService.encrypt(this.transactionName),
-        amount = this.amount,
+        amountEncrypted = encryptionService.encrypt(this.amount.toPlainString()),
         noteEncrypted = this.note?.let { encryptionService.encrypt(it) },
         transactionCategoryEncrypted = encryptionService.encrypt(this.transactionCategory.name),
         transactionDate = this.transactionDate,
@@ -29,7 +30,11 @@ fun TransactionEntity.toTransaction(encryptionService: EncryptionService): Trans
         userId = this.userId,
         transactionType = this.transactionType,
         transactionName = encryptionService.decrypt(this.transactionNameEncrypted),
-        amount = this.amount,
+        amount = try {
+            BigDecimal(encryptionService.decrypt(this.amountEncrypted))
+        } catch (e: Exception) {
+            BigDecimal.ZERO
+        },
         note = this.noteEncrypted?.let { encryptionService.decrypt(it) },
         transactionCategory = try {
             TransactionCategory.valueOf(encryptionService.decrypt(this.transactionCategoryEncrypted))
