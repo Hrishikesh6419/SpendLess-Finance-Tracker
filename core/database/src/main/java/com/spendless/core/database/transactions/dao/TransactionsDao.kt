@@ -39,15 +39,12 @@ interface TransactionsDao {
 
     @Query(
         """
-    SELECT transactionCategory
-    FROM transactions
+    SELECT transactionCategoryEncrypted 
+    FROM transactions 
     WHERE transactionType = 'EXPENSE' AND userId = :userId
-    GROUP BY transactionCategory
-    ORDER BY COUNT(transactionCategory) DESC
-    LIMIT 1
     """
     )
-    fun getMostPopularExpenseCategory(userId: Long): Flow<TransactionCategory?>
+    fun getExpenseCategories(userId: Long): Flow<List<String>>
 
     @Query(
         """

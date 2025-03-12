@@ -30,7 +30,7 @@ data class TransactionEntity(
     val transactionNameEncrypted: String, // Encrypt || ✅ Done
     val amount: BigDecimal, // Encrypt ☠️
     val noteEncrypted: String?, // Encrypt || ✅ Done
-    val transactionCategory: TransactionCategory, // Encrypt ☠️
+    val transactionCategoryEncrypted: String, // Encrypt ☠️|| ✅ Done
     val transactionDate: LocalDateTime,
     val recurringStartDate: LocalDateTime,
     val recurringTransactionId: Long?,

@@ -1,6 +1,7 @@
 package com.spendless.core.database.transactions.utils
 
 import com.hrishi.core.domain.model.RecurringType
+import com.hrishi.core.domain.model.TransactionCategory
 import com.hrishi.core.domain.security.EncryptionService
 import com.hrishi.core.domain.transactions.model.Transaction
 import com.spendless.core.database.transactions.entity.TransactionEntity
@@ -13,11 +14,11 @@ fun Transaction.toTransactionEntity(encryptionService: EncryptionService): Trans
         transactionNameEncrypted = encryptionService.encrypt(this.transactionName),
         amount = this.amount,
         noteEncrypted = this.note?.let { encryptionService.encrypt(it) },
-        transactionCategory = this.transactionCategory,
+        transactionCategoryEncrypted = encryptionService.encrypt(this.transactionCategory.name),
         transactionDate = this.transactionDate,
         recurringStartDate = this.recurringStartDate,
         recurringTransactionId = this.recurringTransactionId,
-        recurringTypeEncrypted = encryptionService.encrypt(this.recurringType.name), // Encrypt Enum as String
+        recurringTypeEncrypted = encryptionService.encrypt(this.recurringType.name),
         nextRecurringDate = this.nextRecurringDate,
     )
 }
@@ -30,7 +31,11 @@ fun TransactionEntity.toTransaction(encryptionService: EncryptionService): Trans
         transactionName = encryptionService.decrypt(this.transactionNameEncrypted),
         amount = this.amount,
         note = this.noteEncrypted?.let { encryptionService.decrypt(it) },
-        transactionCategory = this.transactionCategory,
+        transactionCategory = try {
+            TransactionCategory.valueOf(encryptionService.decrypt(this.transactionCategoryEncrypted))
+        } catch (e: IllegalArgumentException) {
+            TransactionCategory.OTHER
+        },
         transactionDate = this.transactionDate,
         recurringStartDate = this.recurringStartDate,
         recurringTransactionId = this.recurringTransactionId,

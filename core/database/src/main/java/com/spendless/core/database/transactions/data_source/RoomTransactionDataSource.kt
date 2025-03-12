@@ -95,9 +95,23 @@ class RoomTransactionDataSource(
     }
 
     override fun getMostPopularExpenseCategory(userId: Long): Flow<Result<TransactionCategory?, DataError>> {
-        return transactionsDao.getMostPopularExpenseCategory(userId)
-            .map { category ->
-                Result.Success(category) as Result<TransactionCategory?, DataError>
+        return transactionsDao.getExpenseCategories(userId)
+            .map { encryptedCategories ->
+                val categories = encryptedCategories.mapNotNull { encrypted ->
+                    try {
+                        TransactionCategory.valueOf(encryptionService.decrypt(encrypted))
+                    } catch (e: Exception) {
+                        null
+                    }
+                }
+
+                val mostPopularCategory = categories
+                    .groupingBy { it }
+                    .eachCount()
+                    .maxByOrNull { it.value }
+                    ?.key
+
+                Result.Success(mostPopularCategory) as Result<TransactionCategory?, DataError>
             }
             .catch { exception ->
                 if (exception is CancellationException) throw exception
