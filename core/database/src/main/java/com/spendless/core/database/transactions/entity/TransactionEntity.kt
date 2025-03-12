@@ -28,9 +28,9 @@ data class TransactionEntity(
     val transactionId: Long,
     val userId: Long,
     val transactionType: TransactionType,
-    val encryptedTransactionName: String, // Encrypt || ✅ Done
+    val transactionNameEncrypted: String, // Encrypt || ✅ Done
     val amount: BigDecimal, // Encrypt ☠️
-    val note: String?, // Encrypt
+    val noteEncrypted: String?, // Encrypt || ✅ Done
     val transactionCategory: TransactionCategory, // Encrypt ☠️
     val transactionDate: LocalDateTime,
     val recurringStartDate: LocalDateTime,
