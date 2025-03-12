@@ -1,6 +1,10 @@
 package com.hrishi.core.data.export.repository
 
+import android.content.ContentValues
+import android.content.Context
+import android.os.Build
 import android.os.Environment
+import android.provider.MediaStore
 import com.hrishi.core.domain.export.model.ExportType
 import com.hrishi.core.domain.export.repository.ExportRepository
 import com.hrishi.core.domain.formatting.NumberFormatter
@@ -10,13 +14,22 @@ import com.hrishi.core.domain.transactions.repository.TransactionRepository
 import com.hrishi.core.domain.utils.DataError
 import com.hrishi.core.domain.utils.Result
 import com.hrishi.core.domain.utils.toISODateString
-import java.io.File
-import java.io.FileWriter
-import java.io.IOException
+import timber.log.Timber
 
 class ExportRepositoryImpl(
+    private val context: Context,
     private val transactionRepository: TransactionRepository
 ) : ExportRepository {
+
+    companion object {
+        private const val FILE_NAME = "Spendless_transactions.csv"
+        private const val MIME_TYPE = "text/csv"
+        private val CSV_HEADERS = listOf(
+            "Transaction Type", "Amount", "Date", "Transaction Name", "Transaction Category", "Note"
+        ).joinToString(",")
+
+        private const val EXPORT_TAG = "ExportDebug"
+    }
 
     override suspend fun exportTransactions(
         dateRange: ExportType,
@@ -31,8 +44,7 @@ class ExportRepositoryImpl(
 
             when (transactionsResult) {
                 is Result.Success -> {
-                    val exportResult =
-                        writeTransactionsToCsv(transactionsResult.data, userPreference)
+                    val exportResult = writeTransactionsToCsv(transactionsResult.data, userPreference)
                     if (exportResult) {
                         Result.Success(true)
                     } else {
@@ -51,32 +63,43 @@ class ExportRepositoryImpl(
         transactions: List<Transaction>,
         userPreference: UserPreferences
     ): Boolean {
-        val downloadsDir =
-            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-        if (!downloadsDir.exists()) downloadsDir.mkdirs()
 
-        val csvFile = File(downloadsDir, "Spendless_transactions.csv")
+        if (transactions.isEmpty()) {
+            Timber.tag(EXPORT_TAG).e("No transactions to export!")
+            return false
+        }
 
-        return try {
-            FileWriter(csvFile).use { writer ->
-                val headers = listOf(
-                    "Transaction Type",
-                    "Amount",
-                    "Date",
-                    "Transaction Name",
-                    "Transaction Category",
-                    "Note"
-                )
-                writer.appendLine(headers.joinToString(",") { escapeCsv(it) })
-
-                transactions.forEach { transaction ->
-                    val csvLine = buildCsvLine(transaction, userPreference)
-                    writer.appendLine(csvLine)
-                }
-                writer.flush()
+        val csvContent = buildString {
+            appendLine(CSV_HEADERS)
+            transactions.joinTo(this, separator = "\n") {
+                buildCsvLine(it, userPreference)
             }
-            true
-        } catch (e: IOException) {
+        }
+
+        val resolver = context.contentResolver
+
+        val contentValues = ContentValues().apply {
+            put(MediaStore.MediaColumns.DISPLAY_NAME, FILE_NAME)
+            put(MediaStore.MediaColumns.MIME_TYPE, MIME_TYPE)
+            put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS)
+        }
+
+        val contentUri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            MediaStore.Downloads.EXTERNAL_CONTENT_URI
+        } else {
+            MediaStore.Files.getContentUri("external")
+        }
+
+        return runCatching {
+            resolver.insert(contentUri, contentValues)?.let { uri ->
+                resolver.openOutputStream(uri)?.use { outputStream ->
+                    outputStream.write(csvContent.toByteArray())
+                    Timber.tag(EXPORT_TAG).d("CSV successfully written to $uri")
+                    true
+                }
+            } ?: false
+        }.getOrElse {
+            Timber.tag(EXPORT_TAG).e(it, "Failed to write CSV")
             false
         }
     }
