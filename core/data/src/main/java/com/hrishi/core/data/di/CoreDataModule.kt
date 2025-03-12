@@ -49,7 +49,7 @@ val coreDataModule = module {
 
     singleOf(::UserInfoRepositoryImpl).bind<UserInfoRepository>()
 
-    factory { GetUserInfoUseCase(get(), get()) }
+    factory { GetUserInfoUseCase(get()) }
     single { UserInfoUseCases(get()) }
 
     factory { InsertTransactionUseCase(get()) }
