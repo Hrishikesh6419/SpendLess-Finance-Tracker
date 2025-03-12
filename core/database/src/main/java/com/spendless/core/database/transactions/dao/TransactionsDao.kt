@@ -28,8 +28,7 @@ interface TransactionsDao {
     @Query(
         """
         SELECT * FROM transactions 
-        WHERE nextRecurringDate <= :currentDate 
-        AND recurringType != 'ONE_TIME'
+        WHERE nextRecurringDate <= :currentDate
         """
     )
     suspend fun getDueRecurringTransactions(currentDate: LocalDateTime): List<TransactionEntity>

@@ -35,6 +35,6 @@ data class TransactionEntity(
     val transactionDate: LocalDateTime,
     val recurringStartDate: LocalDateTime,
     val recurringTransactionId: Long?,
-    val recurringType: RecurringType, // Encrypt
+    val recurringTypeEncrypted: String, // Encrypt || ✅ Done
     val nextRecurringDate: LocalDateTime?,
 )

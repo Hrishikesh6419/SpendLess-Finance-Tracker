@@ -30,7 +30,13 @@ class RoomTransactionDataSource(
 
             val insertedId = transactionsDao.upsertTransaction(transactionEntity)
 
-            if (transactionEntity.recurringType != RecurringType.ONE_TIME && transactionEntity.recurringTransactionId == null) {
+            val decryptedRecurringType = try {
+                RecurringType.valueOf(encryptionService.decrypt(transactionEntity.recurringTypeEncrypted))
+            } catch (e: Exception) {
+                RecurringType.ONE_TIME
+            }
+
+            if (decryptedRecurringType != RecurringType.ONE_TIME && transactionEntity.recurringTransactionId == null) {
                 val updatedEntity = transactionEntity.copy(
                     transactionId = insertedId,
                     recurringTransactionId = insertedId
@@ -60,8 +66,12 @@ class RoomTransactionDataSource(
     override suspend fun getDueRecurringTransactions(currentDate: LocalDateTime): Result<List<Transaction>, DataError> {
         return try {
             val transactions = transactionsDao.getDueRecurringTransactions(currentDate)
-            if (transactions.isNotEmpty()) {
-                Result.Success(transactions.map { it.toTransaction(encryptionService) })
+                .map { it.toTransaction(encryptionService) }
+
+            val recurringTransactions = transactions.filter { it.recurringType != RecurringType.ONE_TIME }
+
+            if (recurringTransactions.isNotEmpty()) {
+                Result.Success(recurringTransactions)
             } else {
                 Result.Error(DataError.Local.TRANSACTION_FETCH_ERROR)
             }
