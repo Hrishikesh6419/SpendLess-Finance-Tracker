@@ -4,7 +4,6 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import com.hrishi.core.domain.model.RecurringType
 import com.hrishi.core.domain.model.TransactionCategory
 import com.hrishi.core.domain.model.TransactionType
 import com.spendless.core.database.auth.entity.UserInfoEntity
