@@ -33,7 +33,6 @@ class ExportRepositoryImpl(
             "Transaction Category",
             "Recurring Type",
             "Start Date",
-            "Next Recurring Date",
             "Note"
         ).joinToString(",")
 
@@ -123,11 +122,6 @@ class ExportRepositoryImpl(
         } else {
             transaction.recurringStartDate.toISODateString()
         }
-        val nextRecurring = if (transaction.recurringType == RecurringType.ONE_TIME ||
-            transaction.nextRecurringDate == null
-        ) NOT_APPLICABLE else {
-            transaction.nextRecurringDate?.toISODateString() ?: "N/A"
-        }
 
         return listOf(
             transaction.transactionType.displayName,
@@ -140,7 +134,6 @@ class ExportRepositoryImpl(
             transaction.transactionCategory.displayName,
             recurringTypeTitle,
             startDate,
-            nextRecurring,
             transaction.note.orEmpty(),
         ).joinToString(",") { escapeCsv(it) }
     }
