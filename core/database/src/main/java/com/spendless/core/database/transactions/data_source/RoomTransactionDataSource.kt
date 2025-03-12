@@ -3,6 +3,7 @@ package com.spendless.core.database.transactions.data_source
 import android.util.Log
 import com.hrishi.core.domain.model.RecurringType
 import com.hrishi.core.domain.model.TransactionCategory
+import com.hrishi.core.domain.security.EncryptionService
 import com.hrishi.core.domain.transactions.data_source.LocalTransactionDataSource
 import com.hrishi.core.domain.transactions.model.Transaction
 import com.hrishi.core.domain.utils.CalendarUtils
@@ -19,12 +20,13 @@ import java.time.LocalDateTime
 import kotlin.coroutines.cancellation.CancellationException
 
 class RoomTransactionDataSource(
-    private val transactionsDao: TransactionsDao
+    private val transactionsDao: TransactionsDao,
+    private val encryptionService: EncryptionService
 ) : LocalTransactionDataSource {
 
     override suspend fun upsertTransaction(transaction: Transaction): Result<Unit, DataError> {
         return try {
-            val transactionEntity = transaction.toTransactionEntity()
+            val transactionEntity = transaction.toTransactionEntity(encryptionService)
 
             val insertedId = transactionsDao.upsertTransaction(transactionEntity)
 
@@ -48,7 +50,7 @@ class RoomTransactionDataSource(
     ): Flow<Result<List<Transaction>, DataError>> {
         return transactionsDao.getTransactionsForUser(userId, limit)
             .map { transactions ->
-                Result.Success(transactions.map { it.toTransaction() }) as Result<List<Transaction>, DataError>
+                Result.Success(transactions.map { it.toTransaction(encryptionService) }) as Result<List<Transaction>, DataError>
             }
             .catch {
                 emit(Result.Error(DataError.Local.UNKNOWN_DATABASE_ERROR))
@@ -59,7 +61,7 @@ class RoomTransactionDataSource(
         return try {
             val transactions = transactionsDao.getDueRecurringTransactions(currentDate)
             if (transactions.isNotEmpty()) {
-                Result.Success(transactions.map { it.toTransaction() })
+                Result.Success(transactions.map { it.toTransaction(encryptionService) })
             } else {
                 Result.Error(DataError.Local.TRANSACTION_FETCH_ERROR)
             }
@@ -96,7 +98,7 @@ class RoomTransactionDataSource(
     override fun getLargestTransaction(userId: Long): Flow<Result<Transaction?, DataError>> {
         return transactionsDao.getLargestTransaction(userId)
             .map { transactionEntity ->
-                Result.Success(transactionEntity?.toTransaction()) as Result<Transaction?, DataError>
+                Result.Success(transactionEntity?.toTransaction(encryptionService)) as Result<Transaction?, DataError>
             }
             .catch {
                 emit(Result.Error(DataError.Local.UNKNOWN_DATABASE_ERROR))
@@ -126,6 +128,6 @@ class RoomTransactionDataSource(
         endDate: LocalDateTime
     ): List<Transaction> {
         return transactionsDao.getTransactionsForDateRange(userId, startDate, endDate)
-            .map { it.toTransaction() }
+            .map { it.toTransaction(encryptionService) }
     }
 }
