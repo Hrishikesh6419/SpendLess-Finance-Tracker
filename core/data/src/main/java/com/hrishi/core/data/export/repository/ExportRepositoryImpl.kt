@@ -8,6 +8,7 @@ import android.provider.MediaStore
 import com.hrishi.core.domain.export.model.ExportType
 import com.hrishi.core.domain.export.repository.ExportRepository
 import com.hrishi.core.domain.formatting.NumberFormatter
+import com.hrishi.core.domain.model.RecurringType
 import com.hrishi.core.domain.preference.model.UserPreferences
 import com.hrishi.core.domain.transactions.model.Transaction
 import com.hrishi.core.domain.transactions.repository.TransactionRepository
@@ -25,10 +26,19 @@ class ExportRepositoryImpl(
         private const val FILE_NAME = "Spendless_transactions.csv"
         private const val MIME_TYPE = "text/csv"
         private val CSV_HEADERS = listOf(
-            "Transaction Type", "Amount", "Date", "Transaction Name", "Transaction Category", "Note"
+            "Transaction Type",
+            "Amount",
+            "Date",
+            "Transaction Name",
+            "Transaction Category",
+            "Recurring Type",
+            "Start Date",
+            "Next Recurring Date",
+            "Note"
         ).joinToString(",")
 
         private const val EXPORT_TAG = "ExportDebug"
+        private const val NOT_APPLICABLE = "N/A"
     }
 
     override suspend fun exportTransactions(
@@ -44,7 +54,8 @@ class ExportRepositoryImpl(
 
             when (transactionsResult) {
                 is Result.Success -> {
-                    val exportResult = writeTransactionsToCsv(transactionsResult.data, userPreference)
+                    val exportResult =
+                        writeTransactionsToCsv(transactionsResult.data, userPreference)
                     if (exportResult) {
                         Result.Success(true)
                     } else {
@@ -105,6 +116,19 @@ class ExportRepositoryImpl(
     }
 
     private fun buildCsvLine(transaction: Transaction, userPreference: UserPreferences): String {
+        val recurringTypeTitle =
+            transaction.recurringType.exportTitle(transaction.recurringStartDate)
+        val startDate = if (transaction.recurringType == RecurringType.ONE_TIME) {
+            NOT_APPLICABLE
+        } else {
+            transaction.recurringStartDate.toISODateString()
+        }
+        val nextRecurring = if (transaction.recurringType == RecurringType.ONE_TIME ||
+            transaction.nextRecurringDate == null
+        ) NOT_APPLICABLE else {
+            transaction.nextRecurringDate?.toISODateString() ?: "N/A"
+        }
+
         return listOf(
             transaction.transactionType.displayName,
             NumberFormatter.formatAmount(
@@ -114,7 +138,10 @@ class ExportRepositoryImpl(
             transaction.transactionDate.toISODateString(),
             transaction.transactionName,
             transaction.transactionCategory.displayName,
-            transaction.note.orEmpty()
+            recurringTypeTitle,
+            startDate,
+            nextRecurring,
+            transaction.note.orEmpty(),
         ).joinToString(",") { escapeCsv(it) }
     }
 

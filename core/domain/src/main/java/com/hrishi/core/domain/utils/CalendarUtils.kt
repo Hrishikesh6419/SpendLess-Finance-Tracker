@@ -61,6 +61,14 @@ object CalendarUtils {
         val formatter = DateTimeFormatter.ofPattern("MMM d")
         return currentEstDate.format(formatter)
     }
+
+    fun getDayOfWeek(localDateTime: LocalDateTime): String =
+        localDateTime.dayOfWeek.name.lowercase().replaceFirstChar { it.uppercase() }
+
+    fun getDayOfMonth(localDateTime: LocalDateTime): String = localDateTime.dayOfMonth.toString()
+
+    fun getMonthAndDay(localDateTime: LocalDateTime): String =
+        localDateTime.format(DateTimeFormatter.ofPattern("MMM d"))
 }
 
 fun LocalDateTime.toShortDateString(): String {
