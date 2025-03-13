@@ -128,6 +128,11 @@ class ExportRepositoryImpl(
 
         return transactions.map { transaction ->
             val recurringId = transaction.recurringTransactionId
+            val startDate = if (transaction.recurringType == RecurringType.ONE_TIME) {
+                NOT_APPLICABLE
+            } else {
+                transaction.recurringStartDate.toISODateString()
+            }
             val nextRecurring = if (transaction.recurringType == RecurringType.ONE_TIME) {
                 NOT_APPLICABLE
             } else {
@@ -144,7 +149,7 @@ class ExportRepositoryImpl(
                 transaction.transactionName,
                 transaction.transactionCategory.displayName,
                 transaction.recurringType.exportTitle(transaction.recurringStartDate),
-                if (transaction.recurringType == RecurringType.ONE_TIME) NOT_APPLICABLE else transaction.recurringStartDate.toISODateString(),
+                startDate,
                 nextRecurring,
                 transaction.note.orEmpty()
             ).joinToString(",") { escapeCsv(it) }
