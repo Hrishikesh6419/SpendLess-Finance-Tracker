@@ -31,12 +31,12 @@ interface TransactionsDao {
     )
     suspend fun getDueRecurringTransactions(currentDate: LocalDateTime): List<TransactionEntity>
 
-    @Query("SELECT amountEncrypted FROM transactions WHERE userId = :userId")
+    @Query("SELECT amount FROM transactions WHERE userId = :userId")
     fun getAllTransactionAmounts(userId: Long): Flow<List<String>>
 
     @Query(
         """
-    SELECT transactionCategoryEncrypted 
+    SELECT transactionCategory 
     FROM transactions 
     WHERE transactionType = 'EXPENSE' AND userId = :userId
     """
@@ -53,7 +53,7 @@ interface TransactionsDao {
 
     @Query(
         """
-    SELECT amountEncrypted FROM transactions
+    SELECT amount FROM transactions
     WHERE transactionType = 'EXPENSE' 
     AND userId = :userId
     AND transactionDate BETWEEN :startDate AND :endDate

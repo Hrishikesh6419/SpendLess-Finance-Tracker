@@ -45,6 +45,7 @@ koin = "4.0.0"                               # Koin - Dependency Injection for K
 # 📂 Database & Persistence
 # ──────────────────────────
 room = "2.6.1"                               # Room - Android Database ORM
+sqlcipher = "4.5.4"
 
 # ──────────────────────────
 # 📦 Serialization & Data Handling
@@ -155,6 +156,7 @@ koin-androidx-compose = { group = "io.insert-koin", name = "koin-androidx-compos
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+sqlcipher = { group = "net.zetetic", name = "android-database-sqlcipher", version.ref = "sqlcipher" }
 
 # ──────────────────────────
 # 🔄 Lifecycle Management & State Handling

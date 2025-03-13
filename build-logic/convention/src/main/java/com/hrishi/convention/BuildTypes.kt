@@ -62,11 +62,13 @@ internal fun Project.configureBuildTypes(
 }
 
 private fun BuildType.configureDebugBuildType() {
+    buildConfigField("boolean", "IS_DATABASE_ENCRYPTION_ENABLED", "true")
 }
 
 private fun BuildType.configureReleaseBuildType(
     commonExtension: CommonExtension<*, *, *, *, *, *>
 ) {
+    buildConfigField("boolean", "IS_DATABASE_ENCRYPTION_ENABLED", "true")
     isMinifyEnabled = true
     proguardFiles(
         commonExtension.getDefaultProguardFile("proguard-android-optimize.txt"),

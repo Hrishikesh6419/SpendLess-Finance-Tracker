@@ -12,14 +12,14 @@ fun Transaction.toTransactionEntity(encryptionService: EncryptionService): Trans
         transactionId = this.transactionId ?: 0L,
         userId = this.userId,
         transactionType = this.transactionType,
-        transactionNameEncrypted = encryptionService.encrypt(this.transactionName),
-        amountEncrypted = encryptionService.encrypt(this.amount.toPlainString()),
-        noteEncrypted = this.note?.let { encryptionService.encrypt(it) },
-        transactionCategoryEncrypted = encryptionService.encrypt(this.transactionCategory.name),
+        transactionName = this.transactionName,
+        amount = this.amount.toPlainString(),
+        note = this.note,
+        transactionCategory = this.transactionCategory.name,
         transactionDate = this.transactionDate,
         recurringStartDate = this.recurringStartDate,
         recurringTransactionId = this.recurringTransactionId,
-        recurringTypeEncrypted = encryptionService.encrypt(this.recurringType.name),
+        recurringType = this.recurringType.name,
         nextRecurringDate = this.nextRecurringDate,
     )
 }
@@ -29,15 +29,15 @@ fun TransactionEntity.toTransaction(encryptionService: EncryptionService): Trans
         transactionId = this.transactionId,
         userId = this.userId,
         transactionType = this.transactionType,
-        transactionName = encryptionService.decrypt(this.transactionNameEncrypted),
+        transactionName = this.transactionName,
         amount = try {
-            BigDecimal(encryptionService.decrypt(this.amountEncrypted))
+            BigDecimal(this.amount)
         } catch (e: Exception) {
             BigDecimal.ZERO
         },
-        note = this.noteEncrypted?.let { encryptionService.decrypt(it) },
+        note = this.note,
         transactionCategory = try {
-            TransactionCategory.valueOf(encryptionService.decrypt(this.transactionCategoryEncrypted))
+            TransactionCategory.valueOf(this.transactionCategory)
         } catch (e: IllegalArgumentException) {
             TransactionCategory.OTHER
         },
@@ -45,7 +45,7 @@ fun TransactionEntity.toTransaction(encryptionService: EncryptionService): Trans
         recurringStartDate = this.recurringStartDate,
         recurringTransactionId = this.recurringTransactionId,
         recurringType = try {
-            RecurringType.valueOf(encryptionService.decrypt(this.recurringTypeEncrypted))
+            RecurringType.valueOf(this.recurringType)
         } catch (e: IllegalArgumentException) {
             RecurringType.ONE_TIME
         },

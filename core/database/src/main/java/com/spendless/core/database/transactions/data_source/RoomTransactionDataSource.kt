@@ -31,7 +31,7 @@ class RoomTransactionDataSource(
             val insertedId = transactionsDao.upsertTransaction(transactionEntity)
 
             val decryptedRecurringType = try {
-                RecurringType.valueOf(encryptionService.decrypt(transactionEntity.recurringTypeEncrypted))
+                RecurringType.valueOf(transactionEntity.recurringType)
             } catch (e: Exception) {
                 RecurringType.ONE_TIME
             }
@@ -82,10 +82,9 @@ class RoomTransactionDataSource(
 
     override fun getAccountBalance(userId: Long): Flow<Result<BigDecimal, DataError>> {
         return transactionsDao.getAllTransactionAmounts(userId)
-            .map { encryptedAmounts ->
+            .map { amounts ->
                 try {
-                    val total = encryptedAmounts
-                        .map { encryptionService.decrypt(it) }
+                    val total = amounts
                         .mapNotNull { it.toBigDecimalOrNull() }
                         .reduceOrNull(BigDecimal::add) ?: BigDecimal.ZERO
 
@@ -101,13 +100,9 @@ class RoomTransactionDataSource(
 
     override fun getMostPopularExpenseCategory(userId: Long): Flow<Result<TransactionCategory?, DataError>> {
         return transactionsDao.getExpenseCategories(userId)
-            .map { encryptedCategories ->
-                val categories = encryptedCategories.mapNotNull { encrypted ->
-                    try {
-                        TransactionCategory.valueOf(encryptionService.decrypt(encrypted))
-                    } catch (e: Exception) {
-                        null
-                    }
+            .map { categoriesStrings ->
+                val categories = categoriesStrings.mapNotNull { category ->
+                    TransactionCategory.entries.find { it.name == category }
                 }
 
                 val mostPopularCategory = categories
@@ -142,10 +137,9 @@ class RoomTransactionDataSource(
         Log.d("hrishiiii", "Start of previous week: $startDate")
         Log.d("hrishiiii", "End of previous week: $endDate")
         return transactionsDao.getPreviousWeekTransactionAmounts(userId, startDate, endDate)
-            .map { encryptedAmounts ->
+            .map { amounts ->
                 try {
-                    val total = encryptedAmounts
-                        .map { encryptionService.decrypt(it) }
+                    val total = amounts
                         .mapNotNull { it.toBigDecimalOrNull() }
                         .reduceOrNull(BigDecimal::add) ?: BigDecimal.ZERO
                     Result.Success(total)

@@ -9,6 +9,8 @@ android {
 
 dependencies {
     implementation(libs.bundles.koin)
+    implementation(libs.sqlcipher)
+    implementation(libs.androidx.security.crypto)
 
     // Project dependencies
     implementation(projects.core.domain)

@@ -15,5 +15,5 @@ data class UserInfoEntity(
     @PrimaryKey(autoGenerate = true)
     val userId: Long,
     val username: String,
-    val encryptedPin: String
+    val pin: String
 )

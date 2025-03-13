@@ -8,7 +8,7 @@ fun UserInfoEntity.toUserInfo(encryptionService: EncryptionService): UserInfo {
     return UserInfo(
         userId = this.userId,
         username = this.username,
-        pin = encryptionService.decrypt(this.encryptedPin)
+        pin = this.pin
     )
 }
 
@@ -16,6 +16,6 @@ fun UserInfo.toUserEntity(encryptionService: EncryptionService): UserInfoEntity 
     return UserInfoEntity(
         userId = this.userId ?: 0L,
         username = this.username,
-        encryptedPin = encryptionService.encrypt(this.pin)
+        pin = this.pin
     )
 }
