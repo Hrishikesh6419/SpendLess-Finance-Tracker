@@ -33,6 +33,7 @@ class ExportRepositoryImpl(
             "Transaction Category",
             "Recurring Type",
             "Start Date",
+            "Next Recurring Date",
             "Note"
         ).joinToString(",")
 
@@ -81,9 +82,9 @@ class ExportRepositoryImpl(
 
         val csvContent = buildString {
             appendLine(CSV_HEADERS)
-            transactions.joinTo(this, separator = "\n") {
-                buildCsvLine(it, userPreference)
-            }
+            append(
+                buildCsvLines(transactions, userPreference).joinToString("\n")
+            )
         }
 
         val resolver = context.contentResolver
@@ -114,28 +115,40 @@ class ExportRepositoryImpl(
         }
     }
 
-    private fun buildCsvLine(transaction: Transaction, userPreference: UserPreferences): String {
-        val recurringTypeTitle =
-            transaction.recurringType.exportTitle(transaction.recurringStartDate)
-        val startDate = if (transaction.recurringType == RecurringType.ONE_TIME) {
-            NOT_APPLICABLE
-        } else {
-            transaction.recurringStartDate.toISODateString()
-        }
+    private fun buildCsvLines(
+        transactions: List<Transaction>,
+        userPreference: UserPreferences
+    ): List<String> {
+        val recurringTransactionNextDateMap = transactions
+            .filter { it.recurringTransactionId != null }
+            .groupBy { it.recurringTransactionId }
+            .mapValues { (_, groupedTransactions) ->
+                groupedTransactions.firstNotNullOfOrNull { it.nextRecurringDate }
+            }
 
-        return listOf(
-            transaction.transactionType.displayName,
-            NumberFormatter.formatAmount(
-                amount = transaction.amount,
-                preferences = userPreference
-            ),
-            transaction.transactionDate.toISODateString(),
-            transaction.transactionName,
-            transaction.transactionCategory.displayName,
-            recurringTypeTitle,
-            startDate,
-            transaction.note.orEmpty(),
-        ).joinToString(",") { escapeCsv(it) }
+        return transactions.map { transaction ->
+            val recurringId = transaction.recurringTransactionId
+            val nextRecurring = if (transaction.recurringType == RecurringType.ONE_TIME) {
+                NOT_APPLICABLE
+            } else {
+                recurringTransactionNextDateMap[recurringId]?.toISODateString() ?: NOT_APPLICABLE
+            }
+
+            listOf(
+                transaction.transactionType.displayName,
+                NumberFormatter.formatAmount(
+                    amount = transaction.amount,
+                    preferences = userPreference
+                ),
+                transaction.transactionDate.toISODateString(),
+                transaction.transactionName,
+                transaction.transactionCategory.displayName,
+                transaction.recurringType.exportTitle(transaction.recurringStartDate),
+                if (transaction.recurringType == RecurringType.ONE_TIME) NOT_APPLICABLE else transaction.recurringStartDate.toISODateString(),
+                nextRecurring,
+                transaction.note.orEmpty()
+            ).joinToString(",") { escapeCsv(it) }
+        }
     }
 
     private fun escapeCsv(value: String): String {
