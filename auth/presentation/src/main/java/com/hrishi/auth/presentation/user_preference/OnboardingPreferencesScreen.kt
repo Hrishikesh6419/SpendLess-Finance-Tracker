@@ -11,7 +11,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -42,7 +41,7 @@ import com.hrishi.core.presentation.designsystem.components.SpendLessSnackBarHos
 import com.hrishi.core.presentation.designsystem.components.SpendLessTopBar
 import com.hrishi.core.presentation.designsystem.components.buttons.SpendLessButton
 import com.hrishi.presentation.ui.ObserveAsEvents
-import kotlinx.coroutines.launch
+import com.hrishi.presentation.ui.showTimedSnackBar
 import org.koin.androidx.compose.koinViewModel
 import java.math.BigDecimal
 
@@ -68,26 +67,16 @@ fun OnboardingPreferencesScreenRoot(
                 onNavigateToRegisterScreen()
             }
             is OnboardingPreferencesEvent.Error -> {
-                snackBarHostState.currentSnackbarData?.dismiss()
-                when (event) {
-                    OnboardingPreferencesEvent.Error.DuplicateEntry -> {
-                        scope.launch {
-                            snackBarHostState.showSnackbar(
-                                message = context.getString(R.string.common_error_username_taken),
-                                duration = SnackbarDuration.Short
-                            )
-                        }
-                    }
+                scope.showTimedSnackBar(
+                    snackBarHostState = snackBarHostState,
+                    message = when (event) {
+                        OnboardingPreferencesEvent.Error.DuplicateEntry ->
+                            context.getString(R.string.common_error_username_taken)
 
-                    OnboardingPreferencesEvent.Error.Generic -> {
-                        scope.launch {
-                            snackBarHostState.showSnackbar(
-                                message = context.getString(R.string.common_error_something_went_wrong),
-                                duration = SnackbarDuration.Short
-                            )
-                        }
+                        OnboardingPreferencesEvent.Error.Generic ->
+                            context.getString(R.string.common_error_something_went_wrong)
                     }
-                }
+                )
             }
         }
     }

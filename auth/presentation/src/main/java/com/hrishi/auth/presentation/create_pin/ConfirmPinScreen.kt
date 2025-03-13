@@ -16,7 +16,7 @@ import com.hrishi.auth.presentation.create_pin.component.CreatePinScreenComponen
 import com.hrishi.core.presentation.designsystem.SpendLessFinanceTrackerTheme
 import com.hrishi.presentation.ui.ObserveAsEvents
 import com.hrishi.presentation.ui.navigation.PreferencesScreenData
-import kotlinx.coroutines.launch
+import com.hrishi.presentation.ui.showTimedSnackBar
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -35,10 +35,10 @@ fun ConfirmPinScreenRoot(
         when (event) {
             CreatePinEvent.NavigateToRegisterScreen -> onNavigateToRegisterScreen()
             CreatePinEvent.PinsDoNotMatch -> {
-                scope.launch {
-                    snackBarHostState.currentSnackbarData?.dismiss()
-                    snackBarHostState.showSnackbar(context.getString(R.string.confirm_pin_error_pins_do_not_match))
-                }
+                scope.showTimedSnackBar(
+                    snackBarHostState = snackBarHostState,
+                    message = context.getString(R.string.confirm_pin_error_pins_do_not_match)
+                )
             }
 
             is CreatePinEvent.NavigateToPreferencesScreen -> onNavigateToPreferencesScreen(event.screenData)

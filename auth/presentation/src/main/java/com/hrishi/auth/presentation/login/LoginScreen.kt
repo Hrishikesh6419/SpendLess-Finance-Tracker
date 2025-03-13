@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -38,7 +37,7 @@ import com.hrishi.core.presentation.designsystem.components.SpendLessSnackBarHos
 import com.hrishi.core.presentation.designsystem.components.buttons.SpendLessButton
 import com.hrishi.core.presentation.designsystem.components.text_field.SpendLessTextField
 import com.hrishi.presentation.ui.ObserveAsEvents
-import kotlinx.coroutines.launch
+import com.hrishi.presentation.ui.showTimedSnackBar
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -57,13 +56,10 @@ fun LoginScreenRoot(
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
             LoginEvent.IncorrectCredentials -> {
-                scope.launch {
-                    snackBarHostState.currentSnackbarData?.dismiss()
-                    snackBarHostState.showSnackbar(
-                        message = context.getString(R.string.login_error_username_or_pin_is_incorrect),
-                        duration = SnackbarDuration.Short
-                    )
-                }
+                scope.showTimedSnackBar(
+                    snackBarHostState = snackBarHostState,
+                    message = context.getString(R.string.login_error_username_or_pin_is_incorrect)
+                )
             }
 
             LoginEvent.NavigateToRegisterScreen -> {

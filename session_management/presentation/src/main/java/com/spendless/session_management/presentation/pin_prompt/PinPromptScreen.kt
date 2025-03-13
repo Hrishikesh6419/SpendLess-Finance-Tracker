@@ -38,8 +38,8 @@ import com.hrishi.core.presentation.designsystem.components.SpendLessSnackBarHos
 import com.hrishi.core.presentation.designsystem.components.SpendLessTopBar
 import com.hrishi.presentation.ui.ObserveAsEvents
 import com.hrishi.presentation.ui.formatToTimeString
+import com.hrishi.presentation.ui.showTimedSnackBar
 import com.spendless.session_management.presentation.R
-import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -64,10 +64,10 @@ fun PinPromptScreenRoot(
             PinPromptEvent.OnLogout -> onLogout()
             PinPromptEvent.OnSuccessPopBack -> onSuccessClick()
             PinPromptEvent.IncorrectPin -> {
-                snackBarHostState.currentSnackbarData?.dismiss()
-                scope.launch {
-                    snackBarHostState.showSnackbar(context.getString(R.string.error_incorrect_pin))
-                }
+                scope.showTimedSnackBar(
+                    snackBarHostState = snackBarHostState,
+                    message = context.getString(R.string.error_incorrect_pin)
+                )
             }
         }
     }
