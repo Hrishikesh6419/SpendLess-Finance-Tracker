@@ -3,15 +3,11 @@ package com.spendless.settings.presentation.security
 import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBars
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -27,6 +23,7 @@ import com.hrishi.core.domain.model.LockoutDuration
 import com.hrishi.core.domain.model.SessionDuration
 import com.hrishi.core.presentation.designsystem.SpendLessFinanceTrackerTheme
 import com.hrishi.core.presentation.designsystem.components.SegmentedSelector
+import com.hrishi.core.presentation.designsystem.components.SpendLessScaffold
 import com.hrishi.core.presentation.designsystem.components.SpendLessTopBar
 import com.hrishi.core.presentation.designsystem.components.buttons.SpendLessButton
 import com.hrishi.presentation.ui.LocalAuthActionHandler
@@ -80,7 +77,8 @@ fun SettingsSecurityScreen(
     uiState: SettingsSecurityViewState,
     onAction: (SettingsSecurityAction) -> Unit
 ) {
-    Scaffold(containerColor = Color.Transparent,
+    SpendLessScaffold(
+        containerColor = Color.Transparent,
         topBar = {
             SpendLessTopBar(
                 modifier = Modifier

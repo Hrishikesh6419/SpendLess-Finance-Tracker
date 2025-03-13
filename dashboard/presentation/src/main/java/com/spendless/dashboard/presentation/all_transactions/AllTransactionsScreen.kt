@@ -19,7 +19,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.ModalBottomSheetProperties
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -39,6 +38,7 @@ import com.hrishi.core.domain.model.ExpenseFormat
 import com.hrishi.core.domain.model.ThousandsSeparator
 import com.hrishi.core.presentation.designsystem.DownloadButton
 import com.hrishi.core.presentation.designsystem.SpendLessFinanceTrackerTheme
+import com.hrishi.core.presentation.designsystem.components.SpendLessScaffold
 import com.hrishi.core.presentation.designsystem.components.SpendLessTopBar
 import com.hrishi.core.presentation.designsystem.components.TransactionItemView
 import com.hrishi.core.presentation.designsystem.components.buttons.SpendLessFloatingActionButton
@@ -178,9 +178,8 @@ private fun AllTransactionsScreen(
         }
     }
 
-
-
-    Scaffold(containerColor = Color.Transparent,
+    SpendLessScaffold(
+        containerColor = Color.Transparent,
         topBar = {
             SpendLessTopBar(
                 modifier = Modifier

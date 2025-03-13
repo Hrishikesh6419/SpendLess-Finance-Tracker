@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -34,6 +33,7 @@ import com.hrishi.core.presentation.designsystem.LoginIcon
 import com.hrishi.core.presentation.designsystem.SpendLessFinanceTrackerTheme
 import com.hrishi.core.presentation.designsystem.components.SpendLessEnterPin
 import com.hrishi.core.presentation.designsystem.components.SpendLessPinPad
+import com.hrishi.core.presentation.designsystem.components.SpendLessScaffold
 import com.hrishi.core.presentation.designsystem.components.SpendLessSnackBarHost
 import com.hrishi.core.presentation.designsystem.components.SpendLessTopBar
 import com.hrishi.presentation.ui.ObserveAsEvents
@@ -87,7 +87,7 @@ private fun PinPromptScreen(
     uiState: PinPromptState,
     onAction: (PinPromptAction) -> Unit
 ) {
-    Scaffold(
+    SpendLessScaffold(
         containerColor = Color.Transparent,
         snackbarHost = {
             SpendLessSnackBarHost(snackbarHostState)
