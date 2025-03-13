@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -32,6 +31,7 @@ import com.hrishi.core.presentation.designsystem.ArrowForward
 import com.hrishi.core.presentation.designsystem.LoginIcon
 import com.hrishi.core.presentation.designsystem.SpendLessFinanceTrackerTheme
 import com.hrishi.core.presentation.designsystem.components.SpendLessHeadlineTextField
+import com.hrishi.core.presentation.designsystem.components.SpendLessScaffold
 import com.hrishi.core.presentation.designsystem.components.SpendLessSnackBarHost
 import com.hrishi.core.presentation.designsystem.components.buttons.SpendLessButton
 import com.hrishi.presentation.ui.ObserveAsEvents
@@ -99,7 +99,7 @@ fun RegisterScreen(
     snackBarHostState: SnackbarHostState,
     onAction: (RegisterAction) -> Unit
 ) {
-    Scaffold(containerColor = Color.Transparent, snackbarHost = {
+    SpendLessScaffold(containerColor = Color.Transparent, snackbarHost = {
         SpendLessSnackBarHost(snackBarHostState)
     }) { contentPadding ->
         Column(

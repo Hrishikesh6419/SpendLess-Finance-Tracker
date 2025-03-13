@@ -202,7 +202,7 @@ fun DashboardScreen(
 
     SpendLessScaffold(
         withGradient = true,
-        topAppBar = {
+        topBar = {
             SpendLessTopBar(
                 modifier = Modifier
                     .windowInsetsPadding(WindowInsets.statusBars)
