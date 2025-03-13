@@ -90,7 +90,6 @@ fun SettingsPreferencesScreen(
         topBar = {
             SpendLessTopBar(
                 modifier = Modifier
-                    .windowInsetsPadding(WindowInsets.statusBars)
                     .padding(horizontal = 8.dp),
                 title = "Preferences",
                 titleColor = MaterialTheme.colorScheme.onSurface,

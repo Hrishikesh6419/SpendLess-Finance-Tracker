@@ -77,7 +77,6 @@ fun SettingsHomeScreen(
         topBar = {
             SpendLessTopBar(
                 modifier = Modifier
-                    .windowInsetsPadding(WindowInsets.statusBars)
                     .padding(horizontal = 8.dp),
                 title = "Settings",
                 onStartIconClick = {

@@ -184,7 +184,6 @@ private fun AllTransactionsScreen(
         topBar = {
             SpendLessTopBar(
                 modifier = Modifier
-                    .windowInsetsPadding(WindowInsets.statusBars)
                     .padding(horizontal = 8.dp),
                 title = "All Transactions",
                 titleColor = MaterialTheme.colorScheme.onSurface,

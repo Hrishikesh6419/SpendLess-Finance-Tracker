@@ -84,7 +84,6 @@ fun SettingsSecurityScreen(
         topBar = {
             SpendLessTopBar(
                 modifier = Modifier
-                    .windowInsetsPadding(WindowInsets.statusBars)
                     .padding(horizontal = 8.dp),
                 title = "Security",
                 titleColor = MaterialTheme.colorScheme.onSurface,
