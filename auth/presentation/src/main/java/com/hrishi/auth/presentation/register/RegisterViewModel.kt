@@ -52,6 +52,11 @@ class RegisterViewModel(
                     }
 
                     if (isUserNameDuplicate) {
+                        _uiState.update {
+                            it.copy(
+                                isNextEnabled = false
+                            )
+                        }
                         eventChannel.send(RegisterEvent.DuplicateUsername)
                         return@launch
                     }
