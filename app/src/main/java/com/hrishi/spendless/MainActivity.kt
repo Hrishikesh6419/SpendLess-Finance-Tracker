@@ -60,7 +60,9 @@ class MainActivity : ComponentActivity() {
                         },
                         onLogout = {
                             navController.navigateToLoginRoute {
-                                popUpTo<AuthBaseRoute>()
+                                popUpTo(navController.graph.id) {
+                                    inclusive = true
+                                }
                             }
                         },
                         authNavigationDestination = uiState.authNavigationDestination

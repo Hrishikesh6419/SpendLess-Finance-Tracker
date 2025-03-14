@@ -2,13 +2,16 @@ package com.spendless.settings.presentation.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.spendless.session_management.domain.usecases.SessionUseCase
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
-class SettingsHomeViewModel: ViewModel() {
+class SettingsHomeViewModel(
+    private val sessionUseCase: SessionUseCase
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SettingsHomeViewState())
     val uiState = _uiState.asStateFlow()
@@ -20,8 +23,10 @@ class SettingsHomeViewModel: ViewModel() {
         viewModelScope.launch {
             when (action) {
                 SettingsHomeAction.OnLogoutClick -> {
+                    sessionUseCase.clearSessionUseCase()
                     eventChannel.send(SettingsHomeEvent.Logout)
                 }
+
                 SettingsHomeAction.OnBackClick -> {
                     eventChannel.send(SettingsHomeEvent.NavigateBack)
                 }
@@ -29,6 +34,7 @@ class SettingsHomeViewModel: ViewModel() {
                 SettingsHomeAction.OnPreferencesClick -> {
                     eventChannel.send(SettingsHomeEvent.NavigateToPreferencesScreen)
                 }
+
                 SettingsHomeAction.OnSecurityClick -> {
                     eventChannel.send(SettingsHomeEvent.NavigateToSecurityScreen)
                 }
