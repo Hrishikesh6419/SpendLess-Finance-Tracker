@@ -45,6 +45,7 @@ fun SpendLessTextField(
 
     BasicTextField(
         value = value,
+        maxLines = 1,
         onValueChange = onValueChange,
         textStyle = MaterialTheme.typography.bodyMedium.copy(
             color = MaterialTheme.colorScheme.onSurface
