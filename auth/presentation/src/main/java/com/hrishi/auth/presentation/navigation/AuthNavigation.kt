@@ -81,7 +81,11 @@ fun NavGraphBuilder.authGraph(
                     }
                 },
                 onNavigateToRegisterScreen = {
-                    navController.navigateToRegisterScreen()
+                    navController.navigateToRegisterScreen {
+                        popUpTo<AuthBaseRoute> {
+                            inclusive = true
+                        }
+                    }
                 }
             )
         }
@@ -93,7 +97,11 @@ fun NavGraphBuilder.authGraph(
         ) {
             ConfirmPinScreenRoot(
                 onNavigateToRegisterScreen = {
-                    navController.navigateToRegisterScreen()
+                    navController.navigateToRegisterScreen {
+                        popUpTo<AuthBaseRoute> {
+                            inclusive = true
+                        }
+                    }
                 },
                 onNavigateToPreferencesScreen = {
                     navController.navigateToPreferencesScreen(it)
