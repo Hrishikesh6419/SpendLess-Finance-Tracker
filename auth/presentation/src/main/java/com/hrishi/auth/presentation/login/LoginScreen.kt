@@ -15,11 +15,14 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
@@ -89,6 +92,12 @@ fun LoginScreen(
     snackbarHostState: SnackbarHostState,
     onAction: (LoginAction) -> Unit
 ) {
+    val focusRequester = remember { FocusRequester() }
+
+    LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
+    }
+
     SpendLessScaffold(
         snackbarHost = {
             SpendLessSnackBarHost(snackbarHostState)
@@ -124,11 +133,13 @@ fun LoginScreen(
                     onAction(LoginAction.OnUsernameUpdate(it))
                 },
                 hint = stringResource(R.string.login_username),
-                modifier = Modifier.padding(
-                    start = 16.dp,
-                    end = 16.dp,
-                    top = 36.dp
-                )
+                modifier = Modifier
+                    .padding(
+                        start = 16.dp,
+                        end = 16.dp,
+                        top = 36.dp
+                    )
+                    .focusRequester(focusRequester = focusRequester),
             )
 
             SpendLessTextField(
@@ -178,7 +189,7 @@ fun PreviewLoginScreen() {
             LoginScreen(
                 modifier = Modifier,
                 uiState = LoginViewState(),
-                SnackbarHostState()
+                snackbarHostState = SnackbarHostState()
             ) {
 
             }
