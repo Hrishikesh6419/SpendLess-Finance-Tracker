@@ -103,7 +103,7 @@ class OnboardingPreferencesViewModel(
             thousandsSeparator = _uiState.value.thousandsSeparator,
             isBiometricEnabled = false,
             sessionDuration = SessionDuration.ONE_MIN,
-            lockOutDuration = LockoutDuration.FIFTEEN_SECONDS,
+            lockOutDuration = LockoutDuration.THIRTY_SECONDS,
             allowedPinAttempts = PinAttempts.THREE
         )
 

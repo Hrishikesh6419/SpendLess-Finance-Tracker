@@ -48,8 +48,8 @@ fun SettingsSecurityScreenRoot(
                     context,
                     "Security Preferences saved successfully!",
                     Toast.LENGTH_SHORT
-                )
-                    .show()
+                ).show()
+                onNavigateBack()
             }
         }
     }

@@ -56,6 +56,7 @@ fun SettingsPreferenceScreenRoot(
             SettingsPreferencesEvent.PreferencesSaved -> {
                 Toast.makeText(context, "Preferences saved successfully!", Toast.LENGTH_SHORT)
                     .show()
+                onNavigateBack()
             }
         }
     }
