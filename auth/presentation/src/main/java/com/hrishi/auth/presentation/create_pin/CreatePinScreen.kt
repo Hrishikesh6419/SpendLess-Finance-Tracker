@@ -20,7 +20,7 @@ import org.koin.androidx.compose.koinViewModel
 fun CreatePinScreenRoot(
     modifier: Modifier = Modifier,
     onNavigateToConfirmScreen: (CreatePinScreenData) -> Unit,
-    onNavigateToRegisterScreen: () -> Unit,
+    onBackClick: () -> Unit,
     viewModel: CreatePinViewModel = koinViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -29,7 +29,7 @@ fun CreatePinScreenRoot(
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
             is CreatePinEvent.NavigateToConfirmPinScreen -> onNavigateToConfirmScreen(event.screenData)
-            CreatePinEvent.NavigateToRegisterScreen -> onNavigateToRegisterScreen()
+            CreatePinEvent.OnBackClick -> onBackClick()
             else -> Unit
         }
     }

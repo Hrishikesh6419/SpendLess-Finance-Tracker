@@ -22,7 +22,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun ConfirmPinScreenRoot(
     modifier: Modifier = Modifier,
-    onNavigateToRegisterScreen: () -> Unit,
+    onBackClick: () -> Unit,
     onNavigateToPreferencesScreen: (PreferencesScreenData) -> Unit,
     viewModel: CreatePinViewModel = koinViewModel()
 ) {
@@ -33,7 +33,7 @@ fun ConfirmPinScreenRoot(
 
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
-            CreatePinEvent.NavigateToRegisterScreen -> onNavigateToRegisterScreen()
+            CreatePinEvent.OnBackClick -> onBackClick()
             CreatePinEvent.PinsDoNotMatch -> {
                 scope.showTimedSnackBar(
                     snackBarHostState = snackBarHostState,
