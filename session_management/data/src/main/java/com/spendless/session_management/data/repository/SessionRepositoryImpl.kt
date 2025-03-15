@@ -46,7 +46,7 @@ class SessionRepositoryImpl(
                 )
 
                 dataStore.updateData { prefs ->
-                    // ✅ Save session data with updated expiration time
+                    // Save session data with updated expiration time
                     sessionData.copy(sessionExpiryTime = expirationTime).toProto()
                 }
             }
@@ -61,7 +61,7 @@ class SessionRepositoryImpl(
             "Clearing session expiration at ${formatTime(System.currentTimeMillis())}"
         )
 
-        // ✅ Reset session data to default
+        // Reset session data to default
         dataStore.updateData { SessionPreferences.getDefaultInstance() }
     }
 
@@ -82,9 +82,6 @@ class SessionRepositoryImpl(
         }
     }
 
-    /**
-     * Retrieves the current session data as a Flow.
-     */
     override fun getSessionData(): Flow<SessionData> {
         return dataStore.data.map { prefs ->
             Log.d(TAG, "Fetching session data: $prefs")
@@ -95,7 +92,7 @@ class SessionRepositoryImpl(
 
     override fun isSessionExpired(): Flow<Boolean> {
         return dataStore.data.map { prefs ->
-            val hasValidUser = prefs.userId > 0L  // Ensure a user is logged in
+            val hasValidUser = prefs.userId > 0L
             val isExpired = System.currentTimeMillis() >= prefs.sessionExpiryTime
 
             if (!hasValidUser) {
@@ -117,8 +114,7 @@ class SessionRepositoryImpl(
 
     override suspend fun resetSessionExpiry() {
         dataStore.updateData { prefs ->
-            val userPreference = preferencesRepository.getPreferences(prefs.userId).first()
-            when (userPreference) {
+            when (val userPreference = preferencesRepository.getPreferences(prefs.userId).first()) {
                 is Result.Success -> {
                     val sessionExpiryDurationMins =
                         userPreference.data.sessionDuration.getValueInLong()
