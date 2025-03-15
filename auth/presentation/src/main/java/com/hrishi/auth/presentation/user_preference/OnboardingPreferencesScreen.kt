@@ -50,7 +50,7 @@ fun OnboardingPreferencesScreenRoot(
     modifier: Modifier = Modifier,
     viewModel: OnboardingPreferencesViewModel = koinViewModel(),
     onNavigateToDashboardScreen: () -> Unit,
-    onNavigateToRegisterScreen: () -> Unit,
+    onNavigateBack: () -> Unit,
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -63,9 +63,8 @@ fun OnboardingPreferencesScreenRoot(
                 onNavigateToDashboardScreen()
             }
 
-            OnboardingPreferencesEvent.NavigateToRegisterScreen -> {
-                onNavigateToRegisterScreen()
-            }
+            OnboardingPreferencesEvent.OnBackClicked -> onNavigateBack()
+
             is OnboardingPreferencesEvent.Error -> {
                 scope.showTimedSnackBar(
                     snackBarHostState = snackBarHostState,

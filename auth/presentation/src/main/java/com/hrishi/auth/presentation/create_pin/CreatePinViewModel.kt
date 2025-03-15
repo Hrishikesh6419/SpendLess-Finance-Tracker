@@ -76,6 +76,11 @@ class CreatePinViewModel(
                             }
                             resetState()
                         } else {
+                            _uiState.update {
+                                it.copy(
+                                    pin = ""
+                                )
+                            }
                             eventChannel.send(CreatePinEvent.PinsDoNotMatch)
                         }
                     }

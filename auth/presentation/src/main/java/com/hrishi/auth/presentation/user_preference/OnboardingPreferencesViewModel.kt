@@ -47,7 +47,7 @@ class OnboardingPreferencesViewModel(
         viewModelScope.launch {
             when (action) {
                 OnboardingPreferencesAction.OnBackClicked -> {
-                    eventChannel.send(OnboardingPreferencesEvent.NavigateToRegisterScreen)
+                    eventChannel.send(OnboardingPreferencesEvent.OnBackClicked)
                 }
 
                 is OnboardingPreferencesAction.OnExpenseFormatUpdate -> {

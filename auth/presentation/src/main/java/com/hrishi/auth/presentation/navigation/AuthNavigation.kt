@@ -96,7 +96,11 @@ fun NavGraphBuilder.authGraph(
                     navController.popBackStack()
                 },
                 onNavigateToPreferencesScreen = {
-                    navController.navigateToPreferencesScreen(it)
+                    navController.navigateToPreferencesScreen(it) {
+                        popUpTo<ConfirmPinRoute> {
+                            inclusive = true
+                        }
+                    }
                 }
             )
         }
@@ -107,10 +111,8 @@ fun NavGraphBuilder.authGraph(
             )
         ) {
             OnboardingPreferencesScreenRoot(
-                onNavigateToRegisterScreen = {
-                    navController.navigateToRegisterScreen {
-                        popUpTo<RegisterRoute>()
-                    }
+                onNavigateBack = {
+                    navController.popBackStack()
                 },
                 onNavigateToDashboardScreen = onNavigateToDashboardScreen
             )
