@@ -49,7 +49,7 @@ class DashboardViewModel(
 
     private var preference: UserPreferences? = null
 
-    private val isLaunchedFromWidget =
+    private var isLaunchedFromWidget =
         savedStateHandle.toRoute<DashboardScreenRoute>().isLaunchedFromWidget
 
     init {
@@ -126,6 +126,7 @@ class DashboardViewModel(
                             showCreateTransactionSheet = isLaunchedFromWidget
                         )
                     }
+                    isLaunchedFromWidget = false
                 }
             }.launchIn(viewModelScope)
         }
