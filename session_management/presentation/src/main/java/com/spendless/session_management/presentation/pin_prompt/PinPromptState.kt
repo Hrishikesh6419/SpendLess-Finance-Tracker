@@ -9,4 +9,5 @@ data class PinPromptState(
     val remainingPinAttempts: Long = 3,
     val isExceededFailedAttempts: Boolean = false,
     val lockoutTimeRemaining: Long = 0L,
+    val isBiometricsEnabled: Boolean = false
 )

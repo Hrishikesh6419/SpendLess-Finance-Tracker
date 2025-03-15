@@ -49,7 +49,8 @@ class PinPromptViewModel(
                         _uiState.update {
                             it.copy(
                                 lockoutDuration = preferences.data.lockOutDuration,
-                                remainingPinAttempts = preferences.data.allowedPinAttempts.getValue()
+                                remainingPinAttempts = preferences.data.allowedPinAttempts.getValue(),
+                                isBiometricsEnabled = preferences.data.isBiometricEnabled
                             )
                         }
                     }
@@ -98,6 +99,7 @@ class PinPromptViewModel(
 
                         _uiState.update {
                             it.copy(
+                                pin = "",
                                 remainingPinAttempts = _uiState.value.remainingPinAttempts - 1
                             )
                         }

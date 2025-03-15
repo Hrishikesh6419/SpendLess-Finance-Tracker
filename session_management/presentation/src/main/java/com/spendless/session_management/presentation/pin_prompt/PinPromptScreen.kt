@@ -151,7 +151,7 @@ private fun PinPromptScreen(
                 SpendLessPinPad(
                     isLocked = uiState.isExceededFailedAttempts,
                     modifier = Modifier.padding(top = 32.dp),
-                    hasBiometricButton = true,
+                    hasBiometricButton = uiState.isBiometricsEnabled,
                     onNumberPressedClicked = {
                         onAction(PinPromptAction.OnNumberPressed(it))
                     },
