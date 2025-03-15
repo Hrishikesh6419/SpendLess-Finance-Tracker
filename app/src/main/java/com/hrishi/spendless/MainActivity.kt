@@ -11,9 +11,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import com.hrishi.core.presentation.designsystem.SpendLessFinanceTrackerTheme
 import com.hrishi.presentation.ui.navigateToRoute
-import com.hrishi.presentation.ui.navigation.AuthBaseRoute
 import com.hrishi.presentation.ui.navigation.SessionBaseRoute
 import com.hrishi.presentation.ui.navigation.navigateToLoginRoute
+import com.hrishi.presentation.ui.navigation.navigateToPinPromptScreen
 import com.hrishi.spendless.navigation.NavigationRoot
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -38,7 +38,12 @@ class MainActivity : ComponentActivity() {
 
                     LaunchedEffect(uiState.showPinPrompt) {
                         if (uiState.showPinPrompt) {
-                            navController.navigate(SessionBaseRoute)
+                            navController.navigateToPinPromptScreen {
+                                popUpTo<SessionBaseRoute> {
+                                    inclusive = true
+                                }
+                                launchSingleTop = true
+                            }
                         }
                     }
 

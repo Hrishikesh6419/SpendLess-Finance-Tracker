@@ -12,4 +12,4 @@ data object PinPromptScreenRoute : AppRoute
 
 fun NavController.navigateToPinPromptScreen(
     navOptions: NavOptionsBuilder.() -> Unit = {}
-) = navigate(PinPromptScreenRoute, navOptions)
+) = navigate(SessionBaseRoute, navOptions)
