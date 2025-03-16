@@ -81,9 +81,4 @@ class MainActivity : ComponentActivity() {
         super.onResume()
         mainViewModel.onAppResumed()
     }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        mainViewModel.setSessionToExpired()
-    }
 }
