@@ -15,21 +15,17 @@ class TrustedTimeProvider(
     context: Context,
     private val zoneId: ZoneId
 ) : TimeProvider {
-
-    private var cachedInstant: Instant = Instant.now()
     private var trustedTimeClient: TrustedTimeClient? = null
 
     init {
         TrustedTime.createClient(context).addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 trustedTimeClient = task.result
-                cachedInstant = trustedTimeClient?.computeCurrentInstant() ?: Instant.now()
-            } else {
-                cachedInstant = Instant.now()
             }
         }
     }
 
     override val currentLocalDateTime: LocalDateTime
-        get() = cachedInstant.atZone(zoneId).toLocalDateTime()
+        get() = trustedTimeClient?.computeCurrentInstant()?.atZone(zoneId)?.toLocalDateTime()
+            ?: Instant.now().atZone(zoneId).toLocalDateTime()
 }
