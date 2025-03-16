@@ -43,7 +43,7 @@ import com.hrishi.core.presentation.designsystem.model.TransactionCategoryTypeUI
 import com.hrishi.core.presentation.designsystem.model.TransactionTypeUI
 import com.hrishi.presentation.ui.LocalAuthActionHandler
 import com.hrishi.presentation.ui.ObserveAsEvents
-import com.hrishi.presentation.ui.UpdateStatusBarAppearance
+import com.hrishi.presentation.ui.UpdateDialogStatusBarAppearance
 import com.hrishi.presentation.ui.utils.getFormattedTitle
 import org.koin.androidx.compose.koinViewModel
 import java.math.BigDecimal
@@ -55,7 +55,7 @@ fun CreateTransactionScreenRoot(
     viewModel: CreateTransactionViewModel = koinViewModel()
 ) {
     val authActionHandler = LocalAuthActionHandler.current
-    UpdateStatusBarAppearance(isDarkStatusBarIcons = false)
+    UpdateDialogStatusBarAppearance(isDarkStatusBarIcons = false)
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
