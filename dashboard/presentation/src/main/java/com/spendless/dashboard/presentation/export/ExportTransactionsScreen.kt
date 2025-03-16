@@ -31,6 +31,7 @@ import com.hrishi.core.presentation.designsystem.components.CategorySelector
 import com.hrishi.core.presentation.designsystem.components.buttons.SpendLessButton
 import com.hrishi.presentation.ui.LocalAuthActionHandler
 import com.hrishi.presentation.ui.ObserveAsEvents
+import com.hrishi.presentation.ui.UpdateDialogStatusBarAppearance
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -43,6 +44,7 @@ fun ExportTransactionsScreenRoot(
     val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+    UpdateDialogStatusBarAppearance(isDarkStatusBarIcons = false)
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
             ExportTransactionsEvent.CloseBottomSheet -> onDismiss()

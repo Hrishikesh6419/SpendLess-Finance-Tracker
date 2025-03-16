@@ -25,7 +25,7 @@ class ExportTransactionUseCase(
             when (preferencesResult) {
                 is Result.Success -> {
                     exportRepository.exportTransactions(
-                        dateRange = exportType,
+                        exportType = exportType,
                         userId = userId,
                         userPreference = preferencesResult.data
                     )

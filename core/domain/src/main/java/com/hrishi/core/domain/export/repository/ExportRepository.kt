@@ -7,7 +7,7 @@ import com.hrishi.core.domain.utils.Result
 
 interface ExportRepository {
     suspend fun exportTransactions(
-        dateRange: ExportType,
+        exportType: ExportType,
         userId: Long,
         userPreference: UserPreferences
     ): Result<Boolean, DataError>

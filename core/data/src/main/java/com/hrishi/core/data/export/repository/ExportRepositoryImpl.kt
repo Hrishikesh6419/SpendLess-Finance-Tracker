@@ -15,6 +15,7 @@ import com.hrishi.core.domain.transactions.repository.TransactionRepository
 import com.hrishi.core.domain.utils.DataError
 import com.hrishi.core.domain.utils.Result
 import com.hrishi.core.domain.utils.toISODateString
+import kotlinx.coroutines.flow.first
 import timber.log.Timber
 
 class ExportRepositoryImpl(
@@ -42,27 +43,35 @@ class ExportRepositoryImpl(
     }
 
     override suspend fun exportTransactions(
-        dateRange: ExportType,
+        exportType: ExportType,
         userId: Long,
         userPreference: UserPreferences
     ): Result<Boolean, DataError> {
-        val (startDate, endDate) = dateRange.getDateRange()
+
+        fun handleExport(data: List<Transaction>): Result<Boolean, DataError> {
+            val exportResult = writeTransactionsToCsv(data, userPreference)
+            return if (exportResult) {
+                Result.Success(true)
+            } else {
+                Result.Error(DataError.Local.EXPORT_FAILED)
+            }
+        }
 
         return try {
-            val transactionsResult =
-                transactionRepository.getTransactionsForDateRange(userId, startDate, endDate)
+            val dateRange = exportType.getDateRange()
+            if (dateRange == null) {
+                val transactionResult = transactionRepository.getTransactionsForUser(userId).first()
+                return when (transactionResult) {
+                    is Result.Success -> handleExport(transactionResult.data)
+                    is Result.Error -> Result.Error(transactionResult.error)
+                }
+            }
+
+            val (startDate, endDate) = dateRange
+            val transactionsResult = transactionRepository.getTransactionsForDateRange(userId, startDate, endDate)
 
             when (transactionsResult) {
-                is Result.Success -> {
-                    val exportResult =
-                        writeTransactionsToCsv(transactionsResult.data, userPreference)
-                    if (exportResult) {
-                        Result.Success(true)
-                    } else {
-                        Result.Error(DataError.Local.EXPORT_FAILED)
-                    }
-                }
-
+                is Result.Success -> handleExport(transactionsResult.data)
                 is Result.Error -> Result.Error(transactionsResult.error)
             }
         } catch (e: Exception) {
