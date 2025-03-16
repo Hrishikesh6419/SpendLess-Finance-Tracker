@@ -1,6 +1,5 @@
 package com.hrishi.core.domain.export.model
 
-import com.hrishi.core.domain.utils.CalendarUtils
 import java.time.LocalDateTime
 
 enum class ExportType(val displayName: String) {
@@ -9,13 +8,14 @@ enum class ExportType(val displayName: String) {
     LAST_MONTH("Last month"),
     CURRENT_MONTH("Current month");
 
-    fun getDateRange(): Pair<LocalDateTime, LocalDateTime>? {
-        val now = CalendarUtils.currentEstTime
+    fun getDateRange(timeNow: LocalDateTime): Pair<LocalDateTime, LocalDateTime>? {
         return when (this) {
             ALL_DATA -> null
-            LAST_THREE_MONTH -> now.minusMonths(3).withDayOfMonth(1) to now
-            LAST_MONTH -> now.minusMonths(1).withDayOfMonth(1) to now.withDayOfMonth(1).minusDays(1)
-            CURRENT_MONTH -> now.withDayOfMonth(1) to now
+            LAST_THREE_MONTH -> timeNow.minusMonths(3).withDayOfMonth(1) to timeNow
+            LAST_MONTH -> timeNow.minusMonths(1).withDayOfMonth(1) to timeNow.withDayOfMonth(1)
+                .minusDays(1)
+
+            CURRENT_MONTH -> timeNow.withDayOfMonth(1) to timeNow
         }
     }
 }

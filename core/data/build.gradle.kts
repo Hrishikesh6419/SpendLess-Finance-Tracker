@@ -12,4 +12,5 @@ dependencies {
     implementation(projects.core.domain)
     implementation(libs.androidx.security.crypto)
     implementation(projects.core.database)
+    implementation(libs.play.services.time)
 }

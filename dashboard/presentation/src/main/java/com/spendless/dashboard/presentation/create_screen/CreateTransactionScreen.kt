@@ -47,6 +47,8 @@ import com.hrishi.presentation.ui.UpdateDialogStatusBarAppearance
 import com.hrishi.presentation.ui.utils.getFormattedTitle
 import org.koin.androidx.compose.koinViewModel
 import java.math.BigDecimal
+import java.time.LocalDateTime
+import java.time.Month
 
 @Composable
 fun CreateTransactionScreenRoot(
@@ -214,7 +216,7 @@ private fun CreateTransactionScreen(
             showMenuIcon = false,
             options = RecurringTypeUI.entries.toTypedArray(),
             currencyDisplay = { it.symbol },
-            currencyTitleDisplay = { it.getFormattedTitle() },
+            currencyTitleDisplay = { it.getFormattedTitle(uiState.currentTime) },
             onItemSelected = {
                 onAction(CreateTransactionAction.OnFrequencyUpdated(it))
             }
@@ -250,7 +252,8 @@ private fun PreviewCreateTransactionScreenRoot() {
                     transactionCategoryType = TransactionCategoryTypeUI.OTHER,
                     showExpenseCategoryType = true,
                     recurringType = RecurringTypeUI.ONE_TIME,
-                    isCreateButtonEnabled = false
+                    isCreateButtonEnabled = false,
+                    currentTime = LocalDateTime.of(2025, Month.JANUARY, 15, 10, 0)
                 ),
                 snackbarHostState = SnackbarHostState(),
                 onAction = {

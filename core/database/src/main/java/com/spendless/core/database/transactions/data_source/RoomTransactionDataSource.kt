@@ -4,11 +4,12 @@ import android.util.Log
 import com.hrishi.core.domain.model.RecurringType
 import com.hrishi.core.domain.model.TransactionCategory
 import com.hrishi.core.domain.security.EncryptionService
+import com.hrishi.core.domain.time.TimeProvider
 import com.hrishi.core.domain.transactions.data_source.LocalTransactionDataSource
 import com.hrishi.core.domain.transactions.model.Transaction
-import com.hrishi.core.domain.utils.CalendarUtils
 import com.hrishi.core.domain.utils.DataError
 import com.hrishi.core.domain.utils.Result
+import com.hrishi.core.domain.utils.getPreviousWeekRange
 import com.spendless.core.database.transactions.dao.TransactionsDao
 import com.spendless.core.database.transactions.utils.toTransaction
 import com.spendless.core.database.transactions.utils.toTransactionEntity
@@ -21,7 +22,8 @@ import kotlin.coroutines.cancellation.CancellationException
 
 class RoomTransactionDataSource(
     private val transactionsDao: TransactionsDao,
-    private val encryptionService: EncryptionService
+    private val encryptionService: EncryptionService,
+    private val timeProvider: TimeProvider
 ) : LocalTransactionDataSource {
 
     override suspend fun upsertTransaction(transaction: Transaction): Result<Unit, DataError> {
@@ -133,7 +135,7 @@ class RoomTransactionDataSource(
     }
 
     override fun getPreviousWeekTotal(userId: Long): Flow<Result<BigDecimal, DataError>> {
-        val (startDate, endDate) = CalendarUtils.getPreviousWeekRange()
+        val (startDate, endDate) = timeProvider.currentLocalDateTime.getPreviousWeekRange()
         Log.d("hrishiiii", "Start of previous week: $startDate")
         Log.d("hrishiiii", "End of previous week: $endDate")
         return transactionsDao.getPreviousWeekTransactionAmounts(userId, startDate, endDate)

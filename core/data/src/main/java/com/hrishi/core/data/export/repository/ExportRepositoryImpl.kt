@@ -10,6 +10,7 @@ import com.hrishi.core.domain.export.repository.ExportRepository
 import com.hrishi.core.domain.formatting.NumberFormatter
 import com.hrishi.core.domain.model.RecurringType
 import com.hrishi.core.domain.preference.model.UserPreferences
+import com.hrishi.core.domain.time.TimeProvider
 import com.hrishi.core.domain.transactions.model.Transaction
 import com.hrishi.core.domain.transactions.repository.TransactionRepository
 import com.hrishi.core.domain.utils.DataError
@@ -20,6 +21,7 @@ import timber.log.Timber
 
 class ExportRepositoryImpl(
     private val context: Context,
+    private val timeProvider: TimeProvider,
     private val transactionRepository: TransactionRepository
 ) : ExportRepository {
 
@@ -58,7 +60,7 @@ class ExportRepositoryImpl(
         }
 
         return try {
-            val dateRange = exportType.getDateRange()
+            val dateRange = exportType.getDateRange(timeProvider.currentLocalDateTime)
             if (dateRange == null) {
                 val transactionResult = transactionRepository.getTransactionsForUser(userId).first()
                 return when (transactionResult) {

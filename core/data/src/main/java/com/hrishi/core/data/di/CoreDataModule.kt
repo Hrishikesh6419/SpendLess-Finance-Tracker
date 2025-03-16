@@ -1,11 +1,16 @@
 package com.hrishi.core.data.di
 
+import android.os.Build
+import androidx.annotation.RequiresApi
+import com.hrishi.core.data.BuildConfig
 import com.hrishi.core.data.export.repository.ExportRepositoryImpl
 import com.hrishi.core.data.repository.TransactionRepositoryImpl
 import com.hrishi.core.data.repository.UserInfoRepositoryImpl
 import com.hrishi.core.data.repository.UserPreferencesRepositoryImpl
 import com.hrishi.core.data.security.AesEncryptionService
 import com.hrishi.core.data.security.KeyManager
+import com.hrishi.core.data.time.SystemTimeProvider
+import com.hrishi.core.data.time.TrustedTimeProvider
 import com.hrishi.core.domain.auth.repository.UserInfoRepository
 import com.hrishi.core.domain.auth.usecases.GetUserInfoUseCase
 import com.hrishi.core.domain.auth.usecases.UserInfoUseCases
@@ -19,6 +24,7 @@ import com.hrishi.core.domain.preference.usecase.SetPreferencesUseCase
 import com.hrishi.core.domain.preference.usecase.SettingsPreferenceUseCase
 import com.hrishi.core.domain.preference.usecase.ValidateSelectedPreferences
 import com.hrishi.core.domain.security.EncryptionService
+import com.hrishi.core.domain.time.TimeProvider
 import com.hrishi.core.domain.transactions.repository.TransactionRepository
 import com.hrishi.core.domain.transactions.usecases.GetAccountBalanceUseCase
 import com.hrishi.core.domain.transactions.usecases.GetDueRecurringTransactionsUseCase
@@ -33,14 +39,27 @@ import com.hrishi.core.domain.transactions.usecases.ProcessRecurringTransactions
 import com.hrishi.core.domain.transactions.usecases.TransactionUseCases
 import com.hrishi.core.domain.transactions.usecases.ValidateNoteUseCase
 import com.hrishi.core.domain.transactions.usecases.ValidateTransactionNameUseCase
+import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
+import java.time.ZoneId
 
+@RequiresApi(Build.VERSION_CODES.O)
 val coreDataModule = module {
     single { NumberFormatter }
     single { KeyManager.getOrCreateSecretKey() }
     single<EncryptionService> { AesEncryptionService(get()) }
+
+    single { ZoneId.of("America/New_York") }
+    single<TimeProvider> {
+        val useTrustedTime = BuildConfig.IS_TRUSTED_TIME_ENABLED
+        if (useTrustedTime) {
+            TrustedTimeProvider(androidContext(), get())
+        } else {
+            SystemTimeProvider(get())
+        }
+    }
 
     singleOf(::UserPreferencesRepositoryImpl).bind<UserPreferencesRepository>()
 
@@ -61,11 +80,11 @@ val coreDataModule = module {
     factory { GetMostPopularExpenseCategoryUseCase(get()) }
     factory { GetLargestTransactionUseCase(get()) }
     factory { GetPreviousWeekTotalUseCase(get()) }
-    factory { GetTransactionsGroupedByDateUseCase() }
-    factory { GetNextRecurringDateUseCase() }
+    factory { GetTransactionsGroupedByDateUseCase(get()) }
+    factory { GetNextRecurringDateUseCase(get()) }
     factory { ValidateTransactionNameUseCase() }
     factory { ValidateNoteUseCase() }
-    factory { ProcessRecurringTransactionsUseCase(get(), get(), get()) }
+    factory { ProcessRecurringTransactionsUseCase(get(), get(), get(), get()) }
     single {
         TransactionUseCases(
             get(),

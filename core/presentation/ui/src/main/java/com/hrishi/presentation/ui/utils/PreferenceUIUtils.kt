@@ -1,19 +1,22 @@
 package com.hrishi.presentation.ui.utils
 
-import com.hrishi.core.domain.utils.CalendarUtils
+import com.hrishi.core.domain.utils.getFormattedDayOfMonth
+import com.hrishi.core.domain.utils.getFormattedDayOfWeek
+import com.hrishi.core.domain.utils.getMonthAndDay
 import com.hrishi.core.presentation.designsystem.model.RecurringTypeUI
+import java.time.LocalDateTime
 
-fun RecurringTypeUI.getFormattedTitle(): String {
+fun RecurringTypeUI.getFormattedTitle(localDateTime: LocalDateTime): String {
     return when (this) {
-        RecurringTypeUI.WEEKLY -> String.format(this.title, CalendarUtils.getCurrentDayOfWeek())
+        RecurringTypeUI.WEEKLY -> String.format(this.title, localDateTime.getFormattedDayOfWeek())
         RecurringTypeUI.MONTHLY -> String.format(
             this.title,
-            "${CalendarUtils.getCurrentDayOfMonth()}th"
+            "${localDateTime.getFormattedDayOfMonth()}th"
         )
 
         RecurringTypeUI.YEARLY -> String.format(
             this.title,
-            "${CalendarUtils.getCurrentMonthAndDay()}th"
+            "${localDateTime.getMonthAndDay()}th"
         )
 
         else -> this.title

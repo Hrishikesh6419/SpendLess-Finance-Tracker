@@ -2,12 +2,13 @@ package com.hrishi.core.domain.transactions.usecases
 
 import com.hrishi.core.domain.model.RecurringType
 import com.hrishi.core.domain.model.TransactionCategory
+import com.hrishi.core.domain.time.TimeProvider
 import com.hrishi.core.domain.transactions.model.Transaction
 import com.hrishi.core.domain.transactions.model.TransactionGroupItem
 import com.hrishi.core.domain.transactions.repository.TransactionRepository
-import com.hrishi.core.domain.utils.CalendarUtils
 import com.hrishi.core.domain.utils.DataError
 import com.hrishi.core.domain.utils.Result
+import com.hrishi.core.domain.utils.atEndOfDay
 import kotlinx.coroutines.flow.Flow
 import java.math.BigDecimal
 import java.time.LocalDateTime
@@ -89,9 +90,11 @@ class GetPreviousWeekTotalUseCase(
     }
 }
 
-class GetTransactionsGroupedByDateUseCase {
+class GetTransactionsGroupedByDateUseCase(
+    private val timeProvider: TimeProvider
+) {
     operator fun invoke(transactions: List<Transaction>): List<TransactionGroupItem> {
-        val today = CalendarUtils.currentEstDate
+        val today = timeProvider.currentLocalDateTime.toLocalDate()
         val yesterday = today.minusDays(1)
         val dateFormatter = DateTimeFormatter.ofPattern("MMMM d, yyyy")
 
@@ -113,9 +116,11 @@ class GetTransactionsGroupedByDateUseCase {
     }
 }
 
-class GetNextRecurringDateUseCase {
+class GetNextRecurringDateUseCase(
+    private val timeProvider: TimeProvider
+) {
     operator fun invoke(
-        startDate: LocalDateTime = CalendarUtils.currentEstTime,
+        startDate: LocalDateTime = timeProvider.currentLocalDateTime,
         lastTransactionDate: LocalDateTime? = null,
         recurringType: RecurringType,
     ): LocalDateTime? {
@@ -183,9 +188,10 @@ class ValidateNoteUseCase {
 class ProcessRecurringTransactionsUseCase(
     private val getDueRecurringTransactionsUseCase: GetDueRecurringTransactionsUseCase,
     private val insertTransactionUseCase: InsertTransactionUseCase,
-    private val getNextRecurringDateUseCase: GetNextRecurringDateUseCase
+    private val getNextRecurringDateUseCase: GetNextRecurringDateUseCase,
+    private val timeProvider: TimeProvider
 ) {
-    suspend operator fun invoke(currentEstTimeAtEndOfDay: LocalDateTime = CalendarUtils.currentEstTimeAtEndOfDay) {
+    suspend operator fun invoke(currentEstTimeAtEndOfDay: LocalDateTime = timeProvider.currentLocalDateTime.atEndOfDay()) {
 
         val dueTransactionsResult = getDueRecurringTransactionsUseCase(currentEstTimeAtEndOfDay)
 

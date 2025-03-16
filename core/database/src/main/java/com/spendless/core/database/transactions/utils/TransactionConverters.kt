@@ -2,7 +2,8 @@ package com.spendless.core.database.transactions.utils
 
 import androidx.room.TypeConverter
 import com.hrishi.core.domain.model.TransactionCategory
-import com.hrishi.core.domain.utils.CalendarUtils
+import com.hrishi.core.domain.utils.toEpochMillis
+import com.hrishi.core.domain.utils.toLocalDateTime
 import java.math.BigDecimal
 import java.time.LocalDateTime
 
@@ -23,12 +24,12 @@ object TransactionConverters {
 
     @TypeConverter
     fun fromLocalDateTime(value: LocalDateTime?): Long? {
-        return value?.let { CalendarUtils.toEpochMillis(it) }
+        return value?.toEpochMillis()
     }
 
     @TypeConverter
     fun toLocalDateTime(value: Long?): LocalDateTime? {
-        return value?.let { CalendarUtils.epochToLocalDateTime(it) }
+        return value?.toLocalDateTime()
     }
 
     @TypeConverter

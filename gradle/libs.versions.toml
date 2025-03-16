@@ -80,6 +80,7 @@ datastorePreferences = "1.1.2"
 protobufPlugin = "0.9.4"
 protobuf = "4.29.2"
 junitJunit = "4.13.2"
+playServicesTime = "16.0.1"
 
 [libraries]
 androidx-glance-material3 = { group = "androidx.glance", name = "glance-material3", version.ref = "glanceAppwidget" }
@@ -180,6 +181,7 @@ annotation = { group = "androidx.annotation", name = "annotation", version.ref =
 androidx-security-crypto = { group = "androidx.security", name = "security-crypto", version.ref = "securityCrypto" }
 androidx-datastore-preference = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastorePreferences" }
 junit-junit = { group = "junit", name = "junit", version.ref = "junitJunit" }
+play-services-time = { group = "com.google.android.gms", name = "play-services-time", version.ref = "playServicesTime" }
 
 
 # ──────────────────────────
