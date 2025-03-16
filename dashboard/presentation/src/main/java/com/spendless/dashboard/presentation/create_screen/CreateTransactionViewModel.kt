@@ -107,14 +107,37 @@ class CreateTransactionViewModel(
                 )
             }
 
-            is CreateTransactionAction.OnTransactionNameUpdated -> updateState {
-                copy(
-                    transactionName = action.transactionName
-                )
+            is CreateTransactionAction.OnTransactionNameUpdated -> {
+                val trimmedInput = action.transactionName.trim()
+                val isValidName = transactionUseCases.validateTransactionNameUseCase(trimmedInput)
+
+                updateState {
+                    copy(
+                        transactionName = if (trimmedInput.isEmpty() || isValidName) {
+                            trimmedInput
+                        } else {
+                            transactionName
+                        }
+                    )
+                }
             }
 
             is CreateTransactionAction.OnAmountUpdated -> updateState { copy(amount = action.amount) }
-            is CreateTransactionAction.OnNoteUpdated -> updateState { copy(note = action.note) }
+            is CreateTransactionAction.OnNoteUpdated -> {
+                val trimmedNote = action.note.trim()
+                val isValidNote = transactionUseCases.validateNoteUseCase(trimmedNote)
+
+                updateState {
+                    copy(
+                        note = if (isValidNote || trimmedNote.isEmpty()) {
+                            trimmedNote
+                        } else {
+                            note
+                        }
+                    )
+                }
+            }
+
             CreateTransactionAction.OnCreateClicked -> handleCreateTransaction()
             CreateTransactionAction.OnBottomSheetCloseClicked -> {
                 resetScreen()
