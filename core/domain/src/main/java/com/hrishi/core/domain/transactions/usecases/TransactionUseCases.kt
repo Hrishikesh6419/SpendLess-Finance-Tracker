@@ -160,24 +160,23 @@ class GetNextRecurringDateUseCase {
 }
 
 class ValidateTransactionNameUseCase {
-    operator fun invoke(name: String): Boolean {
-        val trimmed = name.trim()
-
-        if (trimmed.isBlank()) {
-            return false
+    operator fun invoke(input: String, previousValue: String): String {
+        return when {
+            input.isBlank() -> ""
+            input.all { it.isLetterOrDigit() || it.isWhitespace() } -> input
+            else -> previousValue
         }
-
-        return trimmed.all { it.isLetterOrDigit() }
     }
 }
 
+
 class ValidateNoteUseCase {
-    operator fun invoke(name: String): Boolean {
-        val trimmed = name.trim()
-        if (trimmed.isBlank()) {
-            return false
+    operator fun invoke(input: String, previousValue: String): String {
+        return when {
+            input.isBlank() -> ""
+            input.length <= 100 -> input
+            else -> previousValue
         }
-        return trimmed.length <= 100
     }
 }
 

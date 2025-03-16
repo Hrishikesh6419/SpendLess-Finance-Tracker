@@ -108,32 +108,24 @@ class CreateTransactionViewModel(
             }
 
             is CreateTransactionAction.OnTransactionNameUpdated -> {
-                val trimmedInput = action.transactionName.trim()
-                val isValidName = transactionUseCases.validateTransactionNameUseCase(trimmedInput)
-
                 updateState {
                     copy(
-                        transactionName = if (trimmedInput.isEmpty() || isValidName) {
-                            trimmedInput
-                        } else {
-                            transactionName
-                        }
+                        transactionName = transactionUseCases.validateTransactionNameUseCase(
+                            input = action.transactionName,
+                            previousValue = transactionName
+                        )
                     )
                 }
             }
 
             is CreateTransactionAction.OnAmountUpdated -> updateState { copy(amount = action.amount) }
             is CreateTransactionAction.OnNoteUpdated -> {
-                val trimmedNote = action.note.trim()
-                val isValidNote = transactionUseCases.validateNoteUseCase(trimmedNote)
-
                 updateState {
                     copy(
-                        note = if (isValidNote || trimmedNote.isEmpty()) {
-                            trimmedNote
-                        } else {
-                            note
-                        }
+                        note = transactionUseCases.validateNoteUseCase(
+                            input = action.note,
+                            previousValue = note
+                        )
                     )
                 }
             }
@@ -176,13 +168,13 @@ class CreateTransactionViewModel(
                     transactionId = null,
                     userId = uiState.userId,
                     transactionType = uiState.transactionType.toTransactionType(),
-                    transactionName = uiState.transactionName,
+                    transactionName = uiState.transactionName.trim(),
                     amount = if (_uiState.value.transactionType == TransactionTypeUI.INCOME) {
                         uiState.amount
                     } else {
                         uiState.amount.negate()
                     },
-                    note = uiState.note,
+                    note = uiState.note.trim(),
                     transactionCategory = if (uiState.transactionType == TransactionTypeUI.INCOME) {
                         TransactionCategory.INCOME
                     } else {
