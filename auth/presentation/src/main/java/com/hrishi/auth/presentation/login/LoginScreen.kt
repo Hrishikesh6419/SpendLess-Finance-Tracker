@@ -99,9 +99,8 @@ fun LoginScreen(
     }
 
     SpendLessScaffold(
-        snackbarHost = {
-            SpendLessSnackBarHost(snackbarHostState)
-        }) { contentPadding ->
+        snackbarHost = { SpendLessSnackBarHost(snackbarHostState) }
+    ) { contentPadding ->
         Column(
             modifier = modifier
                 .fillMaxSize()
@@ -110,74 +109,83 @@ fun LoginScreen(
                 .windowInsetsPadding(WindowInsets.systemBars),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Spacer(modifier = Modifier.padding(12.dp))
-            Image(
-                imageVector = LoginIcon,
-                contentDescription = stringResource(R.string.login_button_content_description)
+            Spacer(modifier = Modifier.padding(top = 24.dp))
+            LoginWelcomeSection()
+            Spacer(modifier = Modifier.padding(top = 36.dp))
+            LoginFields(
+                uiState = uiState,
+                focusRequester = focusRequester,
+                onAction = onAction
             )
-            Text(
-                modifier = Modifier.padding(top = 20.dp),
-                text = stringResource(R.string.login_welcome_back),
-                style = MaterialTheme.typography.headlineMedium,
-            )
-
-            Text(
-                modifier = Modifier.padding(top = 8.dp),
-                text = stringResource(R.string.login_enter_your_details),
-                style = MaterialTheme.typography.bodyMedium
-            )
-
-            SpendLessTextField(
-                value = uiState.username,
-                onValueChange = {
-                    onAction(LoginAction.OnUsernameUpdate(it))
-                },
-                hint = stringResource(R.string.login_username),
-                modifier = Modifier
-                    .padding(
-                        start = 16.dp,
-                        end = 16.dp,
-                        top = 36.dp
-                    )
-                    .focusRequester(focusRequester = focusRequester),
-            )
-
-            SpendLessTextField(
-                value = uiState.pin,
-                onValueChange = {
-                    onAction(LoginAction.OnPinChange(it))
-                },
-                hint = stringResource(R.string.login_pin),
-                keyboardType = KeyboardType.Number,
-                imeAction = ImeAction.Done,
-                onDone = {
-                    onAction(LoginAction.OnLoginClick)
-                },
-                modifier = Modifier.padding(
-                    start = 16.dp,
-                    end = 16.dp,
-                    top = 16.dp
-                )
-            )
-
-            SpendLessButton(
-                modifier = Modifier.padding(
-                    start = 16.dp,
-                    end = 16.dp,
-                    top = 24.dp
-                ),
-                buttonText = stringResource(R.string.login_log_in),
-            ) {
-                onAction(LoginAction.OnLoginClick)
-            }
-
-            SpendLessClickableText(
-                modifier = Modifier.padding(top = 28.dp),
-                text = stringResource(R.string.login_new_to_spend_less)
-            ) {
-                onAction(LoginAction.OnRegisterClick)
-            }
+            Spacer(modifier = Modifier.padding(top = 24.dp))
+            LoginFooterSection(onAction = onAction)
         }
+    }
+}
+
+@Composable
+fun LoginWelcomeSection() {
+    Image(
+        imageVector = LoginIcon,
+        contentDescription = stringResource(R.string.login_button_content_description)
+    )
+    Text(
+        modifier = Modifier.padding(top = 20.dp),
+        text = stringResource(R.string.login_welcome_back),
+        style = MaterialTheme.typography.headlineMedium,
+    )
+    Text(
+        modifier = Modifier.padding(top = 8.dp),
+        text = stringResource(R.string.login_enter_your_details),
+        style = MaterialTheme.typography.bodyMedium
+    )
+}
+
+@Composable
+fun LoginFields(
+    uiState: LoginViewState,
+    focusRequester: FocusRequester,
+    onAction: (LoginAction) -> Unit
+) {
+    SpendLessTextField(
+        value = uiState.username,
+        onValueChange = { onAction(LoginAction.OnUsernameUpdate(it)) },
+        hint = stringResource(R.string.login_username),
+        modifier = Modifier
+            .padding(horizontal = 16.dp)
+            .focusRequester(focusRequester),
+    )
+
+    Spacer(modifier = Modifier.padding(top = 16.dp))
+
+    SpendLessTextField(
+        value = uiState.pin,
+        onValueChange = { onAction(LoginAction.OnPinChange(it)) },
+        hint = stringResource(R.string.login_pin),
+        keyboardType = KeyboardType.Number,
+        imeAction = ImeAction.Done,
+        onDone = { onAction(LoginAction.OnLoginClick) },
+        modifier = Modifier.padding(horizontal = 16.dp)
+    )
+}
+
+@Composable
+fun LoginFooterSection(
+    onAction: (LoginAction) -> Unit
+) {
+    SpendLessButton(
+        modifier = Modifier.padding(horizontal = 16.dp),
+        buttonText = stringResource(R.string.login_log_in),
+    ) {
+        onAction(LoginAction.OnLoginClick)
+    }
+
+    Spacer(modifier = Modifier.padding(top = 28.dp))
+
+    SpendLessClickableText(
+        text = stringResource(R.string.login_new_to_spend_less)
+    ) {
+        onAction(LoginAction.OnRegisterClick)
     }
 }
 
@@ -189,10 +197,9 @@ fun PreviewLoginScreen() {
             LoginScreen(
                 modifier = Modifier,
                 uiState = LoginViewState(),
-                snackbarHostState = SnackbarHostState()
-            ) {
-
-            }
+                snackbarHostState = SnackbarHostState(),
+                onAction = {}
+            )
         }
     }
 }
