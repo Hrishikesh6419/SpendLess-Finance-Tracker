@@ -2,27 +2,21 @@ package com.spendless.dashboard.presentation.all_transactions
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hrishi.core.domain.preference.usecase.PreferenceUseCase
 import com.hrishi.core.domain.transactions.model.Transaction
 import com.hrishi.core.domain.transactions.usecases.TransactionUseCases
 import com.hrishi.core.domain.utils.Result
+import com.spendless.dashboard.domain.usecases.dashboard.GetAllTransactionsDataUseCase
 import com.spendless.dashboard.presentation.dashboard.TransactionGroupUIItem
 import com.spendless.dashboard.presentation.mapper.toUIItem
-import com.spendless.session_management.domain.usecases.SessionUseCases
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class AllTransactionsViewModel(
-    sessionUseCases: SessionUseCases,
-    private val sessionPreferenceUseCase: PreferenceUseCase,
+    private val getAllTransactionsDataUseCase: GetAllTransactionsDataUseCase,
     private val transactionUseCases: TransactionUseCases
 ) : ViewModel() {
 
@@ -32,75 +26,65 @@ class AllTransactionsViewModel(
     private val eventChannel = Channel<AllTransactionsEvent>()
     val events = eventChannel.receiveAsFlow()
 
-    fun onAction(action: AllTransactionsAction) {
-        when (action) {
-            is AllTransactionsAction.OnCardClicked -> {
-                _uiState.update { currentState ->
-                    currentState.copy(
-                        transactions = currentState.transactions?.map { group ->
-                            group.copy(
-                                transactions = group.transactions.map { transaction ->
-                                    if (transaction.transactionId == action.transactionId) {
-                                        transaction.copy(isCollapsed = !transaction.isCollapsed)
-                                    } else transaction
-                                }
-                            )
-                        }
-                    )
-                }
-            }
+    init {
+        fetchTransactionsData()
+    }
 
-            AllTransactionsAction.OnClickBackButton -> {
-                viewModelScope.launch {
-                    eventChannel.send(AllTransactionsEvent.NavigateBack)
-                }
-            }
-
-            is AllTransactionsAction.UpdateCreateBottomSheet -> {
-                _uiState.update {
-                    it.copy(
-                        showCreateTransactionsSheet = action.showSheet
-                    )
-                }
-            }
-
-            is AllTransactionsAction.UpdateExportBottomSheet -> {
-                _uiState.update {
-                    it.copy(
-                        showExportTransactionsSheet = action.showSheet
-                    )
+    private fun fetchTransactionsData() {
+        viewModelScope.launch {
+            getAllTransactionsDataUseCase().collect { result ->
+                if (result is Result.Success) {
+                    val data = result.data
+                    _uiState.update { currentState ->
+                        currentState.copy(
+                            preference = data.preference,
+                            transactions = groupTransactionsByDate(data.transactions)
+                        )
+                    }
                 }
             }
         }
     }
 
-    init {
-        viewModelScope.launch {
-            val sessionData = sessionUseCases.getSessionDataUseCase().first()
-            combine(
-                sessionPreferenceUseCase.getPreferencesUseCase(sessionData.userId),
-                transactionUseCases.getTransactionsForUserUseCase(sessionData.userId)
-            ) { preferences, transactions ->
-                Pair(preferences, transactions)
-            }.onEach { (preferencesResult, transactionsResult) ->
-                if (
-                    preferencesResult is Result.Success &&
-                    transactionsResult is Result.Success
-                ) {
-                    _uiState.update { currentState ->
-                        currentState.copy(
-                            preference = preferencesResult.data,
-                            transactions = groupTransactionsByDate(transactionsResult.data)
-                        )
-                    }
+    fun onAction(action: AllTransactionsAction) {
+        when (action) {
+            is AllTransactionsAction.OnCardClicked -> toggleTransactionCard(action.transactionId)
+            AllTransactionsAction.OnClickBackButton -> emitEvent(AllTransactionsEvent.NavigateBack)
+            is AllTransactionsAction.UpdateCreateBottomSheet -> updateCreateSheet(action.showSheet)
+            is AllTransactionsAction.UpdateExportBottomSheet -> updateExportSheet(action.showSheet)
+        }
+    }
+
+    private fun emitEvent(event: AllTransactionsEvent) {
+        viewModelScope.launch { eventChannel.send(event) }
+    }
+
+    private fun updateCreateSheet(show: Boolean) {
+        _uiState.update { it.copy(showCreateTransactionsSheet = show) }
+    }
+
+    private fun updateExportSheet(show: Boolean) {
+        _uiState.update { it.copy(showExportTransactionsSheet = show) }
+    }
+
+    private fun toggleTransactionCard(transactionId: Long?) {
+        _uiState.update { currentState ->
+            currentState.copy(
+                transactions = currentState.transactions?.map { group ->
+                    group.copy(
+                        transactions = group.transactions.map { transaction ->
+                            if (transaction.transactionId == transactionId) {
+                                transaction.copy(isCollapsed = !transaction.isCollapsed)
+                            } else transaction
+                        }
+                    )
                 }
-            }.launchIn(viewModelScope)
+            )
         }
     }
 
     private fun groupTransactionsByDate(transactions: List<Transaction>): List<TransactionGroupUIItem> {
-        return transactionUseCases.getTransactionsGroupedByDateUseCase(transactions).map {
-            it.toUIItem()
-        }
+        return transactionUseCases.getTransactionsGroupedByDateUseCase(transactions)
+            .map { it.toUIItem() }
     }
 }
