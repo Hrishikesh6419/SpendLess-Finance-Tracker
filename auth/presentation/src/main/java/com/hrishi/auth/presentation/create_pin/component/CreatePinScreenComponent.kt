@@ -2,9 +2,10 @@ package com.hrishi.auth.presentation.create_pin.component
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -41,9 +42,7 @@ fun CreatePinScreenComponent(
 ) {
     SpendLessScaffold(
         containerColor = Color.Transparent,
-        snackbarHost = {
-            SpendLessSnackBarHost(snackbarHostState)
-        },
+        snackbarHost = { SpendLessSnackBarHost(snackbarHostState) },
         topBar = {
             SpendLessTopBar(
                 onStartIconClick = {
@@ -52,60 +51,70 @@ fun CreatePinScreenComponent(
             )
         }
     ) { contentPadding ->
-        Box( // Wrap everything inside a Box to avoid content overlapping with TopBar when using vertical scroll
-            modifier = modifier
-                .fillMaxSize()
-                .padding(contentPadding)
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState()),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                Image(
-                    imageVector = LoginIcon,
-                    contentDescription = stringResource(R.string.login_button_content_description)
-                )
-                Text(
-                    modifier = Modifier.padding(top = 20.dp),
-                    text = stringResource(headlineResId),
-                    style = MaterialTheme.typography.headlineMedium,
-                )
-                Text(
-                    modifier = Modifier.padding(
-                        top = 8.dp,
-                    ),
-                    text = stringResource(subHeadlineResId)
-                )
-
-                SpendLessEnterPin(
-                    pin = uiState.pin,
-                    modifier = Modifier.padding(
-                        top = 36.dp,
-                        start = 46.dp,
-                        end = 45.dp
-                    )
-                )
-
-                SpendLessPinPad(
-                    modifier = Modifier.padding(top = 32.dp),
-                    hasBiometricButton = true,
-                    onNumberPressedClicked = {
-                        onAction(CreatePinAction.OnNumberPressed(it))
-                    },
-                    onDeletePressedClicked = {
-                        onAction(CreatePinAction.OnDeletePressed)
-                    }
-                )
-            }
-        }
+        CreatePinContent(
+            modifier = modifier.padding(contentPadding),
+            headlineResId = headlineResId,
+            subHeadlineResId = subHeadlineResId,
+            uiState = uiState,
+            onAction = onAction
+        )
     }
 }
 
 @Composable
+private fun CreatePinContent(
+    modifier: Modifier = Modifier,
+    @StringRes headlineResId: Int,
+    @StringRes subHeadlineResId: Int,
+    uiState: CreatePinState,
+    onAction: (CreatePinAction) -> Unit
+) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = 26.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Image(
+            imageVector = LoginIcon,
+            contentDescription = stringResource(R.string.login_button_content_description)
+        )
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        Text(
+            text = stringResource(headlineResId),
+            style = MaterialTheme.typography.headlineMedium
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Text(
+            text = stringResource(subHeadlineResId),
+            style = MaterialTheme.typography.bodyMedium
+        )
+
+        Spacer(modifier = Modifier.height(36.dp))
+
+        SpendLessEnterPin(
+            pin = uiState.pin,
+            modifier = Modifier.padding(horizontal = 46.dp)
+        )
+
+        Spacer(modifier = Modifier.height(32.dp))
+
+        SpendLessPinPad(
+            hasBiometricButton = false, // TODO: Remove this
+            onNumberPressedClicked = { onAction(CreatePinAction.OnNumberPressed(it)) },
+            onDeletePressedClicked = { onAction(CreatePinAction.OnDeletePressed) }
+        )
+    }
+}
+
 @Preview
-fun PreviewCreatePinScreen() {
+@Composable
+fun PreviewCreatePinScreenComponent() {
     SpendLessFinanceTrackerTheme {
         Surface(color = MaterialTheme.colorScheme.background) {
             CreatePinScreenComponent(

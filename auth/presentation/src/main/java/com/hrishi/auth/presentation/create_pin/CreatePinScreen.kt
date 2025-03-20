@@ -14,6 +14,7 @@ import com.hrishi.auth.presentation.create_pin.component.CreatePinScreenComponen
 import com.hrishi.core.presentation.designsystem.SpendLessFinanceTrackerTheme
 import com.hrishi.presentation.ui.ObserveAsEvents
 import com.hrishi.presentation.ui.navigation.CreatePinScreenData
+import kotlinx.coroutines.flow.Flow
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -26,13 +27,11 @@ fun CreatePinScreenRoot(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackBarHostState = remember { SnackbarHostState() }
 
-    ObserveAsEvents(viewModel.events) { event ->
-        when (event) {
-            is CreatePinEvent.NavigateToConfirmPinScreen -> onNavigateToConfirmScreen(event.screenData)
-            CreatePinEvent.OnBackClick -> onBackClick()
-            else -> Unit
-        }
-    }
+    EventHandler(
+        events = viewModel.events,
+        onNavigateToConfirmScreen = onNavigateToConfirmScreen,
+        onBackClick = onBackClick
+    )
 
     CreatePinScreenComponent(
         modifier = modifier,
@@ -42,6 +41,21 @@ fun CreatePinScreenRoot(
         uiState = uiState,
         onAction = viewModel::onAction
     )
+}
+
+@Composable
+private fun EventHandler(
+    events: Flow<CreatePinEvent>,
+    onNavigateToConfirmScreen: (CreatePinScreenData) -> Unit,
+    onBackClick: () -> Unit
+) {
+    ObserveAsEvents(events) { event ->
+        when (event) {
+            is CreatePinEvent.NavigateToConfirmPinScreen -> onNavigateToConfirmScreen(event.screenData)
+            CreatePinEvent.OnBackClick -> onBackClick()
+            else -> Unit
+        }
+    }
 }
 
 @Composable
