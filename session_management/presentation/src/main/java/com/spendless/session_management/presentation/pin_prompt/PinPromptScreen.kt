@@ -165,7 +165,7 @@ private fun PinPromptScreen(
 }
 
 @Composable
-fun LockoutCountdownText(lockoutTimeRemaining: Long) {
+private fun LockoutCountdownText(lockoutTimeRemaining: Long) {
     val textStyle = MaterialTheme.typography.bodyMedium
 
     Text(
@@ -196,10 +196,9 @@ fun LockoutCountdownText(lockoutTimeRemaining: Long) {
     )
 }
 
-
 @Composable
 @Preview
-fun PreviewPinPromptScreen() {
+private fun PreviewPinPromptScreen() {
     SpendLessFinanceTrackerTheme {
         Surface(color = MaterialTheme.colorScheme.background) {
             PinPromptScreen(

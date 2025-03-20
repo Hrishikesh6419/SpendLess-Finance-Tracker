@@ -111,7 +111,7 @@ private fun EventHandler(
 }
 
 @Composable
-fun LoginScreen(
+private fun LoginScreen(
     modifier: Modifier = Modifier,
     uiState: LoginViewState,
     snackbarHostState: SnackbarHostState,
@@ -149,7 +149,7 @@ fun LoginScreen(
 }
 
 @Composable
-fun LoginWelcomeSection() {
+private fun LoginWelcomeSection() {
     Image(
         imageVector = LoginIcon,
         contentDescription = stringResource(R.string.login_button_content_description)
@@ -167,7 +167,7 @@ fun LoginWelcomeSection() {
 }
 
 @Composable
-fun LoginFields(
+private fun LoginFields(
     uiState: LoginViewState,
     focusRequester: FocusRequester,
     onAction: (LoginAction) -> Unit
@@ -195,7 +195,7 @@ fun LoginFields(
 }
 
 @Composable
-fun LoginFooterSection(
+private fun LoginFooterSection(
     onAction: (LoginAction) -> Unit
 ) {
     SpendLessButton(
@@ -216,7 +216,7 @@ fun LoginFooterSection(
 
 @Preview
 @Composable
-fun PreviewLoginScreen() {
+private fun PreviewLoginScreen() {
     SpendLessFinanceTrackerTheme {
         Surface(color = MaterialTheme.colorScheme.background) {
             LoginScreen(

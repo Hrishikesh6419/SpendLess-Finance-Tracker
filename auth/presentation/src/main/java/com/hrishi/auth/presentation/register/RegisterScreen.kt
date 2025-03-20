@@ -119,7 +119,7 @@ private fun EventHandler(
 }
 
 @Composable
-fun RegisterScreen(
+private fun RegisterScreen(
     modifier: Modifier = Modifier,
     uiState: RegisterViewState,
     snackBarHostState: SnackbarHostState,
@@ -214,7 +214,7 @@ private fun FooterContent(
 
 @Preview
 @Composable
-fun PreviewRegisterScreen() {
+private fun PreviewRegisterScreen() {
     SpendLessFinanceTrackerTheme {
         Surface(color = MaterialTheme.colorScheme.background) {
             RegisterScreen(

@@ -80,7 +80,7 @@ private fun EventHandler(
 
 @Composable
 @Preview
-fun PreviewConfirmPinScreenRoot() {
+private fun PreviewConfirmPinScreenRoot() {
     SpendLessFinanceTrackerTheme {
         Surface(color = MaterialTheme.colorScheme.background) {
             CreatePinScreenComponent(
