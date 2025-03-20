@@ -1,9 +1,11 @@
 package com.hrishi.auth.presentation.register
 
+import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -20,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -37,6 +40,8 @@ import com.hrishi.core.presentation.designsystem.components.buttons.SpendLessBut
 import com.hrishi.presentation.ui.ObserveAsEvents
 import com.hrishi.presentation.ui.navigation.CreatePinScreenData
 import com.hrishi.presentation.ui.showTimedSnackBar
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -52,7 +57,35 @@ fun RegisterScreenRoot(
     val keyboardController = LocalSoftwareKeyboardController.current
     val scope = rememberCoroutineScope()
 
-    ObserveAsEvents(viewModel.events) { event ->
+    EventHandler(
+        events = viewModel.events,
+        snackBarHostState = snackBarHostState,
+        scope = scope,
+        context = context,
+        keyboardController = keyboardController,
+        onAlreadyHaveAnAccountClick = onAlreadyHaveAnAccountClick,
+        onNavigateToPinScreen = onNavigateToPinScreen
+    )
+
+    RegisterScreen(
+        modifier = modifier,
+        uiState = uiState,
+        snackBarHostState = snackBarHostState,
+        onAction = viewModel::onAction
+    )
+}
+
+@Composable
+private fun EventHandler(
+    events: Flow<RegisterEvent>,
+    snackBarHostState: SnackbarHostState,
+    scope: CoroutineScope,
+    context: Context,
+    keyboardController: SoftwareKeyboardController?,
+    onAlreadyHaveAnAccountClick: () -> Unit,
+    onNavigateToPinScreen: (CreatePinScreenData) -> Unit
+) {
+    ObserveAsEvents(events) { event ->
         when (event) {
             RegisterEvent.SuccessfulRegistration -> {
                 keyboardController?.hide()
@@ -83,13 +116,6 @@ fun RegisterScreenRoot(
             }
         }
     }
-
-    RegisterScreen(
-        modifier = modifier,
-        uiState = uiState,
-        snackBarHostState = snackBarHostState,
-        onAction = viewModel::onAction
-    )
 }
 
 @Composable
@@ -99,77 +125,90 @@ fun RegisterScreen(
     snackBarHostState: SnackbarHostState,
     onAction: (RegisterAction) -> Unit
 ) {
-    SpendLessScaffold(containerColor = Color.Transparent, snackbarHost = {
-        SpendLessSnackBarHost(snackBarHostState)
-    }) { contentPadding ->
-        Column(
-            modifier = modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(contentPadding),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Spacer(modifier = Modifier.padding(12.dp))
-            Image(
-                imageVector = LoginIcon,
-                contentDescription = stringResource(R.string.login_button_content_description)
-            )
+    SpendLessScaffold(
+        containerColor = Color.Transparent,
+        snackbarHost = { SpendLessSnackBarHost(snackBarHostState) }
+    ) { contentPadding ->
+        RegisterContent(
+            modifier = modifier.padding(contentPadding),
+            uiState = uiState,
+            onAction = onAction
+        )
+    }
+}
 
-            Text(
-                modifier = Modifier.padding(
-                    top = 20.dp,
-                    start = 26.dp,
-                    end = 26.dp
-                ),
-                text = stringResource(R.string.register_headline),
-                style = MaterialTheme.typography.headlineMedium,
-                textAlign = TextAlign.Center
-            )
+@Composable
+private fun RegisterContent(
+    modifier: Modifier = Modifier,
+    uiState: RegisterViewState,
+    onAction: (RegisterAction) -> Unit
+) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = 26.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Spacer(modifier = Modifier.height(24.dp))
 
-            Text(
-                modifier = Modifier.padding(top = 8.dp),
-                text = stringResource(R.string.register_create_unique_username),
-                style = MaterialTheme.typography.bodyMedium
-            )
+        IntroductionContent()
 
-            SpendLessHeadlineTextField(
-                value = uiState.username,
-                modifier = Modifier.padding(
-                    top = 36.dp,
-                    start = 26.dp,
-                    end = 26.dp
-                ),
-                onValueChange = {
-                    onAction(RegisterAction.OnUserNameChanged(it))
-                },
-                hint = stringResource(R.string.login_username)
-            )
+        Spacer(modifier = Modifier.height(36.dp))
 
-            SpendLessButton(
-                modifier = Modifier.padding(
-                    top = 16.dp,
-                    start = 26.dp,
-                    end = 26.dp
-                ),
-                buttonText = stringResource(R.string.common_next),
-                onClick = {
-                    onAction(RegisterAction.OnNextClicked)
-                },
-                isEnabled = uiState.isNextEnabled,
-                icon = ArrowForward
-            )
+        SpendLessHeadlineTextField(
+            value = uiState.username,
+            onValueChange = { onAction(RegisterAction.OnUserNameChanged(it)) },
+            hint = stringResource(R.string.login_username)
+        )
 
-            SpendLessClickableText(
-                modifier = Modifier.padding(
-                    top = 28.dp,
-                    start = 26.dp,
-                    end = 26.dp
-                ),
-                text = stringResource(R.string.register_already_have_an_account)
-            ) {
-                onAction(RegisterAction.OnAlreadyHaveAnAccountClicked)
-            }
-        }
+        Spacer(modifier = Modifier.height(16.dp))
+
+        FooterContent(onAction, uiState)
+    }
+}
+
+@Composable
+private fun IntroductionContent() {
+    Image(
+        imageVector = LoginIcon,
+        contentDescription = stringResource(R.string.login_button_content_description)
+    )
+
+    Spacer(modifier = Modifier.height(20.dp))
+
+    Text(
+        text = stringResource(R.string.register_headline),
+        style = MaterialTheme.typography.headlineMedium,
+        textAlign = TextAlign.Center
+    )
+
+    Spacer(modifier = Modifier.height(8.dp))
+
+    Text(
+        text = stringResource(R.string.register_create_unique_username),
+        style = MaterialTheme.typography.bodyMedium
+    )
+}
+
+@Composable
+private fun FooterContent(
+    onAction: (RegisterAction) -> Unit,
+    uiState: RegisterViewState
+) {
+    SpendLessButton(
+        buttonText = stringResource(R.string.common_next),
+        onClick = { onAction(RegisterAction.OnNextClicked) },
+        isEnabled = uiState.isNextEnabled,
+        icon = ArrowForward
+    )
+
+    Spacer(modifier = Modifier.height(28.dp))
+
+    SpendLessClickableText(
+        text = stringResource(R.string.register_already_have_an_account)
+    ) {
+        onAction(RegisterAction.OnAlreadyHaveAnAccountClicked)
     }
 }
 

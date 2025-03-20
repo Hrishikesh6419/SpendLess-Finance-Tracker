@@ -1,5 +1,6 @@
 package com.hrishi.auth.presentation.login
 
+import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -25,6 +26,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -41,6 +43,8 @@ import com.hrishi.core.presentation.designsystem.components.buttons.SpendLessBut
 import com.hrishi.core.presentation.designsystem.components.text_field.SpendLessTextField
 import com.hrishi.presentation.ui.ObserveAsEvents
 import com.hrishi.presentation.ui.showTimedSnackBar
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -56,7 +60,35 @@ fun LoginScreenRoot(
     val snackBarHostState = remember { SnackbarHostState() }
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    ObserveAsEvents(viewModel.events) { event ->
+    EventHandler(
+        events = viewModel.events,
+        scope = scope,
+        snackBarHostState = snackBarHostState,
+        context = context,
+        keyboardController = keyboardController,
+        onRegisterClick = onRegisterClick,
+        onNavigateToDashboard = onNavigateToDashboard
+    )
+
+    LoginScreen(
+        modifier = modifier,
+        uiState = uiState,
+        snackbarHostState = snackBarHostState,
+        onAction = viewModel::onAction
+    )
+}
+
+@Composable
+private fun EventHandler(
+    events: Flow<LoginEvent>,
+    scope: CoroutineScope,
+    snackBarHostState: SnackbarHostState,
+    context: Context,
+    keyboardController: SoftwareKeyboardController?,
+    onRegisterClick: () -> Unit,
+    onNavigateToDashboard: () -> Unit
+) {
+    ObserveAsEvents(events) { event ->
         when (event) {
             LoginEvent.IncorrectCredentials -> {
                 scope.showTimedSnackBar(
@@ -76,13 +108,6 @@ fun LoginScreenRoot(
             }
         }
     }
-
-    LoginScreen(
-        modifier = modifier,
-        uiState = uiState,
-        snackbarHostState = snackBarHostState,
-        onAction = viewModel::onAction
-    )
 }
 
 @Composable
