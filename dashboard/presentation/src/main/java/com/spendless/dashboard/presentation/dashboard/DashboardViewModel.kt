@@ -7,7 +7,7 @@ import androidx.navigation.toRoute
 import com.hrishi.core.domain.formatting.NumberFormatter
 import com.hrishi.core.domain.model.TransactionCategory
 import com.hrishi.core.domain.preference.model.UserPreferences
-import com.hrishi.core.domain.preference.usecase.SettingsPreferenceUseCase
+import com.hrishi.core.domain.preference.usecase.PreferenceUseCase
 import com.hrishi.core.domain.transactions.model.Transaction
 import com.hrishi.core.domain.transactions.usecases.TransactionUseCases
 import com.hrishi.core.domain.utils.CombinedResult
@@ -36,7 +36,7 @@ import java.math.BigDecimal
 class DashboardViewModel(
     savedStateHandle: SavedStateHandle,
     private val sessionUseCases: SessionUseCases,
-    private val sessionPreferenceUseCase: SettingsPreferenceUseCase,
+    private val sessionPreferenceUseCase: PreferenceUseCase,
     private val transactionUseCases: TransactionUseCases
 ) : ViewModel() {
 

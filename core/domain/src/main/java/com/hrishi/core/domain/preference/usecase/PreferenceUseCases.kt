@@ -8,10 +8,10 @@ import com.hrishi.core.domain.utils.DataError
 import com.hrishi.core.domain.utils.Result
 import kotlinx.coroutines.flow.Flow
 
-data class SettingsPreferenceUseCase(
+data class PreferenceUseCase(
     val setPreferencesUseCase: SetPreferencesUseCase,
     val getPreferencesUseCase: GetPreferencesUseCase,
-    val isValidPreference: ValidateSelectedPreferences,
+    val isValidPreferenceUseCase: ValidateSelectedPreferenceUseCase,
 )
 
 class SetPreferencesUseCase(private val userPreferencesRepository: UserPreferencesRepository) {
@@ -26,7 +26,7 @@ class GetPreferencesUseCase(private val userPreferencesRepository: UserPreferenc
     }
 }
 
-class ValidateSelectedPreferences {
+class ValidateSelectedPreferenceUseCase {
     operator fun invoke(
         decimalSeparator: DecimalSeparator,
         thousandsSeparator: ThousandsSeparator

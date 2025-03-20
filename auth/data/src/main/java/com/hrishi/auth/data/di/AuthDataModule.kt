@@ -9,9 +9,9 @@ import com.hrishi.auth.domain.usecase.IsUsernameValidUseCase
 import com.hrishi.auth.domain.usecase.LoginUseCases
 import com.hrishi.auth.domain.usecase.OnboardingPreferenceUseCases
 import com.hrishi.auth.domain.usecase.RegisterUseCases
+import com.hrishi.auth.domain.usecase.RegisterUserAndSavePreferencesUseCase
 import com.hrishi.auth.domain.usecase.RegisterUserUseCase
 import com.hrishi.auth.domain.usecase.ValidatePinMatchUseCase
-import com.hrishi.auth.domain.usecase.ValidateSelectedPreferences
 import org.koin.dsl.module
 
 val authDataModule = module {
@@ -21,7 +21,7 @@ val authDataModule = module {
     single { LoginUseCases(get(), get()) }
 
     // Onboarding Preferences
-    factory { ValidateSelectedPreferences() }
+    factory { RegisterUserAndSavePreferencesUseCase(get(), get(), get()) }
     single { OnboardingPreferenceUseCases(get()) }
 
     // Register User

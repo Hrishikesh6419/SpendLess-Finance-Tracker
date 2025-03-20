@@ -3,7 +3,7 @@ package com.spendless.session_management.presentation.pin_prompt
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hrishi.core.domain.auth.usecases.UserInfoUseCases
-import com.hrishi.core.domain.preference.usecase.SettingsPreferenceUseCase
+import com.hrishi.core.domain.preference.usecase.PreferenceUseCase
 import com.hrishi.core.domain.utils.Result
 import com.hrishi.presentation.ui.MAX_PIN_LENGTH
 import com.spendless.session_management.domain.usecases.SessionUseCases
@@ -24,7 +24,7 @@ import kotlinx.coroutines.withContext
 
 class PinPromptViewModel(
     private val sessionUseCases: SessionUseCases,
-    private val settingsPreferenceUseCase: SettingsPreferenceUseCase,
+    private val preferenceUseCase: PreferenceUseCase,
     private val userInfoUseCases: UserInfoUseCases
 ) : ViewModel() {
 
@@ -40,7 +40,7 @@ class PinPromptViewModel(
                 _uiState.update {
                     it.copy(username = sessionData.userName)
                 }
-                settingsPreferenceUseCase.getPreferencesUseCase(sessionData.userId)
+                preferenceUseCase.getPreferencesUseCase(sessionData.userId)
             }
             .onEach { preferences ->
                 when (preferences) {

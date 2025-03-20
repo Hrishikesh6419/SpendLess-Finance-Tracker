@@ -2,7 +2,7 @@ package com.spendless.dashboard.presentation.all_transactions
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hrishi.core.domain.preference.usecase.SettingsPreferenceUseCase
+import com.hrishi.core.domain.preference.usecase.PreferenceUseCase
 import com.hrishi.core.domain.transactions.model.Transaction
 import com.hrishi.core.domain.transactions.usecases.TransactionUseCases
 import com.hrishi.core.domain.utils.Result
@@ -22,7 +22,7 @@ import kotlinx.coroutines.launch
 
 class AllTransactionsViewModel(
     sessionUseCases: SessionUseCases,
-    private val sessionPreferenceUseCase: SettingsPreferenceUseCase,
+    private val sessionPreferenceUseCase: PreferenceUseCase,
     private val transactionUseCases: TransactionUseCases
 ) : ViewModel() {
 

@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.hrishi.core.domain.formatting.NumberFormatter
 import com.hrishi.core.domain.model.PinAttempts
 import com.hrishi.core.domain.preference.model.UserPreferences
-import com.hrishi.core.domain.preference.usecase.SettingsPreferenceUseCase
+import com.hrishi.core.domain.preference.usecase.PreferenceUseCase
 import com.hrishi.core.domain.utils.Result
 import com.spendless.session_management.domain.usecases.SessionUseCases
 import kotlinx.coroutines.Dispatchers
@@ -22,7 +22,7 @@ import kotlinx.coroutines.withContext
 
 class SettingsPreferenceViewModel(
     private val sessionUseCases: SessionUseCases,
-    private val settingsPreferenceUseCase: SettingsPreferenceUseCase,
+    private val preferenceUseCase: PreferenceUseCase,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SettingsPreferencesViewState())
@@ -40,7 +40,7 @@ class SettingsPreferenceViewModel(
     private fun fetchUserPreferences() {
         sessionUseCases.getSessionDataUseCase()
             .flatMapLatest { sessionData ->
-                settingsPreferenceUseCase.getPreferencesUseCase(sessionData.userId)
+                preferenceUseCase.getPreferencesUseCase(sessionData.userId)
             }
             .onEach { result ->
                 if (result is Result.Success) {
@@ -106,7 +106,7 @@ class SettingsPreferenceViewModel(
                 )
 
                 val preferencesResult = withContext(Dispatchers.IO) {
-                    settingsPreferenceUseCase.setPreferencesUseCase(userPreferencesUpdated)
+                    preferenceUseCase.setPreferencesUseCase(userPreferencesUpdated)
                 }
                 when (preferencesResult) {
                     is Result.Error -> {
@@ -125,7 +125,7 @@ class SettingsPreferenceViewModel(
     private fun updateUiState(updateBlock: (SettingsPreferencesViewState) -> SettingsPreferencesViewState) {
         _uiState.update { currentState ->
             val newState = updateBlock(currentState)
-            val isValidFormat = settingsPreferenceUseCase.isValidPreference(
+            val isValidFormat = preferenceUseCase.isValidPreferenceUseCase(
                 decimalSeparator = newState.decimalSeparator,
                 thousandsSeparator = newState.thousandsSeparator
             )

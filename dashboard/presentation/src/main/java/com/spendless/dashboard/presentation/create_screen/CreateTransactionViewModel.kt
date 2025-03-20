@@ -3,7 +3,7 @@ package com.spendless.dashboard.presentation.create_screen
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hrishi.core.domain.model.TransactionCategory
-import com.hrishi.core.domain.preference.usecase.SettingsPreferenceUseCase
+import com.hrishi.core.domain.preference.usecase.PreferenceUseCase
 import com.hrishi.core.domain.time.TimeProvider
 import com.hrishi.core.domain.transactions.model.Transaction
 import com.hrishi.core.domain.transactions.usecases.TransactionUseCases
@@ -33,7 +33,7 @@ import java.math.BigDecimal
 @OptIn(ExperimentalCoroutinesApi::class)
 class CreateTransactionViewModel(
     private val sessionUseCases: SessionUseCases,
-    private val settingsPreferenceUseCase: SettingsPreferenceUseCase,
+    private val preferenceUseCase: PreferenceUseCase,
     private val transactionUseCases: TransactionUseCases,
     private val timeProvider: TimeProvider
 ) : ViewModel() {
@@ -51,7 +51,7 @@ class CreateTransactionViewModel(
     private fun fetchUserPreferences() {
         sessionUseCases.getSessionDataUseCase()
             .flatMapLatest { sessionData ->
-                settingsPreferenceUseCase.getPreferencesUseCase(sessionData.userId)
+                preferenceUseCase.getPreferencesUseCase(sessionData.userId)
             }
             .onEach { result ->
                 if (result is Result.Success) {

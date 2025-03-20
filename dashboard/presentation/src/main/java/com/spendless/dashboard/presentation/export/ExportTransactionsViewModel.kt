@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hrishi.core.domain.export.usecases.ExportTransactionsUseCases
 import com.hrishi.core.domain.preference.model.UserPreferences
-import com.hrishi.core.domain.preference.usecase.SettingsPreferenceUseCase
+import com.hrishi.core.domain.preference.usecase.PreferenceUseCase
 import com.hrishi.core.domain.transactions.model.Transaction
 import com.hrishi.core.domain.transactions.usecases.TransactionUseCases
 import com.hrishi.core.domain.utils.Result
@@ -24,7 +24,7 @@ import kotlinx.coroutines.withContext
 
 class ExportTransactionsViewModel(
     sessionUseCases: SessionUseCases,
-    private val sessionPreferenceUseCase: SettingsPreferenceUseCase,
+    private val sessionPreferenceUseCase: PreferenceUseCase,
     private val transactionUseCases: TransactionUseCases,
     private val exportTransactionsUseCases: ExportTransactionsUseCases
 ) : ViewModel() {

@@ -6,7 +6,7 @@ import com.hrishi.core.domain.model.BiometricPromptStatus
 import com.hrishi.core.domain.model.LockoutDuration
 import com.hrishi.core.domain.model.SessionDuration
 import com.hrishi.core.domain.preference.model.UserPreferences
-import com.hrishi.core.domain.preference.usecase.SettingsPreferenceUseCase
+import com.hrishi.core.domain.preference.usecase.PreferenceUseCase
 import com.hrishi.core.domain.utils.Result
 import com.spendless.session_management.domain.usecases.SessionUseCases
 import kotlinx.coroutines.channels.Channel
@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 
 class SettingsSecurityViewModel(
     private val sessionUseCases: SessionUseCases,
-    private val settingsPreferenceUseCase: SettingsPreferenceUseCase,
+    private val preferenceUseCase: PreferenceUseCase,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(
@@ -44,7 +44,7 @@ class SettingsSecurityViewModel(
     private fun fetchUserPreferences() {
         sessionUseCases.getSessionDataUseCase()
             .onEach { sessionData ->
-                settingsPreferenceUseCase.getPreferencesUseCase(sessionData.userId)
+                preferenceUseCase.getPreferencesUseCase(sessionData.userId)
                     .collect { result ->
                         if (result is Result.Success) {
                             userPreferences = result.data
@@ -90,7 +90,7 @@ class SettingsSecurityViewModel(
             )
 
             viewModelScope.launch {
-                when (settingsPreferenceUseCase.setPreferencesUseCase(userPreferencesUpdated)) {
+                when (preferenceUseCase.setPreferencesUseCase(userPreferencesUpdated)) {
                     is Result.Success -> {
                         sessionUseCases.resetSessionExpiryUseCase()
                         sendEvent(SettingsSecurityEvent.SecuritySettingsSaved)
