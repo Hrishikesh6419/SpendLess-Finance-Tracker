@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="account_balance">Account Balance</string>
+    <string name="most_popular_category">Most popular category</string>
+    <string name="largest_transaction">Largest transaction</string>
+    <string name="previous_week">Previous week</string>
+    <string name="no_transactions_to_show">No transactions to show</string>
+    <string name="latest_transactions">Latest Transactions</string>
+    <string name="show_all">Show all</string>
+</resources>
