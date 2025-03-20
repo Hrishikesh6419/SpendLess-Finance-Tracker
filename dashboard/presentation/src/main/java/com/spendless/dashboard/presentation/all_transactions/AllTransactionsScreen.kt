@@ -90,31 +90,39 @@ fun AllTransactionsScreenRoot(
         exportBottomSheetState = exportBottomSheetState,
         scope = scope,
         onAction = { action ->
-            when (action) {
-                is AllTransactionsAction.UpdateCreateBottomSheet -> {
-                    if (action.showSheet) {
-                        authActionHandler?.invoke {
-                            viewModel.onAction(action)
-                        }
-                    } else {
-                        viewModel.onAction(action)
-                    }
-                }
-
-                is AllTransactionsAction.UpdateExportBottomSheet -> {
-                    if (action.showSheet) {
-                        authActionHandler?.invoke {
-                            viewModel.onAction(action)
-                        }
-                    } else {
-                        viewModel.onAction(action)
-                    }
-                }
-
-                else -> viewModel.onAction(action)
-            }
+            onActionHandler(action, authActionHandler, viewModel)
         }
     )
+}
+
+private fun onActionHandler(
+    action: AllTransactionsAction,
+    authActionHandler: ((() -> Unit) -> Unit)?,
+    viewModel: AllTransactionsViewModel
+) {
+    when (action) {
+        is AllTransactionsAction.UpdateCreateBottomSheet -> {
+            if (action.showSheet) {
+                authActionHandler?.invoke {
+                    viewModel.onAction(action)
+                }
+            } else {
+                viewModel.onAction(action)
+            }
+        }
+
+        is AllTransactionsAction.UpdateExportBottomSheet -> {
+            if (action.showSheet) {
+                authActionHandler?.invoke {
+                    viewModel.onAction(action)
+                }
+            } else {
+                viewModel.onAction(action)
+            }
+        }
+
+        else -> viewModel.onAction(action)
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -126,6 +134,68 @@ private fun AllTransactionsScreen(
     exportBottomSheetState: SheetState,
     scope: CoroutineScope,
     onAction: (AllTransactionsAction) -> Unit,
+) {
+    AllTransactionsBottomSheets(
+        uiState = uiState,
+        onAction = onAction,
+        createBottomSheetState = createBottomSheetState,
+        exportBottomSheetState = exportBottomSheetState
+    )
+
+    SpendLessScaffold(
+        containerColor = Color.Transparent,
+        topBar = {
+            AllTransactionsTopBar(onAction)
+        },
+        floatingActionButton = {
+            SpendLessFloatingActionButton(
+                onClick = {
+                    scope.launch {
+                        onAction(AllTransactionsAction.UpdateCreateBottomSheet(true))
+                    }
+                }
+            )
+        }
+    ) { contentPadding ->
+        Box(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(top = contentPadding.calculateTopPadding())
+                .padding(horizontal = 16.dp)
+        ) {
+            LatestTransactionsView(uiState, onAction)
+        }
+    }
+}
+
+@Composable
+private fun AllTransactionsTopBar(
+    onAction: (AllTransactionsAction) -> Unit
+) {
+    SpendLessTopBar(
+        modifier = Modifier
+            .padding(horizontal = 8.dp),
+        title = "All Transactions",
+        titleColor = MaterialTheme.colorScheme.onSurface,
+        onStartIconClick = {
+            onAction(AllTransactionsAction.OnClickBackButton)
+        },
+        endIcon2 = DownloadButton,
+        endIcon2Color = MaterialTheme.colorScheme.onSurface,
+        endIcon2BackgroundColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.18f),
+        onEndIcon2Click = {
+            onAction(AllTransactionsAction.UpdateExportBottomSheet(true))
+        }
+    )
+}
+
+@Composable
+@OptIn(ExperimentalMaterial3Api::class)
+private fun AllTransactionsBottomSheets(
+    uiState: AllTransactionsViewState,
+    onAction: (AllTransactionsAction) -> Unit,
+    createBottomSheetState: SheetState,
+    exportBottomSheetState: SheetState
 ) {
     if (uiState.showCreateTransactionsSheet) {
         ModalBottomSheet(
@@ -177,45 +247,6 @@ private fun AllTransactionsScreen(
                     }
                 )
             }
-        }
-    }
-
-    SpendLessScaffold(
-        containerColor = Color.Transparent,
-        topBar = {
-            SpendLessTopBar(
-                modifier = Modifier
-                    .padding(horizontal = 8.dp),
-                title = "All Transactions",
-                titleColor = MaterialTheme.colorScheme.onSurface,
-                onStartIconClick = {
-                    onAction(AllTransactionsAction.OnClickBackButton)
-                },
-                endIcon2 = DownloadButton,
-                endIcon2Color = MaterialTheme.colorScheme.onSurface,
-                endIcon2BackgroundColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.18f),
-                onEndIcon2Click = {
-                    onAction(AllTransactionsAction.UpdateExportBottomSheet(true))
-                }
-            )
-        },
-        floatingActionButton = {
-            SpendLessFloatingActionButton(
-                onClick = {
-                    scope.launch {
-                        onAction(AllTransactionsAction.UpdateCreateBottomSheet(true))
-                    }
-                }
-            )
-        }
-    ) { contentPadding ->
-        Box(
-            modifier = modifier
-                .fillMaxSize()
-                .padding(top = contentPadding.calculateTopPadding())
-                .padding(horizontal = 16.dp)
-        ) {
-            LatestTransactionsView(uiState, onAction)
         }
     }
 }
