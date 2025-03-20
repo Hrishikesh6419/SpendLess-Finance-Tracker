@@ -58,7 +58,7 @@ fun RegisterScreenRoot(
                 keyboardController?.hide()
             }
             RegisterEvent.UsernameTaken -> Unit
-            RegisterEvent.NavigateToRegisterScreen -> {
+            RegisterEvent.NavigateToLoginScreen -> {
                 keyboardController?.hide()
                 onAlreadyHaveAnAccountClick()
             }

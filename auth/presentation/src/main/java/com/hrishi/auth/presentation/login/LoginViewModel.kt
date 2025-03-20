@@ -30,7 +30,7 @@ class LoginViewModel(
 
             LoginAction.OnRegisterClick -> {
                 viewModelScope.launch {
-                    emitEvent(LoginEvent.NavigateToRegisterScreen)
+                    eventChannel.send(LoginEvent.NavigateToRegisterScreen)
                 }
             }
 
@@ -46,7 +46,7 @@ class LoginViewModel(
             val pin = _uiState.value.pin.trim()
 
             if (!loginUseCases.isUsernameValidUseCase(username) || pin.length < MIN_PIN_LENGTH) {
-                emitEvent(LoginEvent.IncorrectCredentials)
+                eventChannel.send(LoginEvent.IncorrectCredentials)
                 return@launch
             }
 
@@ -60,19 +60,15 @@ class LoginViewModel(
                                 sessionExpiryTime = 0
                             )
                         )
-                        emitEvent(LoginEvent.NavigateToDashboardScreen)
+                        eventChannel.send(LoginEvent.NavigateToDashboardScreen)
                     } else {
-                        emitEvent(LoginEvent.IncorrectCredentials)
+                        eventChannel.send(LoginEvent.IncorrectCredentials)
                     }
                 }
 
-                is Result.Error -> emitEvent(LoginEvent.IncorrectCredentials)
+                is Result.Error -> eventChannel.send(LoginEvent.IncorrectCredentials)
             }
         }
-    }
-
-    private suspend fun emitEvent(event: LoginEvent) {
-        eventChannel.send(event)
     }
 
     companion object {
