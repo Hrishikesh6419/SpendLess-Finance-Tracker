@@ -4,7 +4,7 @@ import com.spendless.session_management.domain.model.SessionData
 import com.spendless.session_management.domain.repository.SessionRepository
 import kotlinx.coroutines.flow.Flow
 
-data class SessionUseCase(
+data class SessionUseCases(
     val saveSessionUseCase: SaveSessionUseCase,
     val isSessionExpiredUseCase: GetSessionStatusUseCase,
     val setSessionExpiredUseCase: SetSessionExpiredUseCase,

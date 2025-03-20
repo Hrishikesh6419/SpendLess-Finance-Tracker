@@ -8,7 +8,7 @@ import com.hrishi.core.domain.transactions.usecases.TransactionUseCases
 import com.hrishi.core.domain.utils.Result
 import com.spendless.dashboard.presentation.dashboard.TransactionGroupUIItem
 import com.spendless.dashboard.presentation.mapper.toUIItem
-import com.spendless.session_management.domain.usecases.SessionUseCase
+import com.spendless.session_management.domain.usecases.SessionUseCases
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -21,7 +21,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class AllTransactionsViewModel(
-    sessionUseCases: SessionUseCase,
+    sessionUseCases: SessionUseCases,
     private val sessionPreferenceUseCase: SettingsPreferenceUseCase,
     private val transactionUseCases: TransactionUseCases
 ) : ViewModel() {

@@ -1,6 +1,5 @@
 package com.spendless.dashboard.presentation.dashboard
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -19,7 +18,7 @@ import com.hrishi.presentation.ui.navigation.DashboardScreenRoute
 import com.spendless.dashboard.presentation.mapper.toTransactionCategoryUI
 import com.spendless.dashboard.presentation.mapper.toUIItem
 import com.spendless.session_management.domain.model.SessionData
-import com.spendless.session_management.domain.usecases.SessionUseCase
+import com.spendless.session_management.domain.usecases.SessionUseCases
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -36,7 +35,7 @@ import java.math.BigDecimal
 @ExperimentalCoroutinesApi
 class DashboardViewModel(
     savedStateHandle: SavedStateHandle,
-    private val sessionUseCases: SessionUseCase,
+    private val sessionUseCases: SessionUseCases,
     private val sessionPreferenceUseCase: SettingsPreferenceUseCase,
     private val transactionUseCases: TransactionUseCases
 ) : ViewModel() {

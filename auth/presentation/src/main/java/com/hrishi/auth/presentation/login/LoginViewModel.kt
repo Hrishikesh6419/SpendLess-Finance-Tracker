@@ -5,17 +5,19 @@ import androidx.lifecycle.viewModelScope
 import com.hrishi.auth.domain.usecase.LoginUseCases
 import com.hrishi.core.domain.utils.Result
 import com.spendless.session_management.domain.model.SessionData
-import com.spendless.session_management.domain.usecases.SessionUseCase
+import com.spendless.session_management.domain.usecases.SessionUseCases
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class LoginViewModel(
     private val loginUseCases: LoginUseCases,
-    private val sessionUseCase: SessionUseCase
+    private val sessionUseCases: SessionUseCases
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(LoginViewState())
@@ -25,54 +27,61 @@ class LoginViewModel(
     val events = eventChannel.receiveAsFlow()
 
     fun onAction(action: LoginAction) {
-        viewModelScope.launch {
-            when (action) {
-                LoginAction.OnLoginClick -> {
-                    val username = _uiState.value.username.trim()
-                    val pin = _uiState.value.pin.trim()
+        when (action) {
+            LoginAction.OnLoginClick -> handleLogin()
 
-                    if (!loginUseCases.isUsernameValidUseCase(username) || pin.length < MIN_PIN_LENGTH) {
-                        eventChannel.send(LoginEvent.IncorrectCredentials)
-                    } else {
-                        when (val loginResult = loginUseCases.initiateLoginUseCase(
-                            username = username,
-                            enteredPin = pin
-                        )) {
-                            is Result.Success -> {
-                                val sessionData = SessionData(
+            LoginAction.OnRegisterClick -> {
+                viewModelScope.launch {
+                    emitEvent(LoginEvent.NavigateToRegisterScreen)
+                }
+            }
+
+            is LoginAction.OnPinChange -> _uiState.update { it.copy(pin = action.pin) }
+
+            is LoginAction.OnUsernameUpdate -> _uiState.update { it.copy(username = action.username) }
+        }
+    }
+
+    private fun handleLogin() {
+        viewModelScope.launch {
+            val username = _uiState.value.username.trim()
+            val pin = _uiState.value.pin.trim()
+
+            if (!loginUseCases.isUsernameValidUseCase(username) || pin.length < MIN_PIN_LENGTH) {
+                emitEvent(LoginEvent.IncorrectCredentials)
+                return@launch
+            }
+
+            val loginResult = withContext(Dispatchers.IO) {
+                loginUseCases.initiateLoginUseCase(username, pin)
+            }
+
+            when (loginResult) {
+                is Result.Success -> {
+                    if (loginResult.data > 0L) {
+                        withContext(Dispatchers.IO) {
+                            sessionUseCases.saveSessionUseCase(
+                                SessionData(
                                     userId = loginResult.data,
                                     userName = username,
                                     sessionExpiryTime = 0
                                 )
-                                sessionUseCase.saveSessionUseCase(sessionData)
-                                if (loginResult.data > 0L) {
-                                    eventChannel.send(LoginEvent.NavigateToDashboardScreen)
-                                } else {
-                                    eventChannel.send(LoginEvent.IncorrectCredentials)
-                                }
-                            }
-
-                            is Result.Error -> eventChannel.send(LoginEvent.IncorrectCredentials)
+                            )
                         }
+                        emitEvent(LoginEvent.NavigateToDashboardScreen)
+                    } else {
+                        emitEvent(LoginEvent.IncorrectCredentials)
                     }
                 }
 
-                LoginAction.OnRegisterClick -> {
-                    eventChannel.send(LoginEvent.NavigateToRegisterScreen)
-                }
-
-                is LoginAction.OnPinChange -> {
-                    _uiState.update {
-                        it.copy(pin = action.pin)
-                    }
-                }
-
-                is LoginAction.OnUsernameUpdate -> {
-                    _uiState.update {
-                        it.copy(username = action.username)
-                    }
-                }
+                is Result.Error -> emitEvent(LoginEvent.IncorrectCredentials)
             }
+        }
+    }
+
+    private suspend fun emitEvent(event: LoginEvent) {
+        withContext(Dispatchers.Main) {
+            eventChannel.send(event)
         }
     }
 

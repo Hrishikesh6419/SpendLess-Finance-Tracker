@@ -17,7 +17,7 @@ import com.hrishi.core.domain.utils.Result
 import com.hrishi.presentation.ui.getRouteData
 import com.hrishi.presentation.ui.navigation.PreferencesScreenData
 import com.spendless.session_management.domain.model.SessionData
-import com.spendless.session_management.domain.usecases.SessionUseCase
+import com.spendless.session_management.domain.usecases.SessionUseCases
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -31,7 +31,7 @@ class OnboardingPreferencesViewModel(
     savedStateHandle: SavedStateHandle,
     private val onboardingPreferenceUseCases: OnboardingPreferenceUseCases,
     private val registerUseCases: RegisterUseCases,
-    private val sessionUseCase: SessionUseCase,
+    private val sessionUseCases: SessionUseCases,
     private val settingsPreferenceUseCase: SettingsPreferenceUseCase
 ) : ViewModel() {
 
@@ -123,7 +123,7 @@ class OnboardingPreferencesViewModel(
             userName = screenData?.username.orEmpty(),
             sessionExpiryTime = 0
         )
-        sessionUseCase.saveSessionUseCase(sessionData)
+        sessionUseCases.saveSessionUseCase(sessionData)
         eventChannel.send(OnboardingPreferencesEvent.NavigateToDashboardScreen)
     }
 

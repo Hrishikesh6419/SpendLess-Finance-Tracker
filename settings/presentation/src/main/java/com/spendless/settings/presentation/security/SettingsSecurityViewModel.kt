@@ -8,7 +8,7 @@ import com.hrishi.core.domain.model.SessionDuration
 import com.hrishi.core.domain.preference.model.UserPreferences
 import com.hrishi.core.domain.preference.usecase.SettingsPreferenceUseCase
 import com.hrishi.core.domain.utils.Result
-import com.spendless.session_management.domain.usecases.SessionUseCase
+import com.spendless.session_management.domain.usecases.SessionUseCases
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -19,7 +19,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class SettingsSecurityViewModel(
-    private val sessionUseCase: SessionUseCase,
+    private val sessionUseCases: SessionUseCases,
     private val settingsPreferenceUseCase: SettingsPreferenceUseCase,
 ) : ViewModel() {
 
@@ -42,7 +42,7 @@ class SettingsSecurityViewModel(
     }
 
     private fun fetchUserPreferences() {
-        sessionUseCase.getSessionDataUseCase()
+        sessionUseCases.getSessionDataUseCase()
             .onEach { sessionData ->
                 settingsPreferenceUseCase.getPreferencesUseCase(sessionData.userId)
                     .collect { result ->
@@ -92,7 +92,7 @@ class SettingsSecurityViewModel(
             viewModelScope.launch {
                 when (settingsPreferenceUseCase.setPreferencesUseCase(userPreferencesUpdated)) {
                     is Result.Success -> {
-                        sessionUseCase.resetSessionExpiryUseCase()
+                        sessionUseCases.resetSessionExpiryUseCase()
                         sendEvent(SettingsSecurityEvent.SecuritySettingsSaved)
                     }
 

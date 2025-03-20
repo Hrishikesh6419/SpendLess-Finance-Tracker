@@ -17,7 +17,7 @@ import com.spendless.dashboard.presentation.mapper.toRecurringType
 import com.spendless.dashboard.presentation.mapper.toThousandsSeparatorUI
 import com.spendless.dashboard.presentation.mapper.toTransactionCategory
 import com.spendless.dashboard.presentation.mapper.toTransactionType
-import com.spendless.session_management.domain.usecases.SessionUseCase
+import com.spendless.session_management.domain.usecases.SessionUseCases
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,7 +32,7 @@ import java.math.BigDecimal
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class CreateTransactionViewModel(
-    private val sessionUseCase: SessionUseCase,
+    private val sessionUseCases: SessionUseCases,
     private val settingsPreferenceUseCase: SettingsPreferenceUseCase,
     private val transactionUseCases: TransactionUseCases,
     private val timeProvider: TimeProvider
@@ -49,7 +49,7 @@ class CreateTransactionViewModel(
     }
 
     private fun fetchUserPreferences() {
-        sessionUseCase.getSessionDataUseCase()
+        sessionUseCases.getSessionDataUseCase()
             .flatMapLatest { sessionData ->
                 settingsPreferenceUseCase.getPreferencesUseCase(sessionData.userId)
             }

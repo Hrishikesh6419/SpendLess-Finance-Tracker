@@ -2,7 +2,7 @@ package com.spendless.settings.presentation.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.spendless.session_management.domain.usecases.SessionUseCase
+import com.spendless.session_management.domain.usecases.SessionUseCases
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
 class SettingsHomeViewModel(
-    private val sessionUseCase: SessionUseCase
+    private val sessionUseCases: SessionUseCases
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SettingsHomeViewState())
@@ -23,7 +23,7 @@ class SettingsHomeViewModel(
         viewModelScope.launch {
             when (action) {
                 SettingsHomeAction.OnLogoutClick -> {
-                    sessionUseCase.clearSessionUseCase()
+                    sessionUseCases.clearSessionUseCase()
                     eventChannel.send(SettingsHomeEvent.Logout)
                 }
 

@@ -7,7 +7,7 @@ import com.hrishi.core.domain.model.PinAttempts
 import com.hrishi.core.domain.preference.model.UserPreferences
 import com.hrishi.core.domain.preference.usecase.SettingsPreferenceUseCase
 import com.hrishi.core.domain.utils.Result
-import com.spendless.session_management.domain.usecases.SessionUseCase
+import com.spendless.session_management.domain.usecases.SessionUseCases
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class SettingsPreferenceViewModel(
-    private val sessionUseCase: SessionUseCase,
+    private val sessionUseCases: SessionUseCases,
     private val settingsPreferenceUseCase: SettingsPreferenceUseCase,
 ) : ViewModel() {
 
@@ -38,7 +38,7 @@ class SettingsPreferenceViewModel(
     }
 
     private fun fetchUserPreferences() {
-        sessionUseCase.getSessionDataUseCase()
+        sessionUseCases.getSessionDataUseCase()
             .flatMapLatest { sessionData ->
                 settingsPreferenceUseCase.getPreferencesUseCase(sessionData.userId)
             }

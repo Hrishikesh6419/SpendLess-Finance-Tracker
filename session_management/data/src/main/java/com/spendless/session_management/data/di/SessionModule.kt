@@ -13,7 +13,7 @@ import com.spendless.session_management.domain.usecases.GetSessionDataUseCase
 import com.spendless.session_management.domain.usecases.GetSessionStatusUseCase
 import com.spendless.session_management.domain.usecases.ResetSessionExpiryUseCase
 import com.spendless.session_management.domain.usecases.SaveSessionUseCase
-import com.spendless.session_management.domain.usecases.SessionUseCase
+import com.spendless.session_management.domain.usecases.SessionUseCases
 import com.spendless.session_management.domain.usecases.SetSessionExpiredUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -40,7 +40,7 @@ val sessionModule = module {
     factory { GetSessionDataUseCase(get()) }
     factory { ResetSessionExpiryUseCase(get()) }
     factory { SetSessionExpiredUseCase(get()) }
-    single { SessionUseCase(get(), get(), get(), get(), get(), get()) }
+    single { SessionUseCases(get(), get(), get(), get(), get(), get()) }
 
     singleOf(::SessionRepositoryImpl).bind<SessionRepository>()
 }

@@ -8,7 +8,7 @@ import com.hrishi.core.domain.preference.usecase.SettingsPreferenceUseCase
 import com.hrishi.core.domain.transactions.model.Transaction
 import com.hrishi.core.domain.transactions.usecases.TransactionUseCases
 import com.hrishi.core.domain.utils.Result
-import com.spendless.session_management.domain.usecases.SessionUseCase
+import com.spendless.session_management.domain.usecases.SessionUseCases
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,7 +23,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class ExportTransactionsViewModel(
-    sessionUseCases: SessionUseCase,
+    sessionUseCases: SessionUseCases,
     private val sessionPreferenceUseCase: SettingsPreferenceUseCase,
     private val transactionUseCases: TransactionUseCases,
     private val exportTransactionsUseCases: ExportTransactionsUseCases

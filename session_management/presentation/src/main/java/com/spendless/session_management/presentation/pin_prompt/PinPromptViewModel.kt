@@ -6,7 +6,7 @@ import com.hrishi.core.domain.auth.usecases.UserInfoUseCases
 import com.hrishi.core.domain.preference.usecase.SettingsPreferenceUseCase
 import com.hrishi.core.domain.utils.Result
 import com.hrishi.presentation.ui.MAX_PIN_LENGTH
-import com.spendless.session_management.domain.usecases.SessionUseCase
+import com.spendless.session_management.domain.usecases.SessionUseCases
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
@@ -23,7 +23,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class PinPromptViewModel(
-    private val sessionUseCase: SessionUseCase,
+    private val sessionUseCases: SessionUseCases,
     private val settingsPreferenceUseCase: SettingsPreferenceUseCase,
     private val userInfoUseCases: UserInfoUseCases
 ) : ViewModel() {
@@ -35,7 +35,7 @@ class PinPromptViewModel(
     val events = eventChannel.receiveAsFlow()
 
     init {
-        sessionUseCase.getSessionDataUseCase()
+        sessionUseCases.getSessionDataUseCase()
             .flatMapLatest { sessionData ->
                 _uiState.update {
                     it.copy(username = sessionData.userName)
@@ -91,7 +91,7 @@ class PinPromptViewModel(
                         }
 
                         if (userPin == updatedPin) {
-                            sessionUseCase.resetSessionExpiryUseCase()
+                            sessionUseCases.resetSessionExpiryUseCase()
                             eventChannel.send(PinPromptEvent.OnSuccessPopBack)
                             return@launch
                         }
@@ -115,7 +115,7 @@ class PinPromptViewModel(
                 }
 
                 PinPromptAction.OnLogoutClicked -> {
-                    sessionUseCase.clearSessionUseCase()
+                    sessionUseCases.clearSessionUseCase()
                     eventChannel.send(PinPromptEvent.OnLogout)
                 }
             }

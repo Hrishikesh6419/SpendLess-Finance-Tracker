@@ -7,7 +7,7 @@ import com.hrishi.core.domain.transactions.usecases.TransactionUseCases
 import com.hrishi.presentation.ui.AppNavRoute
 import com.hrishi.presentation.ui.NavigationRequestHandler
 import com.hrishi.presentation.ui.navigation.DashboardScreenRoute
-import com.spendless.session_management.domain.usecases.SessionUseCase
+import com.spendless.session_management.domain.usecases.SessionUseCases
 import com.spendless.widget.presentation.create_transaction.CreateTransactionWidget
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
 
 class MainViewModel(
     savedStateHandle: SavedStateHandle,
-    private val sessionUseCases: SessionUseCase,
+    private val sessionUseCases: SessionUseCases,
     private val transactionUseCases: TransactionUseCases
 ) : ViewModel(), NavigationRequestHandler {
 
