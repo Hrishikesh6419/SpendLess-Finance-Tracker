@@ -6,14 +6,12 @@ import com.hrishi.auth.domain.usecase.LoginUseCases
 import com.hrishi.core.domain.utils.Result
 import com.spendless.session_management.domain.model.SessionData
 import com.spendless.session_management.domain.usecases.SessionUseCases
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class LoginViewModel(
     private val loginUseCases: LoginUseCases,
@@ -52,22 +50,16 @@ class LoginViewModel(
                 return@launch
             }
 
-            val loginResult = withContext(Dispatchers.IO) {
-                loginUseCases.initiateLoginUseCase(username, pin)
-            }
-
-            when (loginResult) {
+            when (val loginResult = loginUseCases.initiateLoginUseCase(username, pin)) {
                 is Result.Success -> {
                     if (loginResult.data > 0L) {
-                        withContext(Dispatchers.IO) {
-                            sessionUseCases.saveSessionUseCase(
-                                SessionData(
-                                    userId = loginResult.data,
-                                    userName = username,
-                                    sessionExpiryTime = 0
-                                )
+                        sessionUseCases.saveSessionUseCase(
+                            SessionData(
+                                userId = loginResult.data,
+                                userName = username,
+                                sessionExpiryTime = 0
                             )
-                        }
+                        )
                         emitEvent(LoginEvent.NavigateToDashboardScreen)
                     } else {
                         emitEvent(LoginEvent.IncorrectCredentials)
@@ -80,9 +72,7 @@ class LoginViewModel(
     }
 
     private suspend fun emitEvent(event: LoginEvent) {
-        withContext(Dispatchers.Main) {
-            eventChannel.send(event)
-        }
+        eventChannel.send(event)
     }
 
     companion object {
