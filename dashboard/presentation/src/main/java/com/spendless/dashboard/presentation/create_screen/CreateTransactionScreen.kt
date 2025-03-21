@@ -59,7 +59,7 @@ fun CreateTransactionScreenRoot(
     UpdateDialogStatusBarAppearance(isDarkStatusBarIcons = false)
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    CreateTransactionEventHandler(
+    EventHandler(
         events = viewModel.events,
         onDismiss = onDismiss
     )
@@ -80,7 +80,7 @@ fun CreateTransactionScreenRoot(
 }
 
 @Composable
-private fun CreateTransactionEventHandler(
+private fun EventHandler(
     events: Flow<CreateTransactionEvent>,
     onDismiss: () -> Unit
 ) {
