@@ -11,9 +11,11 @@ import com.spendless.core.database.auth.utils.toUserEntity
 import com.spendless.core.database.auth.utils.toUserInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
+import kotlin.coroutines.cancellation.CancellationException
 
 class RoomLocalUserInfoDataSource(
     private val userInfoDao: UserInfoDao,
@@ -32,16 +34,22 @@ class RoomLocalUserInfoDataSource(
             } catch (e: SQLiteConstraintException) {
                 Result.Error(DataError.Local.DUPLICATE_USER_ERROR)
             } catch (e: Exception) {
+                if (e is CancellationException) throw e
                 Result.Error(DataError.Local.UNKNOWN_DATABASE_ERROR)
             }
         }
 
     override suspend fun getUser(userName: String): Result<UserInfo, DataError> =
         withContext(Dispatchers.IO) {
-            val userEntity = userInfoDao.getUser(userName)
-            userEntity?.let {
-                Result.Success(it.toUserInfo(encryptionService))
-            } ?: Result.Error(DataError.Local.USER_FETCH_ERROR)
+            try {
+                val userEntity = userInfoDao.getUser(userName)
+                userEntity?.let {
+                    Result.Success(it.toUserInfo(encryptionService))
+                } ?: Result.Error(DataError.Local.USER_FETCH_ERROR)
+            } catch (e: Exception) {
+                if (e is CancellationException) throw e
+                Result.Error(DataError.Local.UNKNOWN_DATABASE_ERROR)
+            }
         }
 
     override fun getAllUsers(): Flow<Result<List<UserInfo>, DataError>> {
@@ -52,6 +60,10 @@ class RoomLocalUserInfoDataSource(
                 } else {
                     Result.Error(DataError.Local.USER_FETCH_ERROR)
                 }
+            }
+            .catch { e ->
+                if (e is CancellationException) throw e
+                emit(Result.Error(DataError.Local.UNKNOWN_DATABASE_ERROR))
             }
             .flowOn(Dispatchers.IO)
     }
