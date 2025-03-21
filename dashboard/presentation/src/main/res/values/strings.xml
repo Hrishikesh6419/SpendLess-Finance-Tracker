@@ -7,4 +7,6 @@
     <string name="no_transactions_to_show">No transactions to show</string>
     <string name="latest_transactions">Latest Transactions</string>
     <string name="show_all">Show all</string>
+    <string name="common_create_text">Create</string>
+    <string name="create_transaction">Create Transaction</string>
 </resources>
