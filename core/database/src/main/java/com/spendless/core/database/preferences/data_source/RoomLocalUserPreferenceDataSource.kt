@@ -20,14 +20,14 @@ class RoomLocalUserPreferenceDataSource(
 ) : LocalPreferencesDataSource {
 
     override suspend fun insertPreference(preferences: UserPreferences): Result<Unit, DataError> {
-        return withContext(Dispatchers.IO) {
-            try {
+        return try {
+            withContext(Dispatchers.IO) {
                 userPreferenceDao.upsertUserPreference(preferences.toUserPreferenceEntity())
-                Result.Success(Unit)
-            } catch (e: Exception) {
-                if (e is CancellationException) throw e
-                Result.Error(DataError.Local.UNKNOWN_DATABASE_ERROR)
             }
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            if (e is CancellationException) throw e
+            Result.Error(DataError.Local.UNKNOWN_DATABASE_ERROR)
         }
     }
 

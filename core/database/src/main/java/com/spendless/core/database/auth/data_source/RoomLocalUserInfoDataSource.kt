@@ -19,36 +19,40 @@ import kotlin.coroutines.cancellation.CancellationException
 class RoomLocalUserInfoDataSource(
     private val userInfoDao: UserInfoDao
 ) : LocalUserInfoDataSource {
-    override suspend fun upsertUser(userInfo: UserInfo): Result<Long, DataError> =
-        withContext(Dispatchers.IO) {
-            try {
-                val userId = userInfoDao.insertUser(userInfo.toUserEntity())
 
-                when {
-                    userId > 0 -> Result.Success(userId)
-                    userId == -1L -> Result.Error(DataError.Local.INSERT_USER_ERROR)
-                    else -> Result.Error(DataError.Local.UNKNOWN_DATABASE_ERROR)
-                }
-            } catch (e: SQLiteConstraintException) {
-                Result.Error(DataError.Local.DUPLICATE_USER_ERROR)
-            } catch (e: Exception) {
-                if (e is CancellationException) throw e
-                Result.Error(DataError.Local.UNKNOWN_DATABASE_ERROR)
+    override suspend fun upsertUser(userInfo: UserInfo): Result<Long, DataError> {
+        return try {
+            val userId = withContext(Dispatchers.IO) {
+                userInfoDao.insertUser(userInfo.toUserEntity())
             }
-        }
 
-    override suspend fun getUser(userName: String): Result<UserInfo, DataError> =
-        withContext(Dispatchers.IO) {
-            try {
-                val userEntity = userInfoDao.getUser(userName)
-                userEntity?.let {
-                    Result.Success(it.toUserInfo())
-                } ?: Result.Error(DataError.Local.USER_FETCH_ERROR)
-            } catch (e: Exception) {
-                if (e is CancellationException) throw e
-                Result.Error(DataError.Local.UNKNOWN_DATABASE_ERROR)
+            when {
+                userId > 0 -> Result.Success(userId)
+                userId == -1L -> Result.Error(DataError.Local.INSERT_USER_ERROR)
+                else -> Result.Error(DataError.Local.UNKNOWN_DATABASE_ERROR)
             }
+        } catch (e: SQLiteConstraintException) {
+            Result.Error(DataError.Local.DUPLICATE_USER_ERROR)
+        } catch (e: Exception) {
+            if (e is CancellationException) throw e
+            Result.Error(DataError.Local.UNKNOWN_DATABASE_ERROR)
         }
+    }
+
+    override suspend fun getUser(userName: String): Result<UserInfo, DataError> {
+        return try {
+            val userEntity = withContext(Dispatchers.IO) {
+                userInfoDao.getUser(userName)
+            }
+
+            userEntity?.let {
+                Result.Success(it.toUserInfo())
+            } ?: Result.Error(DataError.Local.USER_FETCH_ERROR)
+        } catch (e: Exception) {
+            if (e is CancellationException) throw e
+            Result.Error(DataError.Local.UNKNOWN_DATABASE_ERROR)
+        }
+    }
 
     override fun getAllUsers(): Flow<Result<List<UserInfo>, DataError>> {
         return userInfoDao.getAllUsers()
