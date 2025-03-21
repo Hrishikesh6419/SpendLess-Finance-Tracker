@@ -8,17 +8,15 @@ import com.hrishi.core.domain.preference.model.UserPreferences
 import com.hrishi.core.domain.preference.usecase.PreferenceUseCase
 import com.hrishi.core.domain.utils.Result
 import com.spendless.session_management.domain.usecases.SessionUseCases
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class SettingsPreferenceViewModel(
     private val sessionUseCases: SessionUseCases,
@@ -26,7 +24,7 @@ class SettingsPreferenceViewModel(
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SettingsPreferencesViewState())
-    val uiState: StateFlow<SettingsPreferencesViewState> = _uiState
+    val uiState = _uiState.asStateFlow()
 
     private val eventChannel = Channel<SettingsPreferencesEvent>()
     val events = eventChannel.receiveAsFlow()
@@ -45,7 +43,6 @@ class SettingsPreferenceViewModel(
             .onEach { result ->
                 if (result is Result.Success) {
                     userPreferences = result.data
-
                     updateUiState {
                         it.copy(
                             userId = result.data.userId,
@@ -61,39 +58,33 @@ class SettingsPreferenceViewModel(
     }
 
     fun onAction(action: SettingsPreferencesAction) {
-        viewModelScope.launch {
-            when (action) {
-                SettingsPreferencesAction.OnBackClicked -> {
-                    eventChannel.send(SettingsPreferencesEvent.NavigateBack)
-                }
+        when (action) {
+            SettingsPreferencesAction.OnBackClicked -> emitEvent(SettingsPreferencesEvent.NavigateBack)
 
-                is SettingsPreferencesAction.OnExpenseFormatUpdate -> {
-                    updateUiState { it.copy(expenseFormat = action.format) }
-                }
-
-                is SettingsPreferencesAction.OnDecimalSeparatorUpdate -> {
-                    updateUiState { it.copy(decimalSeparator = action.format) }
-                }
-
-                is SettingsPreferencesAction.OnThousandsSeparatorUpdate -> {
-                    updateUiState { it.copy(thousandsSeparator = action.format) }
-                }
-
-                is SettingsPreferencesAction.OnCurrencyUpdate -> {
-                    updateUiState { it.copy(currency = action.currency) }
-                }
-
-                SettingsPreferencesAction.OnSaveClicked -> {
-                    handleOnSaveClicked()
-                }
+            is SettingsPreferencesAction.OnExpenseFormatUpdate -> updateUiState {
+                it.copy(expenseFormat = action.format)
             }
+
+            is SettingsPreferencesAction.OnDecimalSeparatorUpdate -> updateUiState {
+                it.copy(decimalSeparator = action.format)
+            }
+
+            is SettingsPreferencesAction.OnThousandsSeparatorUpdate -> updateUiState {
+                it.copy(thousandsSeparator = action.format)
+            }
+
+            is SettingsPreferencesAction.OnCurrencyUpdate -> updateUiState {
+                it.copy(currency = action.currency)
+            }
+
+            SettingsPreferencesAction.OnSaveClicked -> handleOnSaveClicked()
         }
     }
 
     private fun handleOnSaveClicked() {
         viewModelScope.launch {
             userPreferences?.let { existingUserPreference ->
-                val userPreferencesUpdated = UserPreferences(
+                val updatedPreferences = UserPreferences(
                     userId = _uiState.value.userId,
                     expenseFormat = _uiState.value.expenseFormat,
                     currency = _uiState.value.currency,
@@ -105,22 +96,13 @@ class SettingsPreferenceViewModel(
                     allowedPinAttempts = PinAttempts.THREE
                 )
 
-                val preferencesResult = withContext(Dispatchers.IO) {
-                    preferenceUseCase.setPreferencesUseCase(userPreferencesUpdated)
-                }
-                when (preferencesResult) {
-                    is Result.Error -> {
-                        return@launch
-                    }
-
-                    is Result.Success -> {
-                        eventChannel.send(SettingsPreferencesEvent.PreferencesSaved)
-                    }
+                when (preferenceUseCase.setPreferencesUseCase(updatedPreferences)) {
+                    is Result.Success -> emitEvent(SettingsPreferencesEvent.PreferencesSaved)
+                    is Result.Error -> Unit
                 }
             }
         }
     }
-
 
     private fun updateUiState(updateBlock: (SettingsPreferencesViewState) -> SettingsPreferencesViewState) {
         _uiState.update { currentState ->
@@ -145,5 +127,9 @@ class SettingsPreferenceViewModel(
             thousandsSeparator = state.thousandsSeparator,
             currency = state.currency
         )
+    }
+
+    private fun emitEvent(event: SettingsPreferencesEvent) {
+        viewModelScope.launch { eventChannel.send(event) }
     }
 }
