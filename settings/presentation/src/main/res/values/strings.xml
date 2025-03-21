@@ -4,4 +4,11 @@
     <string name="security">Security</string>
     <string name="settings">Settings</string>
     <string name="log_out">Log out</string>
+    <string name="preferences_saved_successfully">Preferences saved successfully!</string>
+    <string name="expense_format">Expense format</string>
+    <string name="currency">Currency</string>
+    <string name="decimal_separator">Decimal separator</string>
+    <string name="thousand_separator">Thousand separator</string>
+    <string name="save">Save</string>
+    <string name="spend_this_month">spend this month</string>
 </resources>
