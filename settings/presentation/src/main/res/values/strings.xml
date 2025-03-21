@@ -11,4 +11,8 @@
     <string name="thousand_separator">Thousand separator</string>
     <string name="save">Save</string>
     <string name="spend_this_month">spend this month</string>
+    <string name="security_preferences_saved_successfully">Security Preferences saved successfully!</string>
+    <string name="biometrics_for_pin_prompt">Biometrics for PIN prompt</string>
+    <string name="session_expiry_duration">Session expiry duration</string>
+    <string name="locked_out_duration">Locked out duration</string>
 </resources>

@@ -1,5 +1,6 @@
 package com.spendless.settings.presentation.security
 
+import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -28,6 +30,8 @@ import com.hrishi.core.presentation.designsystem.components.SpendLessTopBar
 import com.hrishi.core.presentation.designsystem.components.buttons.SpendLessButton
 import com.hrishi.presentation.ui.LocalAuthActionHandler
 import com.hrishi.presentation.ui.ObserveAsEvents
+import com.spendless.settings.apresentation.R
+import kotlinx.coroutines.flow.Flow
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -40,19 +44,11 @@ fun SettingsSecurityScreenRoot(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
 
-    ObserveAsEvents(viewModel.events) { event ->
-        when (event) {
-            SettingsSecurityEvent.NavigateBack -> onNavigateBack()
-            SettingsSecurityEvent.SecuritySettingsSaved -> {
-                Toast.makeText(
-                    context,
-                    "Security Preferences saved successfully!",
-                    Toast.LENGTH_SHORT
-                ).show()
-                onNavigateBack()
-            }
-        }
-    }
+    EventHandler(
+        events = viewModel.events,
+        onNavigateBack = onNavigateBack,
+        context = context
+    )
 
     SettingsSecurityScreen(
         modifier = modifier,
@@ -72,6 +68,27 @@ fun SettingsSecurityScreenRoot(
 }
 
 @Composable
+private fun EventHandler(
+    events: Flow<SettingsSecurityEvent>,
+    onNavigateBack: () -> Unit,
+    context: Context
+) {
+    ObserveAsEvents(events) { event ->
+        when (event) {
+            SettingsSecurityEvent.NavigateBack -> onNavigateBack()
+            SettingsSecurityEvent.SecuritySettingsSaved -> {
+                Toast.makeText(
+                    context,
+                    context.getString(R.string.security_preferences_saved_successfully),
+                    Toast.LENGTH_SHORT
+                ).show()
+                onNavigateBack()
+            }
+        }
+    }
+}
+
+@Composable
 fun SettingsSecurityScreen(
     modifier: Modifier = Modifier,
     uiState: SettingsSecurityViewState,
@@ -79,17 +96,8 @@ fun SettingsSecurityScreen(
 ) {
     SpendLessScaffold(
         containerColor = Color.Transparent,
-        topBar = {
-            SpendLessTopBar(
-                modifier = Modifier
-                    .padding(horizontal = 8.dp),
-                title = "Security",
-                titleColor = MaterialTheme.colorScheme.onSurface,
-                onStartIconClick = {
-                    onAction(SettingsSecurityAction.OnBackClicked)
-                }
-            )
-        }) { contentPadding ->
+        topBar = { SecurityScreenTopBar(onAction) }
+    ) { contentPadding ->
         Box(
             modifier = modifier
                 .fillMaxSize()
@@ -104,7 +112,7 @@ fun SettingsSecurityScreen(
             ) {
 
                 SegmentedSelector(
-                    title = "Biometrics for PIN prompt",
+                    title = stringResource(R.string.biometrics_for_pin_prompt),
                     options = BiometricPromptStatus.entries.toTypedArray(),
                     selectedOption = uiState.biometricPromptStatus,
                     onOptionSelected = {
@@ -117,7 +125,7 @@ fun SettingsSecurityScreen(
 
                 SegmentedSelector(
                     modifier = Modifier.padding(top = 16.dp),
-                    title = "Session expiry duration",
+                    title = stringResource(R.string.session_expiry_duration),
                     options = SessionDuration.entries.toTypedArray(),
                     selectedOption = uiState.sessionExpiryDuration,
                     onOptionSelected = {
@@ -130,7 +138,7 @@ fun SettingsSecurityScreen(
 
                 SegmentedSelector(
                     modifier = Modifier.padding(top = 16.dp),
-                    title = "Locked out duration",
+                    title = stringResource(R.string.locked_out_duration),
                     options = LockoutDuration.entries.toTypedArray(),
                     selectedOption = uiState.lockedOutDuration,
                     onOptionSelected = {
@@ -144,7 +152,7 @@ fun SettingsSecurityScreen(
                 SpendLessButton(
                     isEnabled = uiState.enableSaveButton,
                     modifier = Modifier.padding(vertical = 34.dp),
-                    buttonText = "Save"
+                    buttonText = stringResource(R.string.save)
                 ) {
                     onAction(SettingsSecurityAction.OnSaveClicked)
                 }
@@ -152,6 +160,19 @@ fun SettingsSecurityScreen(
         }
     }
 
+}
+
+@Composable
+private fun SecurityScreenTopBar(onAction: (SettingsSecurityAction) -> Unit) {
+    SpendLessTopBar(
+        modifier = Modifier
+            .padding(horizontal = 8.dp),
+        title = stringResource(R.string.security),
+        titleColor = MaterialTheme.colorScheme.onSurface,
+        onStartIconClick = {
+            onAction(SettingsSecurityAction.OnBackClicked)
+        }
+    )
 }
 
 @Preview
