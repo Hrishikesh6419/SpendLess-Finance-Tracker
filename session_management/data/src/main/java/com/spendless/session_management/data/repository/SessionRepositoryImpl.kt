@@ -11,13 +11,17 @@ import com.spendless.session_management.data.utils.toDomain
 import com.spendless.session_management.data.utils.toProto
 import com.spendless.session_management.domain.model.SessionData
 import com.spendless.session_management.domain.repository.SessionRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import kotlin.coroutines.cancellation.CancellationException
 
 class SessionRepositoryImpl(
     private val dataStore: DataStore<SessionPreferences>,
@@ -38,26 +42,27 @@ class SessionRepositoryImpl(
     }
 
     override suspend fun saveSession(sessionData: SessionData) {
-        val userPreference = preferencesRepository.getPreferences(sessionData.userId).first()
-        when (userPreference) {
-            is Result.Success -> {
+        try {
+            val userPreference = preferencesRepository.getPreferences(sessionData.userId).first()
+            if (userPreference is Result.Success) {
                 val expirationTime =
-                    timeProvider.currentLocalDateTime.toEpochMillis() + (userPreference.data.sessionDuration.getValueInLong() * MINUTES_TO_MILLIS)
+                    timeProvider.currentLocalDateTime.toEpochMillis() +
+                            (userPreference.data.sessionDuration.getValueInLong() * MINUTES_TO_MILLIS)
 
-                Log.d(
-                    TAG,
-                    "Saving session with expiration at ${formatTime(expirationTime)}"
-                )
+                Log.d(TAG, "Saving session with expiration at ${formatTime(expirationTime)}")
 
-                dataStore.updateData { prefs ->
-                    // Save session data with updated expiration time
-                    sessionData.copy(sessionExpiryTime = expirationTime).toProto()
+                withContext(Dispatchers.IO) {
+                    dataStore.updateData { prefs ->
+                        sessionData.copy(sessionExpiryTime = expirationTime).toProto()
+                    }
                 }
             }
-
-            is Result.Error -> Unit
+        } catch (e: Exception) {
+            if (e is CancellationException) throw e
+            Log.d(TAG, "Error saving session: ${e.message}")
         }
     }
+
 
     override suspend fun clearSession() {
         Log.d(
@@ -65,84 +70,89 @@ class SessionRepositoryImpl(
             "Clearing session expiration at ${formatTime(timeProvider.currentLocalDateTime.toEpochMillis())}"
         )
 
-        // Reset session data to default
-        dataStore.updateData { SessionPreferences.getDefaultInstance() }
+        withContext(Dispatchers.IO) {
+            dataStore.updateData { SessionPreferences.getDefaultInstance() }
+        }
     }
 
-
     override suspend fun setSessionToExpired() {
+        withContext(Dispatchers.IO) {
+            dataStore.updateData { prefs ->
+                val isValidUser = prefs.userId > 0L
+                if (!isValidUser) return@updateData prefs
 
-        // Reset session data to default
-        dataStore.updateData { prefs ->
-            val isValidUser = prefs.userId > 0L
-            if (!isValidUser) {
-                return@updateData prefs
+                Log.d(
+                    TAG,
+                    "setSessionToExpired at ${formatTime(timeProvider.currentLocalDateTime.toEpochMillis())}"
+                )
+                prefs.toBuilder().setSessionExpiryTime(0L).build()
             }
-
-            Log.d(
-                TAG,
-                "setSessionToExpired at ${formatTime(timeProvider.currentLocalDateTime.toEpochMillis())}"
-            )
-            prefs.toBuilder()
-                .setSessionExpiryTime(0L)
-                .build()
         }
     }
 
     override fun getSessionData(): Flow<SessionData> {
-        return dataStore.data.map { prefs ->
-            prefs.toDomain()
-        }
+        return dataStore.data
+            .map { prefs -> prefs.toDomain() }
+            .flowOn(Dispatchers.IO)
     }
 
-
     override fun isSessionExpired(): Flow<Boolean> {
-        return dataStore.data.map { prefs ->
-            val hasValidUser = prefs.userId > 0L
-            val isExpired =
-                timeProvider.currentLocalDateTime.toEpochMillis() >= prefs.sessionExpiryTime
+        return dataStore.data
+            .map { prefs ->
+                val hasValidUser = prefs.userId > 0L
+                val isExpired =
+                    timeProvider.currentLocalDateTime.toEpochMillis() >= prefs.sessionExpiryTime
 
-            if (!hasValidUser) {
-                Log.d(TAG, "No valid user session found. Returning expired=false.")
-                return@map false  // User is not logged in, no need to show PIN prompt
-            }
+                if (!hasValidUser) {
+                    Log.d(TAG, "No valid user session found. Returning expired=false.")
+                    return@map false
+                }
 
-            Log.d(
-                TAG,
-                "Checking session expired: $isExpired at ${formatTime(timeProvider.currentLocalDateTime.toEpochMillis())}"
-            )
-            Log.d(TAG, "Session expires at ${formatTime(prefs.sessionExpiryTime)}")
-            if (isExpired) {
-                setSessionToExpired()
+                Log.d(
+                    TAG,
+                    "Checking session expired: $isExpired at ${formatTime(timeProvider.currentLocalDateTime.toEpochMillis())}"
+                )
+                Log.d(TAG, "Session expires at ${formatTime(prefs.sessionExpiryTime)}")
+
+                if (isExpired) {
+                    setSessionToExpired()
+                }
+                isExpired
             }
-            isExpired
-        }
+            .flowOn(Dispatchers.IO)
     }
 
     override suspend fun resetSessionExpiry() {
-        dataStore.updateData { prefs ->
-            val currentTime = timeProvider.currentLocalDateTime.toEpochMillis()
-            val userPreference = preferencesRepository.getPreferences(prefs.userId).firstOrNull()
-            if (userPreference !is Result.Success) {
-                Log.d(TAG, "Failed to fetch user preferences. Keeping old expiry.")
-                return@updateData prefs
-            }
+        try {
+            withContext(Dispatchers.IO) {
+                dataStore.updateData { prefs ->
+                    val currentTime = timeProvider.currentLocalDateTime.toEpochMillis()
+                    val userPreference =
+                        preferencesRepository.getPreferences(prefs.userId).firstOrNull()
 
-            val newSessionExpiryDurationMins = userPreference.data.sessionDuration.getValueInLong()
-            val newExpirationTime = currentTime + (newSessionExpiryDurationMins * MINUTES_TO_MILLIS)
+                    if (userPreference !is Result.Success) {
+                        Log.d(TAG, "Failed to fetch user preferences. Keeping old expiry.")
+                        return@updateData prefs
+                    }
 
-            Log.d(
-                TAG,
-                "Resetting session expiry from ${formatTime(prefs.sessionExpiryTime)} to ${
-                    formatTime(
-                        newExpirationTime
+                    val newSessionExpiryDurationMins =
+                        userPreference.data.sessionDuration.getValueInLong()
+                    val newExpirationTime =
+                        currentTime + (newSessionExpiryDurationMins * MINUTES_TO_MILLIS)
+
+                    Log.d(
+                        TAG,
+                        "Resetting session expiry from ${formatTime(prefs.sessionExpiryTime)} to ${
+                            formatTime(newExpirationTime)
+                        }"
                     )
-                }"
-            )
 
-            prefs.toBuilder()
-                .setSessionExpiryTime(newExpirationTime)
-                .build()
+                    prefs.toBuilder().setSessionExpiryTime(newExpirationTime).build()
+                }
+            }
+        } catch (e: Exception) {
+            if (e is CancellationException) throw e
+            Log.d(TAG, "Error resetting session expiry: ${e.message}")
         }
     }
 }
