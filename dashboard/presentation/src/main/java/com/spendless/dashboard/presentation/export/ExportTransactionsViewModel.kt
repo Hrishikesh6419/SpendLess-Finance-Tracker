@@ -41,66 +41,66 @@ class ExportTransactionsViewModel(
     private var userId: Long? = 0L
 
     init {
-        combine(
-            sessionUseCases.getSessionDataUseCase().flatMapLatest { sessionData ->
+        sessionUseCases.getSessionDataUseCase()
+            .flatMapLatest { sessionData ->
                 userId = sessionData.userId
-                sessionPreferenceUseCase.getPreferencesUseCase(sessionData.userId)
-            },
-            sessionUseCases.getSessionDataUseCase().flatMapLatest { sessionData ->
-                transactionUseCases.getTransactionsForUserUseCase(sessionData.userId)
-            }
-        ) { preferences, transactions ->
-            Pair(preferences, transactions)
-        }.onEach { (preferencesResult, transactionsResult) ->
-            if (
-                preferencesResult is Result.Success &&
-                transactionsResult is Result.Success
-            ) {
-                preferences = preferencesResult.data
-                transactions = transactionsResult.data
-            }
-        }.launchIn(viewModelScope)
+                combine(
+                    sessionPreferenceUseCase.getPreferencesUseCase(sessionData.userId),
+                    transactionUseCases.getTransactionsForUserUseCase(sessionData.userId)
+                ) { preferencesResult, transactionsResult ->
+                    Pair(preferencesResult, transactionsResult)
+                }
+            }.onEach { (preferencesResult, transactionsResult) ->
+                if (preferencesResult is Result.Success && transactionsResult is Result.Success) {
+                    preferences = preferencesResult.data
+                    transactions = transactionsResult.data
+                }
+            }.launchIn(viewModelScope)
     }
 
     fun onAction(action: ExportTransactionsAction) {
         when (action) {
-            ExportTransactionsAction.OnDismissClicked -> {
-                viewModelScope.launch {
-                    eventChannel.send(ExportTransactionsEvent.CloseBottomSheet)
-                }
-            }
+            ExportTransactionsAction.OnDismissClicked -> onDismissClickedAction()
+            ExportTransactionsAction.OnExportClicked -> onExportClickedAction()
+            is ExportTransactionsAction.OnExportTypeUpdated -> onExportTypeUpdatedAction(action)
+        }
+    }
 
-            ExportTransactionsAction.OnExportClicked -> {
-                viewModelScope.launch {
-                    withContext(Dispatchers.IO) {
-                        val exportResult = exportTransactionsUseCases.exportTransactionUseCase(
-                            userId = userId ?: 0L,
-                            exportType = _uiState.value.exportType,
+    private fun onExportTypeUpdatedAction(action: ExportTransactionsAction.OnExportTypeUpdated) {
+        _uiState.update {
+            it.copy(
+                exportType = action.exportType
+            )
+        }
+    }
+
+    private fun onExportClickedAction() {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                val exportResult = exportTransactionsUseCases.exportTransactionUseCase(
+                    userId = userId ?: 0L,
+                    exportType = _uiState.value.exportType,
+                )
+                when (exportResult) {
+                    is Result.Error -> eventChannel.send(
+                        ExportTransactionsEvent.ExportStatus(
+                            false
                         )
-                        when (exportResult) {
-                            is Result.Error -> eventChannel.send(
-                                ExportTransactionsEvent.ExportStatus(
-                                    false
-                                )
-                            )
+                    )
 
-                            is Result.Success -> eventChannel.send(
-                                ExportTransactionsEvent.ExportStatus(
-                                    true
-                                )
-                            )
-                        }
-                    }
-                }
-            }
-
-            is ExportTransactionsAction.OnExportTypeUpdated -> {
-                _uiState.update {
-                    it.copy(
-                        exportType = action.exportType
+                    is Result.Success -> eventChannel.send(
+                        ExportTransactionsEvent.ExportStatus(
+                            true
+                        )
                     )
                 }
             }
+        }
+    }
+
+    private fun onDismissClickedAction() {
+        viewModelScope.launch {
+            eventChannel.send(ExportTransactionsEvent.CloseBottomSheet)
         }
     }
 }
