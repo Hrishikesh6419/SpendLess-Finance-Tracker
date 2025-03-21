@@ -3,7 +3,6 @@ package com.spendless.core.database.transactions.data_source
 import android.util.Log
 import com.hrishi.core.domain.model.RecurringType
 import com.hrishi.core.domain.model.TransactionCategory
-import com.hrishi.core.domain.security.EncryptionService
 import com.hrishi.core.domain.time.TimeProvider
 import com.hrishi.core.domain.transactions.data_source.LocalTransactionDataSource
 import com.hrishi.core.domain.transactions.model.Transaction
@@ -22,13 +21,12 @@ import kotlin.coroutines.cancellation.CancellationException
 
 class RoomTransactionDataSource(
     private val transactionsDao: TransactionsDao,
-    private val encryptionService: EncryptionService,
     private val timeProvider: TimeProvider
 ) : LocalTransactionDataSource {
 
     override suspend fun upsertTransaction(transaction: Transaction): Result<Unit, DataError> {
         return try {
-            val transactionEntity = transaction.toTransactionEntity(encryptionService)
+            val transactionEntity = transaction.toTransactionEntity()
 
             val insertedId = transactionsDao.upsertTransaction(transactionEntity)
 
@@ -58,7 +56,7 @@ class RoomTransactionDataSource(
     ): Flow<Result<List<Transaction>, DataError>> {
         return transactionsDao.getTransactionsForUser(userId, limit)
             .map { transactions ->
-                Result.Success(transactions.map { it.toTransaction(encryptionService) }) as Result<List<Transaction>, DataError>
+                Result.Success(transactions.map { it.toTransaction() }) as Result<List<Transaction>, DataError>
             }
             .catch {
                 emit(Result.Error(DataError.Local.UNKNOWN_DATABASE_ERROR))
@@ -68,7 +66,7 @@ class RoomTransactionDataSource(
     override suspend fun getDueRecurringTransactions(currentDate: LocalDateTime): Result<List<Transaction>, DataError> {
         return try {
             val transactions = transactionsDao.getDueRecurringTransactions(currentDate)
-                .map { it.toTransaction(encryptionService) }
+                .map { it.toTransaction() }
 
             val recurringTransactions = transactions.filter { it.recurringType != RecurringType.ONE_TIME }
 
@@ -124,7 +122,7 @@ class RoomTransactionDataSource(
     override fun getLargestTransaction(userId: Long): Flow<Result<Transaction?, DataError>> {
         return transactionsDao.getAllExpenses(userId)
             .map { transactions ->
-                val decryptedTransactions = transactions.map { it.toTransaction(encryptionService) }
+                val decryptedTransactions = transactions.map { it.toTransaction() }
                 val largestTransaction = decryptedTransactions.minByOrNull { it.amount }
 
                 Result.Success(largestTransaction) as Result<Transaction?, DataError>
@@ -160,6 +158,6 @@ class RoomTransactionDataSource(
         endDate: LocalDateTime
     ): List<Transaction> {
         return transactionsDao.getTransactionsForDateRange(userId, startDate, endDate)
-            .map { it.toTransaction(encryptionService) }
+            .map { it.toTransaction() }
     }
 }
