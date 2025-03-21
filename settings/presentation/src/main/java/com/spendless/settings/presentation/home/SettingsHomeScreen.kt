@@ -20,14 +20,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.hrishi.core.presentation.designsystem.ExitIcon
 import com.hrishi.core.presentation.designsystem.LockIcon
 import com.hrishi.core.presentation.designsystem.SettingsButton
@@ -35,6 +34,7 @@ import com.hrishi.core.presentation.designsystem.SpendLessFinanceTrackerTheme
 import com.hrishi.core.presentation.designsystem.components.SpendLessScaffold
 import com.hrishi.core.presentation.designsystem.components.SpendLessTopBar
 import com.hrishi.presentation.ui.ObserveAsEvents
+import com.spendless.settings.apresentation.R
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -46,8 +46,6 @@ fun SettingsHomeScreenRoot(
     onLogout: () -> Unit,
     onNavigateBack: () -> Unit,
 ) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
             SettingsHomeEvent.Logout -> onLogout()
@@ -59,28 +57,18 @@ fun SettingsHomeScreenRoot(
 
     SettingsHomeScreen(
         modifier = modifier,
-        uiState = uiState,
         onAction = viewModel::onAction
     )
 }
 
 @Composable
-fun SettingsHomeScreen(
+private fun SettingsHomeScreen(
     modifier: Modifier = Modifier,
-    uiState: SettingsHomeViewState,
     onAction: (SettingsHomeAction) -> Unit
 ) {
     SpendLessScaffold(
         topBar = {
-            SpendLessTopBar(
-                modifier = Modifier
-                    .padding(horizontal = 8.dp),
-                title = "Settings",
-                onStartIconClick = {
-                    onAction(SettingsHomeAction.OnBackClick)
-                },
-                titleColor = MaterialTheme.colorScheme.onSurface
-            )
+            SettingsTopBar(onBackClick = { onAction(SettingsHomeAction.OnBackClick) })
         },
         containerColor = Color.Transparent
     ) { contentPadding ->
@@ -92,40 +80,68 @@ fun SettingsHomeScreen(
                 .padding(contentPadding)
         ) {
             SettingsGroup {
-                SettingsItem(
+                SettingsMenuItem(
                     icon = SettingsButton,
-                    text = "Preferences",
+                    text = stringResource(R.string.preferences),
                     onClick = { onAction(SettingsHomeAction.OnPreferencesClick) }
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                SettingsItem(
+                SettingsMenuItem(
                     icon = LockIcon,
-                    text = "Security",
+                    text = stringResource(R.string.security),
                     onClick = { onAction(SettingsHomeAction.OnSecurityClick) }
                 )
             }
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            SettingsItem(
-                icon = ExitIcon,
-                text = "Log out",
-                iconTint = MaterialTheme.colorScheme.error,
-                iconBackgroundColor = MaterialTheme.colorScheme.error.copy(alpha = 0.08f),
-                textColor = MaterialTheme.colorScheme.error,
-                modifier = Modifier
-                    .background(
-                        color = MaterialTheme.colorScheme.surfaceContainerLowest,
-                        shape = RoundedCornerShape(12.dp)
-                    )
-                    .fillMaxWidth()
-                    .padding(4.dp),
-                onClick = { onAction(SettingsHomeAction.OnLogoutClick) }
-            )
+            LogoutMenuItem(onClick = { onAction(SettingsHomeAction.OnLogoutClick) })
         }
     }
+}
+
+@Composable
+private fun SettingsTopBar(onBackClick: () -> Unit) {
+    SpendLessTopBar(
+        modifier = Modifier.padding(horizontal = 8.dp),
+        title = stringResource(R.string.settings),
+        onStartIconClick = onBackClick,
+        titleColor = MaterialTheme.colorScheme.onSurface
+    )
+}
+
+@Composable
+private fun SettingsMenuItem(
+    icon: ImageVector,
+    text: String,
+    onClick: () -> Unit
+) {
+    SettingsItem(
+        icon = icon,
+        text = text,
+        onClick = onClick
+    )
+}
+
+@Composable
+private fun LogoutMenuItem(onClick: () -> Unit) {
+    SettingsItem(
+        icon = ExitIcon,
+        text = stringResource(R.string.log_out),
+        iconTint = MaterialTheme.colorScheme.error,
+        iconBackgroundColor = MaterialTheme.colorScheme.error.copy(alpha = 0.08f),
+        textColor = MaterialTheme.colorScheme.error,
+        modifier = Modifier
+            .background(
+                color = MaterialTheme.colorScheme.surfaceContainerLowest,
+                shape = RoundedCornerShape(12.dp)
+            )
+            .fillMaxWidth()
+            .padding(4.dp),
+        onClick = onClick
+    )
 }
 
 @Composable
@@ -194,8 +210,7 @@ private fun PreviewSettingsHomeScreenRoot() {
     SpendLessFinanceTrackerTheme {
         Surface(color = MaterialTheme.colorScheme.background) {
             SettingsHomeScreen(
-                uiState = SettingsHomeViewState(),
-                onAction = {}
+                onAction = { }
             )
         }
     }
