@@ -12,9 +12,12 @@ import com.hrishi.core.domain.utils.getPreviousWeekRange
 import com.spendless.core.database.transactions.dao.TransactionsDao
 import com.spendless.core.database.transactions.utils.toTransaction
 import com.spendless.core.database.transactions.utils.toTransactionEntity
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 import java.math.BigDecimal
 import java.time.LocalDateTime
 import kotlin.coroutines.cancellation.CancellationException
@@ -28,7 +31,9 @@ class RoomTransactionDataSource(
         return try {
             val transactionEntity = transaction.toTransactionEntity()
 
-            val insertedId = transactionsDao.upsertTransaction(transactionEntity)
+            val insertedId = withContext(Dispatchers.IO) {
+                transactionsDao.upsertTransaction(transactionEntity)
+            }
 
             val decryptedRecurringType = try {
                 RecurringType.valueOf(transactionEntity.recurringType)
@@ -37,15 +42,18 @@ class RoomTransactionDataSource(
             }
 
             if (decryptedRecurringType != RecurringType.ONE_TIME && transactionEntity.recurringTransactionId == null) {
-                val updatedEntity = transactionEntity.copy(
-                    transactionId = insertedId,
-                    recurringTransactionId = insertedId
-                )
-                transactionsDao.upsertTransaction(updatedEntity)
+                withContext(Dispatchers.IO) {
+                    val updatedEntity = transactionEntity.copy(
+                        transactionId = insertedId,
+                        recurringTransactionId = insertedId
+                    )
+                    transactionsDao.upsertTransaction(updatedEntity)
+                }
             }
 
             Result.Success(Unit)
         } catch (e: Exception) {
+            if (e is CancellationException) throw e
             Result.Error(DataError.Local.UNKNOWN_DATABASE_ERROR)
         }
     }
@@ -58,15 +66,19 @@ class RoomTransactionDataSource(
             .map { transactions ->
                 Result.Success(transactions.map { it.toTransaction() }) as Result<List<Transaction>, DataError>
             }
-            .catch {
+            .catch { e ->
+                if (e is CancellationException) throw e
                 emit(Result.Error(DataError.Local.UNKNOWN_DATABASE_ERROR))
             }
+            .flowOn(Dispatchers.IO)
     }
 
     override suspend fun getDueRecurringTransactions(currentDate: LocalDateTime): Result<List<Transaction>, DataError> {
         return try {
-            val transactions = transactionsDao.getDueRecurringTransactions(currentDate)
-                .map { it.toTransaction() }
+            val transactions = withContext(Dispatchers.IO) {
+                transactionsDao.getDueRecurringTransactions(currentDate)
+                    .map { it.toTransaction() }
+            }
 
             val recurringTransactions = transactions.filter { it.recurringType != RecurringType.ONE_TIME }
 
@@ -76,6 +88,7 @@ class RoomTransactionDataSource(
                 Result.Error(DataError.Local.TRANSACTION_FETCH_ERROR)
             }
         } catch (e: Exception) {
+            if (e is CancellationException) throw e
             Result.Error(DataError.Local.UNKNOWN_DATABASE_ERROR)
         }
     }
@@ -93,9 +106,11 @@ class RoomTransactionDataSource(
                     Result.Error(DataError.Local.UNKNOWN_DATABASE_ERROR)
                 }
             }
-            .catch {
+            .catch { e ->
+                if (e is CancellationException) throw e
                 emit(Result.Error(DataError.Local.UNKNOWN_DATABASE_ERROR))
             }
+            .flowOn(Dispatchers.IO)
     }
 
     override fun getMostPopularExpenseCategory(userId: Long): Flow<Result<TransactionCategory?, DataError>> {
@@ -113,10 +128,11 @@ class RoomTransactionDataSource(
 
                 Result.Success(mostPopularCategory) as Result<TransactionCategory?, DataError>
             }
-            .catch { exception ->
-                if (exception is CancellationException) throw exception
+            .catch { e ->
+                if (e is CancellationException) throw e
                 emit(Result.Error(DataError.Local.UNKNOWN_DATABASE_ERROR))
             }
+            .flowOn(Dispatchers.IO)
     }
 
     override fun getLargestTransaction(userId: Long): Flow<Result<Transaction?, DataError>> {
@@ -127,9 +143,11 @@ class RoomTransactionDataSource(
 
                 Result.Success(largestTransaction) as Result<Transaction?, DataError>
             }
-            .catch {
+            .catch { e ->
+                if (e is CancellationException) throw e
                 emit(Result.Error(DataError.Local.UNKNOWN_DATABASE_ERROR))
             }
+            .flowOn(Dispatchers.IO)
     }
 
     override fun getPreviousWeekTotal(userId: Long): Flow<Result<BigDecimal, DataError>> {
@@ -147,17 +165,24 @@ class RoomTransactionDataSource(
                     Result.Error(DataError.Local.UNKNOWN_DATABASE_ERROR)
                 }
             }
-            .catch {
+            .catch { e ->
+                if (e is CancellationException) throw e
                 emit(Result.Error(DataError.Local.UNKNOWN_DATABASE_ERROR))
             }
+            .flowOn(Dispatchers.IO)
     }
 
     override suspend fun getTransactionsForDateRange(
         userId: Long,
         startDate: LocalDateTime,
         endDate: LocalDateTime
-    ): List<Transaction> {
-        return transactionsDao.getTransactionsForDateRange(userId, startDate, endDate)
-            .map { it.toTransaction() }
+    ): List<Transaction> = try {
+        withContext(Dispatchers.IO) {
+            transactionsDao.getTransactionsForDateRange(userId, startDate, endDate)
+                .map { it.toTransaction() }
+        }
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+        emptyList()
     }
 }
