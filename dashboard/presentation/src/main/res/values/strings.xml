@@ -9,4 +9,9 @@
     <string name="show_all">Show all</string>
     <string name="common_create_text">Create</string>
     <string name="create_transaction">Create Transaction</string>
+    <string name="exported_successfully_to_downloads">Exported successfully to downloads</string>
+    <string name="export_failed">Export failed</string>
+    <string name="export_transactions_to_csv_format">Export transactions to CSV format</string>
+    <string name="export">Export</string>
+    <string name="export_range">Export Range</string>
 </resources>
