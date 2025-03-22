@@ -153,7 +153,6 @@ class CreateTransactionViewModel(
                     note = uiState.note,
                     transactionCategoryType = uiState.transactionCategoryType.toTransactionCategory(),
                     recurringType = uiState.recurringType.toRecurringType(),
-                    currentTime = timeProvider.currentLocalDateTime
                 )
 
                 val result = transactionUseCases.insertTransactionUseCase(transaction)
@@ -166,8 +165,24 @@ class CreateTransactionViewModel(
     }
 
     private fun resetScreen() {
+        val transactionTypeUI = TransactionTypeUI.EXPENSE
         _uiState.update {
-            initialUiState()
+            it.copy(
+                transactionType = transactionTypeUI,
+                transactionName = "",
+                transactionNameHint = createTransactionsUseCases.getTransactionHintUseCase(
+                    transactionTypeUI.toTransactionType()
+                ),
+                amount = BigDecimal.ZERO,
+                noteHint = "Add Note",
+                note = "",
+                transactionCategoryType = TransactionCategoryTypeUI.OTHER,
+                showExpenseCategoryType = createTransactionsUseCases.isExpenseCategoryVisibleUseCase(
+                    transactionTypeUI.toTransactionType()
+                ),
+                recurringType = RecurringTypeUI.ONE_TIME,
+                isCreateButtonEnabled = false
+            )
         }
     }
 

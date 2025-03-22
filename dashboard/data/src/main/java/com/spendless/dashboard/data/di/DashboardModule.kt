@@ -16,6 +16,6 @@ val dashboardModule = module {
     factory { GetTransactionHintUseCase() }
     factory { IsExpenseCategoryVisibleUseCase() }
     factory { IsValidInputUseCase() }
-    factory { BuildTransactionUseCase(get()) }
+    factory { BuildTransactionUseCase(get(), get()) }
     single { CreateTransactionsUseCases(get(), get(), get(), get()) }
 }

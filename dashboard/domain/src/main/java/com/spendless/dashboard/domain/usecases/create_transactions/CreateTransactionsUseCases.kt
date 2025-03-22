@@ -3,10 +3,10 @@ package com.spendless.dashboard.domain.usecases.create_transactions
 import com.hrishi.core.domain.model.RecurringType
 import com.hrishi.core.domain.model.TransactionCategory
 import com.hrishi.core.domain.model.TransactionType
+import com.hrishi.core.domain.time.TimeProvider
 import com.hrishi.core.domain.transactions.model.Transaction
 import com.hrishi.core.domain.transactions.usecases.TransactionUseCases
 import java.math.BigDecimal
-import java.time.LocalDateTime
 
 data class CreateTransactionsUseCases(
     val getTransactionHintUseCase: GetTransactionHintUseCase,
@@ -34,7 +34,10 @@ class IsValidInputUseCase {
     }
 }
 
-class BuildTransactionUseCase(private val transactionUseCases: TransactionUseCases) {
+class BuildTransactionUseCase(
+    private val transactionUseCases: TransactionUseCases,
+    private val currentTimeProvider: TimeProvider
+) {
     operator fun invoke(
         userId: Long,
         transactionType: TransactionType,
@@ -42,8 +45,7 @@ class BuildTransactionUseCase(private val transactionUseCases: TransactionUseCas
         amount: BigDecimal,
         note: String,
         transactionCategoryType: TransactionCategory,
-        recurringType: RecurringType,
-        currentTime: LocalDateTime
+        recurringType: RecurringType
     ): Transaction {
         val nextRecurringDate =
             transactionUseCases.getNextRecurringDateUseCase(recurringType = recurringType)
@@ -68,8 +70,8 @@ class BuildTransactionUseCase(private val transactionUseCases: TransactionUseCas
             amount = finalAmount,
             note = note.trim(),
             transactionCategory = transactionCategory,
-            transactionDate = currentTime,
-            recurringStartDate = currentTime,
+            transactionDate = currentTimeProvider.currentLocalDateTime,
+            recurringStartDate = currentTimeProvider.currentLocalDateTime,
             recurringTransactionId = null,
             recurringType = recurringType,
             nextRecurringDate = nextRecurringDate
