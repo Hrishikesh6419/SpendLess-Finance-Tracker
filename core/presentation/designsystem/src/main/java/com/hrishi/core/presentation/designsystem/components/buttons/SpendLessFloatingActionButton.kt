@@ -1,8 +1,10 @@
 package com.hrishi.core.presentation.designsystem.components.buttons
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
@@ -23,38 +25,46 @@ fun SpendLessFloatingActionButton(
     modifier: Modifier = Modifier,
     icon: ImageVector = PlusIcon,
     iconColor: Color = MaterialTheme.colorScheme.onSecondaryContainer,
+    containerColor: Color = MaterialTheme.colorScheme.secondaryContainer,
     contentDescription: String = "",
+    isEnabled: Boolean = true,
     onClick: () -> Unit
 ) {
-    Box(
-        modifier = modifier
-            .size(60.dp)
-            .background(
-                color = MaterialTheme.colorScheme.secondaryContainer,
-                shape = RoundedCornerShape(16.dp)
-            )
-            .clickable {
-                onClick()
-            },
-        contentAlignment = Alignment.Center
+
+    Surface(
+        modifier = modifier.size(60.dp),
+        shape = RoundedCornerShape(16.dp),
+        color = containerColor,
+        enabled = isEnabled,
+        onClick = onClick
     ) {
-        Icon(
-            modifier = Modifier,
-            tint = iconColor,
-            imageVector = icon,
-            contentDescription = contentDescription
-        )
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = contentDescription,
+                tint = iconColor
+            )
+        }
     }
 }
 
-@Preview
+
+@Preview(showBackground = true)
 @Composable
 fun PreviewSpendLessFloatingActionButton() {
     SpendLessFinanceTrackerTheme {
         Surface(color = MaterialTheme.colorScheme.background) {
-            SpendLessFloatingActionButton(
-                contentDescription = "Add new transaction"
+            Column(
+                modifier = Modifier
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
+                SpendLessFloatingActionButton(
+                    contentDescription = "Add new transaction"
+                ) { }
             }
         }
     }
