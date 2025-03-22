@@ -13,6 +13,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -24,7 +26,8 @@ fun PreviousWeekTotalView(
     modifier: Modifier = Modifier,
     amount: String,
     description: String,
-    backgroundColor: Color = secondaryFixed
+    backgroundColor: Color = secondaryFixed,
+    contentDescription: String? = null
 ) {
     Column(
         modifier = modifier
@@ -33,39 +36,62 @@ fun PreviousWeekTotalView(
                 color = backgroundColor,
                 shape = RoundedCornerShape(16.dp)
             )
-            .padding(start = 12.dp)
-            .padding(end = 36.dp),
+            .padding(12.dp)
+            .semantics {
+                if (contentDescription != null) {
+                    this.contentDescription = contentDescription
+                }
+            },
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.Start
     ) {
-        Text(
-            text = amount,
-            style = MaterialTheme.typography.titleLarge
-        )
-
-        Text(
-            modifier = Modifier.padding(top = 2.dp),
-            text = description,
-            style = MaterialTheme.typography.bodySmall.copy(
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
-                fontSize = 12.sp
-            )
-        )
+        AmountDisplay(amount)
+        DescriptionDisplay(description)
     }
 }
 
-@Preview
+@Composable
+private fun AmountDisplay(amount: String) {
+    Text(
+        text = amount,
+        style = MaterialTheme.typography.titleLarge
+    )
+}
+
+@Composable
+private fun DescriptionDisplay(description: String) {
+    Text(
+        modifier = Modifier.padding(top = 2.dp),
+        text = description,
+        style = MaterialTheme.typography.bodySmall.copy(
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+            fontSize = 12.sp
+        )
+    )
+}
+
+@Preview(showBackground = true)
 @Composable
 fun PreviewPreviousWeekTotalView() {
     SpendLessFinanceTrackerTheme {
         Surface(
-            color = MaterialTheme.colorScheme.background
+            color = MaterialTheme.colorScheme.background,
+            modifier = Modifier.padding(16.dp)
         ) {
-            PreviousWeekTotalView(
-                modifier = Modifier.padding(12.dp),
-                description = "Largest transaction",
-                amount = "-\$59.99",
-            )
+            Column(
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                PreviousWeekTotalView(
+                    amount = "-$59.99",
+                    description = "Previous week",
+                )
+
+                PreviousWeekTotalView(
+                    amount = "$1,247.35",
+                    description = "Previous month",
+                    backgroundColor = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.2f),
+                )
+            }
         }
     }
 }
