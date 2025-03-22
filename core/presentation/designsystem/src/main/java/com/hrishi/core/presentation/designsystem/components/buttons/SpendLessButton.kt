@@ -1,5 +1,8 @@
 package com.hrishi.core.presentation.designsystem.components.buttons
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
@@ -41,6 +44,7 @@ fun SpendLessButton(
     ),
     isEnabled: Boolean = true,
     icon: ImageVector? = null,
+    iconContentDescription: String? = null,
     onClick: () -> Unit
 ) {
     Button(
@@ -57,46 +61,77 @@ fun SpendLessButton(
             disabledContainerColor = disabledContainerColor
         )
     ) {
-        Text(
-            text = buttonText,
-            style = if (isEnabled) {
-                enabledTextStyle
-            } else {
-                disabledTextStyle
-            },
-            color = if (isEnabled) {
-                contentColor
-            } else {
-                MaterialTheme.colorScheme.onSurface.copy(
-                    alpha = 0.38f
-                )
-            }
+        ButtonContent(
+            buttonText = buttonText,
+            isEnabled = isEnabled,
+            enabledTextStyle = enabledTextStyle,
+            disabledTextStyle = disabledTextStyle,
+            contentColor = contentColor,
+            disabledContentColor = disabledContentColor,
+            icon = icon,
+            iconContentDescription = iconContentDescription
         )
-        Spacer(modifier = Modifier.width(8.dp))
+    }
+}
 
-        icon?.let {
-            Icon(
-                modifier = Modifier
-                    .align(Alignment.CenterVertically)
-                    .padding(top = 2.dp),
-                imageVector = it,
-                contentDescription = ""
-            )
-        }
+@Composable
+private fun RowScope.ButtonContent(
+    buttonText: String,
+    isEnabled: Boolean,
+    enabledTextStyle: TextStyle,
+    disabledTextStyle: TextStyle,
+    contentColor: Color,
+    disabledContentColor: Color,
+    icon: ImageVector?,
+    iconContentDescription: String?
+) {
+    Text(
+        text = buttonText,
+        style = if (isEnabled) enabledTextStyle else disabledTextStyle,
+        color = if (isEnabled) contentColor else disabledContentColor
+    )
+
+    icon?.let {
+        Spacer(modifier = Modifier.width(8.dp))
+        Icon(
+            modifier = Modifier
+                .align(Alignment.CenterVertically)
+                .padding(top = 2.dp),
+            imageVector = it,
+            contentDescription = iconContentDescription ?: ""
+        )
     }
 }
 
 @Preview
 @Composable
-fun PreviewSpendLessButton() {
+private fun PreviewSpendLessButton() {
     SpendLessFinanceTrackerTheme {
         Surface(color = MaterialTheme.colorScheme.background) {
-            SpendLessButton(
-                buttonText = "Next",
-                isEnabled = true,
-                icon = ArrowForward
+            Column(
+                modifier = Modifier
+                    .padding(16.dp)
+                    .fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
+                SpendLessButton(
+                    buttonText = "Enabled Button",
+                    isEnabled = true,
+                    icon = ArrowForward,
+                    iconContentDescription = ""
+                ) {}
 
+                SpendLessButton(
+                    buttonText = "Disabled Button",
+                    isEnabled = false,
+                    icon = ArrowForward,
+                    iconContentDescription = ""
+                ) {}
+
+                SpendLessButton(
+                    buttonText = "No Icon Button",
+                    isEnabled = true
+                ) {}
             }
         }
     }
