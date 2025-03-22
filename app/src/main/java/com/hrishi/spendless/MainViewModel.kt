@@ -84,7 +84,13 @@ class MainViewModel(
             it.copy(
                 showPinPrompt = false,
                 isSessionExpired = false,
-                isUserLoggedIn = true
+                isUserLoggedIn = true,
+                pendingRoute = it.pendingRoute
+                    ?: AppNavRoute(
+                        pendingRoute = DashboardScreenRoute(
+                            isLaunchedFromWidget = isLaunchedFromWidget
+                        )
+                    )
             )
         }
     }

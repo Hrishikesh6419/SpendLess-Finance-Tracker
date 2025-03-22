@@ -31,7 +31,7 @@ fun NavGraphBuilder.settingsNavGraph(
                 },
                 onLogout = onLogout,
                 onNavigateBack = {
-                    navController.popBackStack()
+                    navController.navigateUp()
                 }
             )
         }
@@ -39,7 +39,7 @@ fun NavGraphBuilder.settingsNavGraph(
         composable<SettingsPreferenceScreenRoute> {
             SettingsPreferenceScreenRoot(
                 onNavigateBack = {
-                    navController.popBackStack()
+                    navController.navigateUp()
                 }
             )
         }
@@ -47,7 +47,7 @@ fun NavGraphBuilder.settingsNavGraph(
         composable<SettingsSecurityScreenRoute> {
             SettingsSecurityScreenRoot(
                 onNavigateBack = {
-                    navController.popBackStack()
+                    navController.navigateUp()
                 }
             )
         }

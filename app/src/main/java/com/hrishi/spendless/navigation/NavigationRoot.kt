@@ -67,7 +67,7 @@ fun NavigationRoot(
                 navController = navController,
                 onVerificationSuccess = {
                     onSessionVerified()
-                    navController.popBackStack()
+                    navController.navigateUp()
                 },
                 onLogout = {
                     onLogout()

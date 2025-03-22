@@ -105,9 +105,7 @@ class PinPromptViewModel(
                         }
 
                         if (_uiState.value.remainingPinAttempts <= 0) {
-                            if (!_uiState.value.isExceededFailedAttempts) {
-                                startLockoutTimer()
-                            }
+                            startLockoutTimer()
                         }
 
                         eventChannel.send(PinPromptEvent.IncorrectPin)

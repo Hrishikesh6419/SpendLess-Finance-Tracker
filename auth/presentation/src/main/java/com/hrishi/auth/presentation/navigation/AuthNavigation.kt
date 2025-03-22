@@ -93,7 +93,7 @@ fun NavGraphBuilder.authGraph(
         ) {
             ConfirmPinScreenRoot(
                 onBackClick = {
-                    navController.popBackStack()
+                    navController.navigateUp()
                 },
                 onNavigateToPreferencesScreen = {
                     navController.navigateToPreferencesScreen(it) {
@@ -112,7 +112,7 @@ fun NavGraphBuilder.authGraph(
         ) {
             OnboardingPreferencesScreenRoot(
                 onNavigateBack = {
-                    navController.popBackStack()
+                    navController.navigateUp()
                 },
                 onNavigateToDashboardScreen = onNavigateToDashboardScreen
             )
