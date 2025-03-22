@@ -67,11 +67,8 @@ fun TransactionItemView(
     var expanded by remember { mutableStateOf(!isCollapsed) }
     val canExpand = !note.isNullOrBlank()
 
-    // Apply the same shape & padding in both states, so items don't shift.
-    // Only toggle the background color if expanded.
     val containerModifier = modifier
         .clickable(enabled = canExpand) {
-            // If there's no note, no expand/collapse logic applies
             if (canExpand) {
                 expanded = !expanded
                 onCardClicked(expanded)
@@ -155,13 +152,11 @@ private fun TransactionItemInnerContent(
         modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.Top
     ) {
-        // Icon + optional note indicator
         Box(
             modifier = Modifier
                 .size(46.dp)
                 .background(Color.Transparent)
         ) {
-            // Colored background for expense or income
             Box(
                 modifier = Modifier
                     .align(Alignment.Center)
@@ -172,13 +167,11 @@ private fun TransactionItemInnerContent(
                     )
             )
 
-            // Main icon text
             Text(
                 modifier = Modifier.align(Alignment.Center),
                 text = icon
             )
 
-            // If there's a note, draw a small overlay icon
             if (!note.isNullOrBlank()) {
                 Box(
                     modifier = Modifier
@@ -241,19 +234,6 @@ private fun TransactionItemInnerContent(
     }
 }
 
-private val defaultAmountFormatter: (BigDecimal) -> String = { amount ->
-    val absAmount = amount.abs().setScale(2, RoundingMode.HALF_EVEN)
-    when {
-        amount < BigDecimal.ZERO -> {
-            "-$$absAmount"
-        }
-
-        else -> {
-            "$$absAmount"
-        }
-    }
-}
-
 @Preview(name = "Multiple Scenarios", showBackground = true)
 @Composable
 fun PreviewTransactionItem() {
@@ -273,7 +253,7 @@ fun PreviewTransactionItem() {
                 note = "Grabbed a quick lunch",
                 amount = BigDecimal("8.50"),
                 isCollapsed = true,
-                displayAmount = defaultAmountFormatter,
+                displayAmount = fakeDefaultAmountFormatter,
                 onCardClicked = {}
             )
 
@@ -285,7 +265,7 @@ fun PreviewTransactionItem() {
                 note = "Went to a local match with friends",
                 amount = BigDecimal("45.00"),
                 isCollapsed = false,
-                displayAmount = defaultAmountFormatter,
+                displayAmount = fakeDefaultAmountFormatter,
                 onCardClicked = {}
             )
 
@@ -297,7 +277,7 @@ fun PreviewTransactionItem() {
                 note = null,
                 amount = BigDecimal("2.00"),
                 isCollapsed = true,
-                displayAmount = defaultAmountFormatter,
+                displayAmount = fakeDefaultAmountFormatter,
                 onCardClicked = {}
             )
 
@@ -309,7 +289,7 @@ fun PreviewTransactionItem() {
                 note = "Monthly charge for phone services",
                 amount = BigDecimal("-49.99"),
                 isCollapsed = true,
-                displayAmount = defaultAmountFormatter,
+                displayAmount = fakeDefaultAmountFormatter,
                 onCardClicked = {}
             )
 
@@ -321,9 +301,22 @@ fun PreviewTransactionItem() {
                 note = "Installment for new MacBook",
                 amount = BigDecimal("-999.99"),
                 isCollapsed = false,
-                displayAmount = defaultAmountFormatter,
+                displayAmount = fakeDefaultAmountFormatter,
                 onCardClicked = {}
             )
+        }
+    }
+}
+
+private val fakeDefaultAmountFormatter: (BigDecimal) -> String = { amount ->
+    val absAmount = amount.abs().setScale(2, RoundingMode.HALF_EVEN)
+    when {
+        amount < BigDecimal.ZERO -> {
+            "-$$absAmount"
+        }
+
+        else -> {
+            "$$absAmount"
         }
     }
 }
