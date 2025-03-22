@@ -24,9 +24,7 @@ fun SpendLessEnterPin(
     pin: String
 ) {
     Row(
-        modifier = modifier.padding(
-            vertical = 19.dp
-        ),
+        modifier = modifier.padding(vertical = 18.dp),
         horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         List(pinMaxLength) { index ->
@@ -49,7 +47,7 @@ private fun CirclePin(
             .clip(CircleShape)
             .background(
                 when {
-                    isLocked -> MaterialTheme.colorScheme.onBackground.copy(alpha = 0.05f) // Lighter when locked
+                    isLocked -> MaterialTheme.colorScheme.onBackground.copy(alpha = 0.05f)
                     isEnabled -> MaterialTheme.colorScheme.primary
                     else -> MaterialTheme.colorScheme.onBackground.copy(alpha = 0.12f)
                 }
