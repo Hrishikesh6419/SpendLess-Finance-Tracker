@@ -12,6 +12,7 @@ import com.hrishi.core.data.security.KeyManager
 import com.hrishi.core.data.time.SystemTimeProvider
 import com.hrishi.core.data.time.TrustedTimeProvider
 import com.hrishi.core.domain.auth.repository.UserInfoRepository
+import com.hrishi.core.domain.auth.usecases.AreUsersPresentUseCase
 import com.hrishi.core.domain.auth.usecases.GetUserInfoUseCase
 import com.hrishi.core.domain.auth.usecases.UserInfoUseCases
 import com.hrishi.core.domain.export.repository.ExportRepository
@@ -71,7 +72,8 @@ val coreDataModule = module {
     singleOf(::UserInfoRepositoryImpl).bind<UserInfoRepository>()
 
     factory { GetUserInfoUseCase(get()) }
-    single { UserInfoUseCases(get()) }
+    factory { AreUsersPresentUseCase(get()) }
+    single { UserInfoUseCases(get(), get()) }
 
     factory { InsertTransactionUseCase(get()) }
     factory { GetTransactionsForUserUseCase(get()) }

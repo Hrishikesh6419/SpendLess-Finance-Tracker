@@ -14,8 +14,7 @@ data class MainState(
 
 sealed class AuthNavigationDestination {
     data object None: AuthNavigationDestination()
-    data object LoginScreen: AuthNavigationDestination()
-    data object RegisterScreen: AuthNavigationDestination()
     data object PinScreen: AuthNavigationDestination()
+    data class AuthScreen(val shouldNavigateToLogin: Boolean = false) : AuthNavigationDestination()
     data class DashboardScreen(val isLaunchedFromWidget: Boolean): AuthNavigationDestination()
 }

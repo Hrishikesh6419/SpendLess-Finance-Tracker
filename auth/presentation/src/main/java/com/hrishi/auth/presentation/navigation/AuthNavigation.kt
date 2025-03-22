@@ -28,10 +28,15 @@ import kotlin.reflect.typeOf
 
 fun NavGraphBuilder.authGraph(
     navController: NavHostController,
+    shouldNavigateToLogin: Boolean?,
     onNavigateToDashboardScreen: () -> Unit
 ) {
     navigation<AuthBaseRoute>(
-        startDestination = LoginRoute
+        startDestination = if (shouldNavigateToLogin == true) {
+            LoginRoute
+        } else {
+            RegisterRoute
+        }
     ) {
         composable<LoginRoute> {
             LoginScreenRoot(

@@ -12,7 +12,6 @@ import com.hrishi.presentation.ui.LocalAuthNavigationHandler
 import com.hrishi.presentation.ui.NavigationRequestHandler
 import com.hrishi.presentation.ui.navigation.AuthBaseRoute
 import com.hrishi.presentation.ui.navigation.DashboardBaseRoute
-import com.hrishi.presentation.ui.navigation.RegisterRoute
 import com.hrishi.presentation.ui.navigation.SessionBaseRoute
 import com.hrishi.presentation.ui.navigation.SettingsHomeScreenRoute
 import com.hrishi.presentation.ui.navigation.navigateToDashboardScreen
@@ -45,6 +44,7 @@ fun NavigationRoot(
         ) {
             authGraph(
                 navController = navController,
+                shouldNavigateToLogin = (authNavigationDestination as? AuthNavigationDestination.AuthScreen)?.shouldNavigateToLogin,
                 onNavigateToDashboardScreen = {
                     navController.navigateToDashboardScreen {
                         popUpTo<AuthBaseRoute> { inclusive = true }
@@ -86,9 +86,8 @@ fun NavigationRoot(
 private fun getStartDestination(authNavigationDestination: AuthNavigationDestination) =
     when (authNavigationDestination) {
         is AuthNavigationDestination.DashboardScreen -> DashboardBaseRoute
-        AuthNavigationDestination.LoginScreen -> AuthBaseRoute
+        is AuthNavigationDestination.AuthScreen -> AuthBaseRoute
         AuthNavigationDestination.None -> AuthBaseRoute
         AuthNavigationDestination.PinScreen -> SessionBaseRoute
-        AuthNavigationDestination.RegisterScreen -> RegisterRoute
     }
 

@@ -57,11 +57,7 @@ class RoomLocalUserInfoDataSource(
     override fun getAllUsers(): Flow<Result<List<UserInfo>, DataError>> {
         return userInfoDao.getAllUsers()
             .map { userEntities ->
-                if (userEntities.isNotEmpty()) {
-                    Result.Success(userEntities.map { it.toUserInfo() })
-                } else {
-                    Result.Error(DataError.Local.USER_FETCH_ERROR)
-                }
+                Result.Success(userEntities.map { it.toUserInfo() }) as Result<List<UserInfo>, DataError>
             }
             .catch { e ->
                 if (e is CancellationException) throw e

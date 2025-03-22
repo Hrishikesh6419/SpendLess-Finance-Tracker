@@ -3,6 +3,7 @@ package com.hrishi.spendless
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.hrishi.core.domain.auth.usecases.UserInfoUseCases
 import com.hrishi.core.domain.transactions.usecases.TransactionUseCases
 import com.hrishi.presentation.ui.AppNavRoute
 import com.hrishi.presentation.ui.NavigationRequestHandler
@@ -20,7 +21,8 @@ import kotlinx.coroutines.launch
 class MainViewModel(
     savedStateHandle: SavedStateHandle,
     private val sessionUseCases: SessionUseCases,
-    private val transactionUseCases: TransactionUseCases
+    private val transactionUseCases: TransactionUseCases,
+    private val userInfoUseCases: UserInfoUseCases
 ) : ViewModel(), NavigationRequestHandler {
 
     private val _uiState = MutableStateFlow(MainState())
@@ -95,7 +97,7 @@ class MainViewModel(
         }
     }
 
-    private fun getAuthNavigationDestination(
+    private suspend fun getAuthNavigationDestination(
         isUserPresent: Boolean,
         isSessionExpired: Boolean,
         isLaunchedFromWidget: Boolean
@@ -109,7 +111,11 @@ class MainViewModel(
                 AuthNavigationDestination.PinScreen
             }
 
-            else -> AuthNavigationDestination.LoginScreen
+            userInfoUseCases.areUsersPresentUseCase() -> {
+                AuthNavigationDestination.AuthScreen(shouldNavigateToLogin = true)
+            }
+
+            else -> AuthNavigationDestination.AuthScreen()
         }
     }
 
