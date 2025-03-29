@@ -10,7 +10,6 @@ SpendLess is a minimalistic and secure personal finance tracker built as part of
 - Session Management with Timeout
 - Create & View Transactions
 - Dashboard with Basic Statistics
-- Encrypted Data Storage
 - Customizable Currency and Formatting Preferences
 - Export Transactions (CSV)
 - Create Transaction Widget
