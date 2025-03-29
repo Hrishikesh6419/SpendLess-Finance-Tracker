@@ -26,7 +26,7 @@ class SettingsSecurityViewModel(
     private val _uiState = MutableStateFlow(
         SettingsSecurityViewState(
             biometricPromptStatus = BiometricPromptStatus.DISABLE,
-            sessionExpiryDuration = SessionDuration.ONE_MIN,
+            sessionExpiryDuration = SessionDuration.FIVE_MIN,
             lockedOutDuration = LockoutDuration.FIFTEEN_SECONDS
         )
     )

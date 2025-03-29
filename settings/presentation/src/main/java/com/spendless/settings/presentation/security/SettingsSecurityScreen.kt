@@ -184,7 +184,7 @@ fun PreviewSettingsSecurityScreen() {
                 modifier = Modifier,
                 uiState = SettingsSecurityViewState(
                     biometricPromptStatus = BiometricPromptStatus.ENABLE,
-                    sessionExpiryDuration = SessionDuration.ONE_MIN,
+                    sessionExpiryDuration = SessionDuration.FIVE_MIN,
                     lockedOutDuration = LockoutDuration.FIFTEEN_SECONDS
                 ),
                 onAction = {
