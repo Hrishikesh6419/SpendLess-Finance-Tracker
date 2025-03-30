@@ -1,6 +1,7 @@
 package com.spendless.dashboard.presentation.create_screen
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -16,9 +17,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -43,6 +48,7 @@ import com.hrishi.presentation.ui.ObserveAsEvents
 import com.hrishi.presentation.ui.UpdateDialogStatusBarAppearance
 import com.hrishi.presentation.ui.utils.getFormattedTitle
 import com.spendless.dashboard.core.R
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import org.koin.androidx.compose.koinViewModel
 import java.math.BigDecimal
@@ -97,6 +103,13 @@ private fun CreateTransactionScreen(
     uiState: CreateTransactionViewState,
     onAction: (CreateTransactionAction) -> Unit
 ) {
+    val focusRequester = remember { FocusRequester() }
+
+    LaunchedEffect(Unit) {
+        delay(500L)
+        focusRequester.requestFocus()
+    }
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -112,7 +125,7 @@ private fun CreateTransactionScreen(
 
         Spacer(modifier = Modifier.height(34.dp))
 
-        TransactionFields(uiState, onAction)
+        TransactionFields(uiState, onAction, focusRequester)
 
         Spacer(modifier = Modifier.height(12.dp))
 
@@ -168,11 +181,14 @@ private fun TransactionTypeSelector(
 @Composable
 private fun ColumnScope.TransactionFields(
     uiState: CreateTransactionViewState,
-    onAction: (CreateTransactionAction) -> Unit
+    onAction: (CreateTransactionAction) -> Unit,
+    focusRequester: FocusRequester
 ) {
     BasicTransactionField(
         modifier = Modifier
             .fillMaxWidth()
+            .focusable()
+            .focusRequester(focusRequester)
             .align(Alignment.CenterHorizontally),
         value = uiState.transactionName,
         hint = uiState.transactionNameHint,

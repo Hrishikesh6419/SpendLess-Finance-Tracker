@@ -64,7 +64,6 @@ fun BasicTransactionField(
         ),
         modifier = modifier
             .fillMaxWidth()
-            .focusable()
             .onFocusChanged { isFocused = it.isFocused },
         decorationBox = { innerTextField ->
             TransactionFieldDecoration(
