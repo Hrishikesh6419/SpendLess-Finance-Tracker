@@ -41,10 +41,7 @@ SpendLess is a minimalistic and secure personal finance tracker built as part of
 ## 🚀 Demo
 **Check out the demo video** here
 
-
-https://github.com/user-attachments/assets/e24c62bd-f43f-416a-b25d-505342124218
-
-
+https://github.com/user-attachments/assets/5ccb905c-ddb7-46ca-8941-ba61f6b7f51a
 
 ---
 
