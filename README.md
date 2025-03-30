@@ -32,7 +32,9 @@ SpendLess is a minimalistic and secure personal finance tracker built as part of
 
 | Login | Dashb | Create | Widget |
 | ------|-----------|--------|--------|
-| ![login1](https://github.com/user-attachments/assets/52230b59-b736-41e7-9c80-dee79533f56a) | ![dashboard](https://github.com/user-attachments/assets/6dc1734f-5998-45a5-8981-0a123c8e3c3b)| ![create](https://github.com/user-attachments/assets/4fe8f35d-b82c-40b0-b269-7b29e52704d6)| ![widget](https://github.com/user-attachments/assets/bdadb286-0349-4272-95af-0885fac79ce7) |
+| ![login1](https://github.com/user-attachments/assets/52230b59-b736-41e7-9c80-dee79533f56a) | ![dashboard](https://github.com/user-attachments/assets/6dc1734f-5998-45a5-8981-0a123c8e3c3b)| ![create](https://github.com/user-attachments/assets/8a6f5537-f23a-4096-8fcd-ae46378df515)| ![widget](https://github.com/user-attachments/assets/bdadb286-0349-4272-95af-0885fac79ce7) |
+
+
 
 ---
 
