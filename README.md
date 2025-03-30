@@ -52,8 +52,11 @@ SpendLess is built using Clean Architecture with multi-module support to ensure 
 
 ## 🛠 Installation & Setup
 
-1. **Clone** the repository: ```git clone https://github.com/YourUsername/spendless-finance-tracker.git```
-2. Open the project in Android Studio.
-3. Sync Gradle dependencies.
-4. Run on an emulator or connected device.
+1. **Clone** the repository:
+   ```bash
+   git clone https://github.com/Hrishikesh6419/SpendLess-Finance-Tracker.git
+   ```
+3. Open the project in Android Studio.
+4. Sync Gradle dependencies.
+5. Run on an emulator or connected device.
 
